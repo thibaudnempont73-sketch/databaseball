@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>DataBaseball — Pronostics MLB v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060A12;--bg2:#0E1520;--card:#0F1825;--card2:#141E2E;
+  --b1:#1C2A3E;--b2:#243448;
+  --red:#E8192C;--red-d:rgba(232,25,44,.1);--red-b:rgba(232,25,44,.25);
+  --green:#00C896;--green-d:rgba(0,200,150,.08);--green-b:rgba(0,200,150,.22);
+  --amber:#F5A623;--amber-d:rgba(245,166,35,.08);--amber-b:rgba(245,166,35,.22);
+  --blue:#4B9EFF;--blue-d:rgba(75,158,255,.08);--blue-b:rgba(75,158,255,.22);
+  --purple:#9B6DFF;--purple-d:rgba(155,109,255,.08);--purple-b:rgba(155,109,255,.22);
+  --teal:#00D4D4;--teal-d:rgba(0,212,212,.08);--teal-b:rgba(0,212,212,.22);
+  --white:#E8EDF5;--muted:#5C6E87;--muted2:#2A3A52;
+  --sans:'Inter',sans-serif;--display:'Bebas Neue',sans-serif;--mono:'DM Mono',monospace;
+}
+html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh}
+.topbar{position:sticky;top:0;z-index:200;background:rgba(6,10,18,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.logo{font-family:var(--display);font-size:20px;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.logo span{color:var(--red)}
+.logo-ball{width:20px;height:20px;background:var(--red);border-radius:50%;position:relative;flex-shrink:0}
+.logo-ball::before,.logo-ball::after{content:'';position:absolute;border:1.5px solid rgba(255,255,255,.3);border-radius:50%;width:62%;height:100%;top:0;left:50%;transform:translateX(-50%) rotate(35deg)}
+.logo-ball::after{transform:translateX(-50%) rotate(-35deg)}
+.topbar-r{display:flex;align-items:center;gap:8px}
+.api-pill{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid var(--b1);color:var(--muted);transition:all .3s}
+.api-pill.ok{border-color:var(--green-b);color:var(--green);background:var(--green-d)}
+.api-pill.err{border-color:var(--red-b);color:var(--red);background:var(--red-d)}
+.pulse{width:6px;height:6px;background:var(--red);border-radius:50%;animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.nav-tabs{display:flex;gap:0;padding:0 16px;background:var(--bg2);border-bottom:1px solid var(--b1);overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{padding:10px 14px;border:none;background:none;color:var(--muted);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.nav-tab:hover{color:var(--white)}
+.nav-tab.active{color:var(--red);border-bottom-color:var(--red)}
+.page{display:none;max-width:1000px;margin:0 auto;padding:20px 14px}
+.page.active{display:block;animation:fu .2s ease}
+@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.ph{margin-bottom:20px}
+.ph-eye{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+.ph-title{font-family:var(--display);font-size:28px;letter-spacing:.5px;line-height:1;margin-bottom:3px}
+.ph-sub{font-size:11px;color:var(--muted);line-height:1.5}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--b1);border-radius:10px;overflow:hidden}
+.card-h{padding:11px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
+.card-ht{font-size:12px;font-weight:700}
+.card-hs{font-size:10px;color:var(--muted)}
+.kpi{background:var(--card);border:1px solid var(--b1);border-radius:10px;padding:14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px}
+.kpi-v{font-family:var(--display);font-size:30px;line-height:1;margin-bottom:2px}
+.kpi-m{font-size:10px;color:var(--muted)}
+
+/* PRONO CARD */
+.prono{background:var(--card);border:1px solid var(--b1);border-radius:12px;overflow:hidden;margin-bottom:10px;transition:border-color .2s,box-shadow .2s}
+.prono.forte{border-color:var(--green-b);box-shadow:0 0 20px rgba(0,200,150,.06)}
+.prono.moyenne{border-color:var(--amber-b)}
+.prono.alerte{border-color:var(--red-b)}
+.prono-top{padding:14px 14px 0}
+.prono-meta{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tag{font-size:9px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:3px 7px;border-radius:20px}
+.tag-v{background:var(--blue-d);color:var(--blue);border:1px solid var(--blue-b)}
+.tag-nrfi{background:var(--green-d);color:var(--green);border:1px solid var(--green-b)}
+.tag-ou{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b)}
+.tag-prop{background:var(--purple-d);color:var(--purple);border:1px solid var(--purple-b)}
+.tag-btts{background:var(--teal-d);color:var(--teal);border:1px solid var(--teal-b)}
+.tag-f5{background:var(--red-d);color:var(--red);border:1px solid var(--red-b)}
+.tag-marge{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b)}
+.prono-body{display:flex;align-items:flex-start;gap:12px;padding-bottom:12px}
+.ring-wrap{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px}
+.ring{position:relative;width:62px;height:62px}
+.ring svg{transform:rotate(-90deg)}
+.ring-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--display);font-size:16px;line-height:1;text-align:center}
+.ring-lbl{font-size:9px;color:var(--muted);text-align:center;font-weight:600;letter-spacing:.3px}
+.prono-cnt{flex:1;min-width:0}
+.prono-pick{font-size:14px;font-weight:800;margin-bottom:5px;line-height:1.3}
+.prono-exp{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+.raisons{display:flex;flex-direction:column;gap:4px}
+.raison{display:flex;align-items:flex-start;gap:6px;font-size:11px;line-height:1.4;padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.02)}
+.raison.pos{background:rgba(0,200,150,.04)}
+.raison.neg{background:rgba(245,166,35,.04)}
+.raison.warn{background:rgba(92,110,135,.04)}
+.raison-icon{flex-shrink:0;font-size:11px}
+.raison-main{color:var(--white);font-weight:600}
+.raison-detail{color:var(--muted);font-size:10px}
+.prono-footer{border-top:1px solid var(--b1);padding:10px 14px;display:flex;align-items:center;gap:10px}
+.prob-bar-h{flex:1;height:5px;background:var(--b2);border-radius:3px;overflow:hidden;position:relative}
+.prob-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.prob-labels{display:flex;justify-content:space-between;margin-bottom:3px;font-size:9px}
+.data-pct{font-size:9px;color:var(--muted);flex-shrink:0}
+.conf-stars{font-size:12px;letter-spacing:1px;flex-shrink:0}
+
+/* REGRESSION ALERT */
+.reg-alert{background:rgba(232,25,44,.06);border:1px solid var(--red-b);border-radius:8px;padding:9px 12px;margin-bottom:8px;font-size:11px;color:var(--red);display:flex;gap:8px;align-items:flex-start}
+
+/* POIDS GRAPHIQUE */
+.poids-bar{margin-bottom:6px}
+.poids-bar-top{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px}
+.poids-bar-top span:first-child{color:var(--muted)}
+.poids-bar-top span:last-child{font-weight:700;font-family:var(--mono)}
+.poids-track{height:4px;background:var(--b2);border-radius:2px;overflow:hidden}
+.poids-fill{height:100%;border-radius:2px}
+
+/* HISTORIQUE */
+.hist-item{padding:10px 14px;border-bottom:1px solid rgba(28,42,62,.6);display:flex;align-items:center;gap:10px;font-size:12px}
+.hist-item:last-child{border-bottom:none}
+.hist-date{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:54px}
+.hist-type{min-width:70px}
+.hist-pick{flex:1;font-size:11px}
+.hist-proba{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;text-align:right}
+.hist-conf{min-width:56px;text-align:center}
+.hist-res{min-width:60px;text-align:right;font-weight:700;font-size:11px}
+.hist-res.w{color:var(--green)}.hist-res.l{color:var(--red)}.hist-res.p{color:var(--muted)}
+
+/* STANDINGS */
+.div-block{background:var(--card);border:1px solid var(--b1);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.div-title{padding:9px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);border-bottom:1px solid var(--b1);background:rgba(255,255,255,.02)}
+.stand-row{display:grid;grid-template-columns:18px 1fr 50px 30px 46px 52px;gap:6px;align-items:center;padding:8px 14px;border-bottom:1px solid rgba(28,42,62,.5);font-size:11px}
+.stand-row:last-child{border-bottom:none}
+.stand-row:hover{background:rgba(255,255,255,.015)}
+.srank{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.sname{font-weight:700;display:flex;align-items:center;gap:5px}
+.sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.swl{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.sgb{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center}
+.spct{font-family:var(--mono);font-size:11px;font-weight:500;text-align:right}
+.sstreak{text-align:right}
+.pill{display:inline-block;padding:2px 6px;border-radius:20px;font-size:9px;font-weight:700}
+.pg{background:var(--green-d);color:var(--green)}.pr{background:var(--red-d);color:var(--red)}
+.py{background:var(--amber-d);color:var(--amber)}.pm{background:rgba(92,110,135,.12);color:var(--muted)}
+.pb{background:var(--blue-d);color:var(--blue)}
+
+/* LEADERS */
+.lead-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(28,42,62,.6)}
+.lead-item:last-child{border-bottom:none}
+.lead-item:hover{background:rgba(255,255,255,.015)}
+.lr-rank{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:18px}
+.lr-rank.top{color:var(--amber)}
+.lr-info{flex:1;min-width:0}
+.lr-name{font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lr-team{font-size:10px;color:var(--muted)}
+.lr-val{font-family:var(--display);font-size:19px}
+
+/* BANKROLL */
+.bk-input{width:100%;background:var(--card);border:1px solid var(--b1);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--white);font-family:var(--sans);outline:none;transition:border-color .2s}
+.bk-input:focus{border-color:var(--red)}
+.bk-btn{background:var(--red);color:var(--white);border:none;padding:10px 20px;border-radius:8px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer;transition:background .2s}
+.bk-btn:hover{background:#c4151f}
+.kelly-card{background:var(--card);border:1px solid var(--b1);border-radius:10px;padding:14px;margin-bottom:8px}
+.kelly-match{font-size:11px;color:var(--muted);margin-bottom:4px}
+.kelly-pick{font-size:13px;font-weight:700;margin-bottom:6px}
+.kelly-mise{display:flex;justify-content:space-between;align-items:center}
+.kelly-val{font-family:var(--display);font-size:24px;color:var(--green)}
+.kelly-pct{font-size:11px;color:var(--muted)}
+
+/* TABS */
+.tabs{display:flex;gap:3px;background:var(--card);border:1px solid var(--b1);border-radius:8px;padding:3px;margin-bottom:14px;width:fit-content;flex-wrap:wrap}
+.tab-btn{padding:5px 12px;border-radius:5px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+.tab-btn.active{background:var(--red);color:var(--white)}
+.tab-btn:not(.active){background:transparent;color:var(--muted)}
+.tc{display:none}.tc.active{display:block}
+
+/* METEO */
+.meteo-badge{display:inline-flex;align-items:center;gap:5px;background:var(--blue-d);border:1px solid var(--blue-b);border-radius:6px;padding:4px 9px;font-size:10px;color:var(--blue)}
+.meteo-impact{font-size:10px;font-weight:700;margin-left:4px}
+.meteo-impact.boost{color:var(--red)}.meteo-impact.down{color:var(--blue)}.meteo-impact.neu{color:var(--muted)}
+
+/* GRAPHIQUE POIDS */
+.poids-chart{display:flex;align-items:flex-end;gap:4px;height:60px;padding:0 4px;margin:10px 0}
+.poids-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.poids-bar-v{border-radius:3px 3px 0 0;width:100%;transition:height .8s ease;min-height:2px}
+.poids-col-lbl{font-size:8px;color:var(--muted);text-align:center;line-height:1.2;max-width:40px}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;gap:10px;color:var(--muted);font-size:12px}
+.spinner{width:16px;height:16px;border:2px solid var(--b1);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{padding:40px;text-align:center;color:var(--muted);font-size:12px;line-height:1.6}
+
+/* ROI CHART */
+.roi-line{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(28,42,62,.5);font-size:11px}
+.roi-line:last-child{border-bottom:none}
+.roi-bar-wrap{flex:1;height:14px;background:var(--b2);border-radius:3px;overflow:hidden;position:relative}
+.roi-bar-fill{height:100%;border-radius:3px;position:absolute;top:0;left:0;transition:width .6s ease}
+.roi-label{min-width:90px;font-size:10px;color:var(--muted)}
+.roi-val{min-width:44px;text-align:right;font-family:var(--mono);font-size:10px}
+
+/* EXPORT */
+.export-btn{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--b2);color:var(--muted);padding:7px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+.export-btn:hover{border-color:var(--green-b);color:var(--green)}
+
+/* SCORE CONFIANCE /100 */
+.conf100{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:4px}
+.conf100-val{font-family:var(--display);font-size:18px;line-height:1}
+.conf100-bar{width:54px;height:4px;background:var(--b2);border-radius:2px;overflow:hidden}
+.conf100-fill{height:100%;border-radius:2px}
+.conf100-lbl{font-size:8px;color:var(--muted);letter-spacing:.3px}
+
+/* INTERVALLE DE CONFIANCE */
+.proba-ci{font-size:9px;color:var(--muted);font-family:var(--mono);text-align:center;margin-top:2px}
+
+/* GRAPHIQUE POIDS — labels complets + tooltip */
+.poids-col-lbl{font-size:8px;color:var(--muted);text-align:center;line-height:1.15;max-width:54px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.poids-col{position:relative;cursor:default}
+.poids-col .poids-tip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--b2);border-radius:6px;padding:6px 9px;font-size:10px;color:var(--white);white-space:normal;width:150px;text-align:center;opacity:0;pointer-events:none;transition:opacity .15s;z-index:50;margin-bottom:6px;box-shadow:0 4px 16px rgba(0,0,0,.4);line-height:1.4}
+.poids-col:hover .poids-tip{opacity:1}
+.poids-tip-w{font-family:var(--mono);color:var(--amber);font-size:9px;display:block;margin-top:3px}
+
+/* BEST BET DU JOUR */
+.bestbet{background:linear-gradient(135deg,rgba(0,200,150,.1),rgba(245,166,35,.06));border:1px solid var(--green-b);border-radius:14px;padding:16px;margin-bottom:16px;position:relative;overflow:hidden}
+.bestbet::before{content:'⭐ BEST BET DU JOUR';position:absolute;top:0;right:0;background:var(--green);color:#04140d;font-size:9px;font-weight:800;letter-spacing:1px;padding:4px 12px;border-radius:0 0 0 10px}
+.bestbet-pick{font-size:17px;font-weight:800;margin:18px 0 6px;line-height:1.3}
+.bestbet-meta{font-size:11px;color:var(--muted)}
+.bestbet-row{display:flex;gap:18px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.bestbet-stat{display:flex;flex-direction:column}
+.bestbet-stat-v{font-family:var(--display);font-size:24px;line-height:1}
+.bestbet-stat-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+/* ALERTE VALEUR INVERSÉE */
+.value-alert{background:var(--purple-d);border:1px solid var(--purple-b);border-radius:8px;padding:8px 11px;margin-bottom:8px;font-size:11px;color:var(--purple);display:flex;gap:8px;align-items:flex-start;line-height:1.4}
+
+/* FORME RÉCENTE + FATIGUE */
+.forme-dots{display:inline-flex;gap:2px;vertical-align:middle}
+.forme-dot{width:11px;height:11px;border-radius:3px;font-size:7px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#04140d}
+.forme-w{background:var(--green)}.forme-l{background:var(--red);color:#fff}
+.fatigue-badge{display:inline-flex;align-items:center;gap:4px;background:var(--amber-d);border:1px solid var(--amber-b);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--amber)}
+
+/* VEGAS / EDGE */
+.vegas-row{display:flex;gap:10px;align-items:center;font-size:11px;padding:8px 0;border-top:1px solid var(--b1);margin-top:8px}
+.vegas-chip{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:6px;background:var(--card2);border:1px solid var(--b2);color:var(--muted)}
+.edge-pos{color:var(--green);font-weight:700}.edge-neg{color:var(--red);font-weight:700}
+
+/* IO BUTTONS */
+.io-btn{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--b2);color:var(--muted);padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+.io-btn:hover{border-color:var(--blue-b);color:var(--blue)}
+
+/* BOUTON PARIER */
+.bet-btn{width:100%;background:linear-gradient(135deg,var(--green),#00a87d);color:#04140d;border:none;padding:10px;border-radius:8px;font-family:var(--sans);font-weight:800;font-size:12px;cursor:pointer;transition:transform .1s,filter .15s}
+.bet-btn:hover{filter:brightness(1.1)}
+.bet-btn:active{transform:scale(.98)}
+.bet-btn-off{background:var(--card2);color:var(--muted);border:1px solid var(--b2);font-weight:600;cursor:pointer}
+.bet-btn-off[disabled]{cursor:not-allowed;opacity:.6}
+
+/* POIDS DES CRITÈRES — barres horizontales (labels complets, pas de troncature) */
+.poids-rows{display:flex;flex-direction:column;gap:6px}
+.poids-line{display:grid;grid-template-columns:1fr 72px 30px;gap:8px;align-items:center}
+.poids-line-lbl{font-size:10px;color:var(--white);line-height:1.25}
+.poids-line-track{height:7px;background:var(--b2);border-radius:4px;overflow:hidden}
+.poids-line-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.poids-line-pct{font-family:var(--mono);font-size:10px;text-align:right;color:var(--muted)}
+
+/* AIDE DÉBUTANT */
+.help-box{background:var(--card);border:1px solid var(--b1);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.help-box summary{padding:11px 14px;font-size:12px;font-weight:700;cursor:pointer;color:var(--blue);list-style:none}
+.help-box summary::-webkit-details-marker{display:none}
+.help-box[open] summary{border-bottom:1px solid var(--b1)}
+.help-content{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.help-item{font-size:11px;line-height:1.5;color:var(--white)}
+.help-item .mono{font-family:var(--mono);color:var(--amber)}
+
+/* TABLEAU DONNÉES MATCH */
+.data-head{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:10px 14px;font-family:var(--display);font-size:18px;border-bottom:1px solid var(--b1);background:rgba(255,255,255,.02)}
+.data-head span:nth-child(1){text-align:left;color:var(--blue)}
+.data-head span:nth-child(2){font-size:11px;color:var(--muted);align-self:center}
+.data-head span:nth-child(3){text-align:right;color:var(--red)}
+.data-row{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(28,42,62,.5)}
+.data-row:last-child{border-bottom:none}
+.data-cell{font-family:var(--mono);font-size:13px;font-weight:500}
+.data-cell.a{text-align:left}.data-cell.h{text-align:right}
+.data-cell.win{color:var(--green)}
+.data-mid{text-align:center;font-size:10px;color:var(--muted);line-height:1.3}
+.data-hint{font-size:8px;color:var(--muted2);margin-top:1px}
+.match-tabs{display:flex;gap:3px;background:var(--card);border:1px solid var(--b1);border-radius:8px;padding:3px;margin-bottom:12px;width:fit-content}
+
+/* COURBE BANKROLL */
+.bk-chart{width:100%;height:160px;background:var(--card);border:1px solid var(--b1);border-radius:10px;overflow:hidden}
+.pari-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(28,42,62,.6);font-size:11px}
+.pari-row:last-child{border-bottom:none}
+.pari-mise{font-family:var(--mono);min-width:60px;text-align:right}
+.pari-res{min-width:74px;text-align:right;font-weight:700}
+
+@media(max-width:600px){
+  .g2,.g3,.g4,.g5{grid-template-columns:1fr 1fr}
+  .stand-row{grid-template-columns:16px 1fr 44px 28px 44px}
+  .hist-proba,.hist-conf{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v5 · 26/06</span></div>
+  <div class="topbar-r">
+    <span class="api-pill" id="api-pill">⏳</span>
+    <div style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--red)"><div class="pulse"></div>LIVE</div>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="goTo('pronos')">⚡ Pronostics</button>
+  <button class="nav-tab" onclick="goTo('matchs')">⚾ Matchs</button>
+  <button class="nav-tab" onclick="goTo('historique')">📈 Historique</button>
+  <button class="nav-tab" onclick="goTo('bankroll')">💰 Bankroll</button>
+  <button class="nav-tab" onclick="goTo('classements')">📊 Classements</button>
+  <button class="nav-tab" onclick="goTo('joueurs')">🏆 Joueurs</button>
+</nav>
+
+<!-- ═══ PRONOSTICS ═══ -->
+<div class="page active" id="page-pronos">
+  <div class="ph">
+    <div class="ph-eye">Aujourd'hui · <span id="date-txt">—</span></div>
+    <div class="ph-title">PRONOSTICS DU JOUR</div>
+    <div class="ph-sub">100% données réelles MLB · Z-score vs ligue · Splits domicile/ext · Forme réelle · Régression appliquée · Score confiance /100</div>
+  </div>
+  <div class="g5 mb16" id="kpi-row">
+    <div class="kpi"><div class="kpi::before" style="background:var(--red)"></div><div class="kpi-l">Total pronos</div><div class="kpi-v" style="color:var(--red)" id="k-tot">—</div><div class="kpi-m">générés</div></div>
+    <div class="kpi"><div class="kpi-l">Forte confiance</div><div class="kpi-v" style="color:var(--green)" id="k-forte">—</div><div class="kpi-m">score 70/100+</div></div>
+    <div class="kpi"><div class="kpi-l">Meilleure proba</div><div class="kpi-v" style="color:var(--amber)" id="k-best">—</div><div class="kpi-m">probabilité max</div></div>
+    <div class="kpi"><div class="kpi-l">Matchs analysés</div><div class="kpi-v" style="color:var(--blue)" id="k-games">—</div><div class="kpi-m">aujourd'hui</div></div>
+    <div class="kpi"><div class="kpi-l">Données dispo</div><div class="kpi-v" style="color:var(--purple)" id="k-data">—</div><div class="kpi-m">critères moyens</div></div>
+  </div>
+  <div id="best-bet"></div>
+  <details class="help-box">
+    <summary>🔰 Comment lire un pronostic ? (cliquez)</summary>
+    <div class="help-content">
+      <div class="help-item"><strong>Probabilité</strong> — La chance estimée que le pari soit gagnant, avec sa fourchette (ex : <span class="mono">67% (62–72%)</span>). Plus c'est haut, plus c'est probable.</div>
+      <div class="help-item"><strong>Score de confiance /100</strong> — À quel point on peut <em>faire confiance</em> à cette estimation (qualité + quantité de données + écart entre les équipes). <span style="color:var(--green)">70+ = fiable</span>.</div>
+      <div class="help-item"><strong>⚖️ Poids des critères</strong> — Chaque barre montre l'importance d'un critère dans le calcul. Survolez-la pour le détail.</div>
+      <div class="help-item"><strong>💎 Alerte valeur</strong> — Le pari semble plus (ou moins) intéressant que ce que pense le marché. Signal à surveiller.</div>
+      <div class="help-item"><strong>Cote estimée</strong> — La cote « juste » correspondant à notre probabilité (ex : 60% → 1.67). Pour gagner sur le long terme, cherchez chez votre bookmaker une cote <em>supérieure</em> à celle-ci. <span style="color:var(--muted)">(Les vraies cotes Vegas s'activent en ajoutant une clé the-odds-api dans le code.)</span></div>
+      <div class="help-item"><strong>🌡️ Météo</strong> — Vent, température et humidité ont des effets parfois opposés : on les combine en un seul <strong>effet net</strong> sur le total de points (Over/Under). Ça n'influence pas le vainqueur (les 2 équipes subissent le même temps).</div>
+      <div class="help-item"><strong>🎯 Parier</strong> — Place le pari dans votre suivi avec une mise calculée automatiquement selon votre capital. Suivez vos gains dans 💰 Bankroll.</div>
+      <div class="help-item" style="color:var(--muted)">⚠️ Outil d'analyse statistique à but informatif. Aucun pari n'est sans risque — ne misez que ce que vous pouvez perdre.</div>
+    </div>
+  </details>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+    <div style="display:flex;gap:4px;flex-wrap:wrap" id="filtres">
+      <button class="tab-btn active" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('tous',this)">Tous</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('victoire',this)">🏆 Victoire</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('nrfi',this)">🚫 1ère manche</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('ou',this)">📊 Total points</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('btts',this)">⚡ Les 2 marquent</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('f5',this)">5️⃣ 5 manches</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('marge',this)">📐 Écart final</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('prop',this)">👤 Joueurs</button>
+    </div>
+    <div style="display:flex;gap:4px">
+      <button class="tab-btn" style="border:1px solid var(--b1)" onclick="trierPar('conf')">Confiance ↓</button>
+      <button class="tab-btn" style="border:1px solid var(--b1)" onclick="trierPar('proba')">Proba ↓</button>
+      <button onclick="exporterPDF()" class="export-btn">📄 Export</button>
+    </div>
+  </div>
+  <div id="pronos-list"><div class="loading"><div class="spinner"></div>Analyse mathématique en cours...</div></div>
+</div>
+
+<!-- ═══ MATCHS ═══ -->
+<div class="page" id="page-matchs">
+  <div class="ph"><div class="ph-eye">En direct</div><div class="ph-title">MATCHS DU JOUR</div><div class="ph-sub">Cliquez pour voir l'analyse complète avec toutes les données croisées</div></div>
+  <div id="matchs-list"><div class="loading"><div class="spinner"></div></div></div>
+  <div id="match-detail" style="display:none"></div>
+</div>
+
+<!-- ═══ HISTORIQUE ═══ -->
+<div class="page" id="page-historique">
+  <div class="ph"><div class="ph-eye">Mémoire</div><div class="ph-title">HISTORIQUE DES PRONOSTICS</div><div class="ph-sub">Tous les pronos générés sont suivis ici pour mesurer la fiabilité du modèle (calibration). Vos <strong>paris réels</strong> sont dans 💰 Bankroll.</div></div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+    <button class="io-btn" onclick="exporterHistorique()">⬇️ Exporter (JSON)</button>
+    <label class="io-btn">⬆️ Importer (JSON)<input type="file" accept="application/json" onchange="importerHistorique(this)" style="display:none"></label>
+    <span style="font-size:10px;color:var(--muted);line-height:1.4;flex:1;min-width:200px">⚠️ Sur fichier local (Android <code>content://</code>), le stockage du navigateur peut s'effacer entre sessions. Exportez régulièrement, ou hébergez l'app sur GitHub Pages pour une persistance fiable.</span>
+  </div>
+
+  <div class="g4 mb16">
+    <div class="kpi"><div class="kpi-l">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="h-taux">—</div><div class="kpi-m">pronos terminés</div></div>
+    <div class="kpi"><div class="kpi-l">Pronos analysés</div><div class="kpi-v" style="color:var(--blue)" id="h-total">—</div><div class="kpi-m">depuis le début</div></div>
+    <div class="kpi"><div class="kpi-l">ROI théorique</div><div class="kpi-v" style="color:var(--amber)" id="h-roi">—</div><div class="kpi-m">si 1u sur chaque prono</div></div>
+    <div class="kpi"><div class="kpi-l">En attente</div><div class="kpi-v" style="color:var(--muted)" id="h-attente">—</div><div class="kpi-m">résultats inconnus</div></div>
+  </div>
+
+  <div class="card mb12">
+    <div class="card-h"><div class="card-ht">Réussite par niveau de confiance</div><div class="card-hs">Est-ce que plus de confiance = plus de victoires ?</div></div>
+    <div style="padding:12px" id="hist-by-conf"></div>
+  </div>
+
+  <div class="card mb12">
+    <div class="card-h"><div class="card-ht">Réussite par type de pari</div></div>
+    <div style="padding:12px" id="hist-by-type"></div>
+  </div>
+
+  <div class="card mb12">
+    <div class="card-h"><div class="card-ht">📐 Calibration du modèle</div><div class="card-hs">Quand on annonce X%, gagne-t-on vraiment X% du temps ?</div></div>
+    <div style="padding:12px" id="hist-calibration"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ht">Tous les pronostics</div>
+      <div style="display:flex;gap:6px">
+        <button class="tab-btn active" style="border:1px solid var(--b1)" onclick="filtrerHist('tous',this)">Tous</button>
+        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('W',this)">✅ Gagnés</button>
+        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('L',this)">❌ Perdus</button>
+        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('P',this)">⏳ En attente</button>
+        <button onclick="viderHistorique()" style="background:var(--red-d);border:1px solid var(--red-b);color:var(--red);padding:4px 10px;border-radius:5px;font-size:10px;cursor:pointer">Effacer</button>
+      </div>
+    </div>
+    <div id="hist-list"></div>
+  </div>
+</div>
+
+<!-- ═══ BANKROLL ═══ -->
+<div class="page" id="page-bankroll">
+  <div class="ph"><div class="ph-eye">Gestion financière</div><div class="ph-title">MA BANKROLL</div><div class="ph-sub">Définissez votre capital, pariez depuis l'onglet ⚡ Pronostics, suivez votre courbe ici</div></div>
+
+  <div class="card mb16">
+    <div class="card-h"><div class="card-ht">💰 Votre capital de départ</div><div class="card-hs">Mises calculées automatiquement (Kelly fractionné 25%)</div></div>
+    <div style="padding:14px;display:flex;gap:10px;align-items:center">
+      <input class="bk-input" id="bk-input" type="number" placeholder="Ex: 500" min="1">
+      <button class="bk-btn" onclick="sauverBankroll()">Sauvegarder</button>
+    </div>
+    <div style="padding:0 14px 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">
+      <div class="kpi"><div class="kpi-l">Capital actuel</div><div class="kpi-v" style="color:var(--green)" id="bk-actuel">—</div><div class="kpi-m">euros</div></div>
+      <div class="kpi"><div class="kpi-l">Gain/Perte</div><div class="kpi-v" id="bk-delta">—</div><div class="kpi-m">paris terminés</div></div>
+      <div class="kpi"><div class="kpi-l">ROI</div><div class="kpi-v" id="bk-roi">—</div><div class="kpi-m">% rendement</div></div>
+      <div class="kpi"><div class="kpi-l">Paris placés</div><div class="kpi-v" style="color:var(--blue)" id="bk-nb">—</div><div class="kpi-m">au total</div></div>
+      <div class="kpi"><div class="kpi-l">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="bk-jeu">—</div><div class="kpi-m">paris en attente</div></div>
+    </div>
+  </div>
+
+  <div class="card mb16">
+    <div class="card-h"><div class="card-ht">📈 Évolution du capital</div><div class="card-hs">Après chaque pari terminé</div></div>
+    <div style="padding:14px"><div class="bk-chart" id="bk-curve"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="card-ht">🎟️ Mes paris</div><div class="card-hs">Placés depuis l'onglet Pronostics</div></div>
+    <div id="paris-list"><div class="empty" style="padding:24px">Aucun pari placé pour l'instant.<br>Allez dans ⚡ Pronostics et cliquez sur <strong>🎯 Parier</strong> sous un pronostic.</div></div>
+  </div>
+</div>
+
+<!-- ═══ CLASSEMENTS ═══ -->
+<div class="page" id="page-classements">
+  <div class="ph"><div class="ph-eye">Saison 2026</div><div class="ph-title">CLASSEMENTS MLB</div><div class="ph-sub">Données officielles — Win% pythagoricien calculé sur runs réels</div></div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('cl','al',this)">Ligue Américaine</button>
+    <button class="tab-btn" onclick="switchTab('cl','nl',this)">Ligue Nationale</button>
+  </div>
+  <div class="tc active" id="tc-cl-al"><div id="stand-al"><div class="loading"><div class="spinner"></div></div></div></div>
+  <div class="tc" id="tc-cl-nl"><div id="stand-nl"></div></div>
+</div>
+
+<!-- ═══ JOUEURS ═══ -->
+<div class="page" id="page-joueurs">
+  <div class="ph"><div class="ph-eye">Saison 2026</div><div class="ph-title">MEILLEURS JOUEURS</div><div class="ph-sub">Classements officiels MLB avec explications simples</div></div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('jou','bat',this)">Batteurs</button>
+    <button class="tab-btn" onclick="switchTab('jou','lan',this)">Lanceurs</button>
+  </div>
+  <div class="tc active" id="tc-jou-bat">
+    <div class="g3">
+      <div class="card"><div class="card-h"><div><div class="card-ht">💣 Plus de circuits</div><div class="card-hs">Balle envoyée hors du terrain — tous les coureurs marquent</div></div></div><div id="l-hr"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht">🏏 Meilleure moyenne</div><div class="card-hs">Coups sûrs ÷ passages au bâton</div></div></div><div id="l-avg"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht">📈 Plus de points produits</div><div class="card-hs">Coéquipiers fait marquer</div></div></div><div id="l-rbi"><div class="loading"><div class="spinner"></div></div></div></div>
+    </div>
+    <div class="g3">
+      <div class="card"><div class="card-h"><div><div class="card-ht">⚡ Force offensive totale</div><div class="card-hs">Capacité à atteindre les bases + puissance de frappe</div></div></div><div id="l-ops"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht">🏃 Bases volées</div><div class="card-hs">Volé une base sans se faire éliminer</div></div></div><div id="l-sb"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht">🎯 Points marqués</div><div class="card-hs">Fois où le joueur a lui-même passé le marbre</div></div></div><div id="l-runs"><div class="loading"><div class="spinner"></div></div></div></div>
+    </div>
+  </div>
+  <div class="tc" id="tc-jou-lan">
+    <div class="g3">
+      <div class="card"><div class="card-h"><div><div class="card-ht">🎯 Moins de points encaissés</div><div class="card-hs">Moyenne points encaissés sur 9 manches — plus c'est bas, mieux c'est</div></div></div><div id="l-era"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht">💨 Plus d'éliminations directes</div><div class="card-hs">Batteurs mis hors-jeu directement</div></div></div><div id="l-so"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht">✅ Plus de victoires</div><div class="card-hs">Matchs gagnés quand le lanceur était en jeu</div></div></div><div id="l-wins"><div class="loading"><div class="spinner"></div></div></div></div>
+    </div>
+    <div class="g3">
+      <div class="card"><div class="card-h"><div><div class="card-ht">🔢 Efficacité globale</div><div class="card-hs">Marcheurs + coups sûrs concédés par manche — plus c'est bas, mieux c'est</div></div></div><div id="l-whip"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht">💾 Matchs sauvegardés</div><div class="card-hs">Entre en fin de match et préserve la victoire</div></div></div><div id="l-saves"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht">📐 Éliminations par manche</div><div class="card-hs">Moyenne d'éliminations directes pour 9 manches lancées</div></div></div><div id="l-k9"><div class="loading"><div class="spinner"></div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// API & CACHE
+// ═══════════════════════════════════════════════════
+const MLB='https://statsapi.mlb.com/api/v1';
+const WEATHER='https://api.open-meteo.com/v1/forecast';
+const SEASON=2026;
+const _cache={};
+// Stats de ligue (moyennes + écarts-types) calculées dynamiquement pour la normalisation Z-score
+let LG={ops:null,teamEra:null,starterEra:null,whip:null,k9:null};
+
+async function api(path){
+  if(_cache[path])return _cache[path];
+  const url=MLB+path;
+  for(const proxy of [
+    u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u=>u
+  ]){
+    try{
+      const r=await fetch(proxy(url),{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(10000)});
+      if(!r.ok)continue;
+      const d=await r.json();
+      _cache[path]=d;
+      setOk();
+      return d;
+    }catch(e){continue;}
+  }
+  setErr();
+  throw new Error('API MLB inaccessible');
+}
+
+async function getWeather(lat,lon){
+  try{
+    const r=await fetch(`${WEATHER}?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh`,{signal:AbortSignal.timeout(5000)});
+    if(!r.ok)return null;
+    return await r.json();
+  }catch(e){return null;}
+}
+
+// ── Cotes Vegas (best-effort, fallback gracieux) ──
+// The Odds API publie un flux gratuit limité ; sans clé on tente un proxy public.
+// Si CORS/format échouent, on retourne null et l'UI affiche "indisponible".
+const VEGAS_KEY=''; // optionnel : coller une clé the-odds-api.com pour activer les vraies cotes
+async function getVegasOdds(){
+  if(!VEGAS_KEY)return null;
+  try{
+    const url=`https://api.the-odds-api.com/v4/sports/baseball_mlb/odds/?regions=us&markets=h2h&oddsFormat=decimal&apiKey=${VEGAS_KEY}`;
+    const r=await fetch(url,{signal:AbortSignal.timeout(8000)});
+    if(!r.ok)return null;
+    const d=await r.json();
+    const map={};
+    d.forEach(ev=>{
+      const home=ev.home_team,away=ev.away_team;
+      const bk=ev.bookmakers?.[0];
+      const h2h=bk?.markets?.find(m=>m.key==='h2h');
+      if(!h2h)return;
+      const oH=h2h.outcomes.find(o=>o.name===home)?.price;
+      const oA=h2h.outcomes.find(o=>o.name===away)?.price;
+      if(oH&&oA){
+        // proba implicite normalisée (retrait de la marge bookmaker)
+        const iH=1/oH,iA=1/oA,tot=iH+iA;
+        map[`${away}@${home}`]={home:home,away:away,coteH:oH,coteA:oA,probaH:iH/tot*100,probaA:iA/tot*100};
+      }
+    });
+    return map;
+  }catch(e){return null;}
+}
+
+// ── Forme récente réelle + fatigue (1 appel /équipe sur les ~20 derniers jours) ──
+function dateMinus(n){const d=new Date();d.setDate(d.getDate()-n);return d.toISOString().split('T')[0];}
+async function getFormeFatigue(teamId){
+  try{
+    const d=await api(`/schedule?sportId=1&teamId=${teamId}&startDate=${dateMinus(21)}&endDate=${yesterday()}&hydrate=team,linescore`);
+    const games=(d.dates??[]).flatMap(x=>x.games??[]).filter(g=>g.status?.abstractGameState==='Final')
+      .sort((a,b)=>new Date(b.gameDate)-new Date(a.gameDate));
+    const last10=games.slice(0,10).map(g=>{
+      const isHome=g.teams.home.team.id===teamId;
+      const my=isHome?g.teams.home.score:g.teams.away.score;
+      const opp=isHome?g.teams.away.score:g.teams.home.score;
+      return{w:my>opp,date:g.gameDate};
+    });
+    const wins=last10.filter(x=>x.w).length;
+    // Fatigue : nombre de matchs et de jours de REPOS sur les 7 derniers jours
+    // (plus parlant que les "back-to-back" — en MLB jouer chaque jour est la norme)
+    const last7=games.filter(g=>new Date(g.gameDate)>=new Date(dateMinus(7)));
+    const joursJoues7=new Set(last7.map(g=>g.gameDate.split('T')[0])).size;
+    const reposSemaine=Math.max(0,7-joursJoues7);   // jours sans match sur 7
+    const doubleHeaders=last7.length-joursJoues7;    // 2 matchs le même jour
+    return{
+      last10, // plus récent en premier (affiché de gauche à droite : récent → ancien)
+      wins,total:last10.length,
+      formePct:last10.length?wins/last10.length:null,
+      matchs7j:last7.length,reposSemaine,doubleHeaders
+    };
+  }catch(e){return null;}
+}
+
+// ── Splits domicile/extérieur (1 appel hitting + 1 pitching /équipe) ──
+async function getSplits(teamId){
+  const out={hitH:null,hitA:null,pitH:null,pitA:null};
+  try{
+    const dh=await api(`/teams/${teamId}/stats?stats=statSplits&sitCodes=h,a&group=hitting&season=${SEASON}`);
+    (dh.stats?.[0]?.splits??[]).forEach(s=>{
+      if(s.split?.code==='h')out.hitH=s.stat;
+      if(s.split?.code==='a')out.hitA=s.stat;
+    });
+  }catch(e){}
+  try{
+    const dp=await api(`/teams/${teamId}/stats?stats=statSplits&sitCodes=h,a&group=pitching&season=${SEASON}`);
+    (dp.stats?.[0]?.splits??[]).forEach(s=>{
+      if(s.split?.code==='h')out.pitH=s.stat;
+      if(s.split?.code==='a')out.pitA=s.stat;
+    });
+  }catch(e){}
+  return out;
+}
+
+function setOk(){const p=document.getElementById('api-pill');p.textContent='✅ MLB API';p.className='api-pill ok';}
+function setErr(){const p=document.getElementById('api-pill');p.textContent='❌ Hors ligne';p.className='api-pill err';}
+function today(){return new Date().toISOString().split('T')[0];}
+function fdate(){return new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});}
+function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().split('T')[0];}
+function pt(n,dec=1){return Math.round(n*(10**dec))/(10**dec);}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+const loaded={};
+function goTo(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelector(`[onclick="goTo('${page}')"]`).classList.add('active');
+  if(!loaded[page]){loaded[page]=true;pages[page]?.();}
+}
+function switchTab(g,id,btn){
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll(`[id^="tc-${g}-"]`).forEach(t=>t.classList.remove('active'));
+  document.getElementById(`tc-${g}-${id}`).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════
+// STOCKAGE — localStorage avec FALLBACK MÉMOIRE
+// Sur fichier local Android (content://) ou navigateur restreint, localStorage peut être bloqué.
+// On garde alors l'état en mémoire pour que l'app fonctionne au moins pendant la session.
+// ═══════════════════════════════════════════════════
+const _mem={};
+let STORAGE_OK=true;
+(function(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');}catch(e){STORAGE_OK=false;}})();
+function lsGet(k){if(STORAGE_OK){try{const v=localStorage.getItem(k);return v!==null?v:(k in _mem?_mem[k]:null);}catch(e){}}return k in _mem?_mem[k]:null;}
+function lsSet(k,v){_mem[k]=String(v);if(STORAGE_OK){try{localStorage.setItem(k,v);}catch(e){STORAGE_OK=false;}}}
+function lsRemove(k){delete _mem[k];if(STORAGE_OK){try{localStorage.removeItem(k);}catch(e){}}}
+
+function getHistorique(){try{return JSON.parse(lsGet('db_pronos')||'[]');}catch(e){return[];}}
+function sauverHistorique(hist){try{lsSet('db_pronos',JSON.stringify(hist));}catch(e){}}
+function getBankroll(){try{return parseFloat(lsGet('db_bankroll')||'0');}catch(e){return 0;}}
+function setBankrollLS(v){lsSet('db_bankroll',v);}
+// Capital actuel = capital initial + gains/pertes des paris RÉELLEMENT placés et terminés
+function getBankrollActuel(){
+  const init=getBankroll();
+  if(!init)return 0;
+  const paris=getHistorique().filter(h=>h.parie);
+  let pnl=0;
+  paris.forEach(h=>{
+    if(h.resultat==='W')pnl+=h.mise*(h.cote-1);
+    else if(h.resultat==='L')pnl-=h.mise;
+  });
+  return init+pnl;
+}
+
+// ── Export / Import JSON (fallback persistance pour fichier local content://) ──
+function exporterHistorique(){
+  const data={version:5,exportLe:new Date().toISOString(),pronos:getHistorique(),bankroll:getBankroll(),bankrollActuel:getBankrollActuel()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`databaseball-historique-${today()}.json`;
+  a.click();URL.revokeObjectURL(url);
+}
+function importerHistorique(input){
+  const file=input.files?.[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      const incoming=Array.isArray(data)?data:(data.pronos??[]);
+      if(!Array.isArray(incoming))throw new Error('format');
+      // Fusion : on garde les résultats déjà connus, on ajoute les nouveaux
+      const hist=getHistorique();
+      const byId={};hist.forEach(h=>byId[h.id]=h);
+      incoming.forEach(p=>{
+        if(!byId[p.id])byId[p.id]=p;
+        else if(byId[p.id].resultat==='P'&&p.resultat&&p.resultat!=='P')byId[p.id]=p;
+      });
+      sauverHistorique(Object.values(byId));
+      if(data.bankroll)setBankrollLS(data.bankroll);
+      if(data.bankrollActuel)lsSet('db_bankroll_actuel',data.bankrollActuel);
+      alert(`Import réussi : ${incoming.length} pronostics fusionnés.`);
+      loadHistorique();
+    }catch(err){alert('Fichier invalide : '+err.message);}
+  };
+  reader.readAsText(file);
+}
+
+function ajouterPronos(pronos){
+  const hist=getHistorique();
+  const today_str=today();
+  pronos.forEach(p=>{
+    const exists=hist.find(h=>h.id===p.id);
+    if(!exists){
+      hist.push({
+        id:p.id, date:today_str,
+        type:p.type, typeLabel:p.typeLabel,
+        matchLabel:p.matchLabel, pick:p.pick,
+        proba:p.proba, confiance:p.confiance,
+        confScore:p.confScore??null, marge:p.marge??null,
+        resultat:'P', // P = en attente
+        scoreReel:null, gamePk:p.gamePk
+      });
+    }
+  });
+  sauverHistorique(hist);
+}
+
+// MAJ automatique des résultats d'hier
+async function majResultatsHier(){
+  const hist=getHistorique();
+  const enAttente=hist.filter(h=>h.resultat==='P'&&h.date===yesterday());
+  if(!enAttente.length)return;
+  try{
+    const d=await api(`/schedule?sportId=1&date=${yesterday()}&hydrate=team,linescore`);
+    const games=d.dates?.[0]?.games??[];
+    enAttente.forEach(prono=>{
+      const game=games.find(g=>g.gamePk===prono.gamePk);
+      if(!game||game.status.abstractGameState!=='Final')return;
+      const away=game.teams.away, home=game.teams.home;
+      const aScore=away.score??0, hScore=home.score??0;
+      const score=`${aScore}-${hScore}`;
+      prono.scoreReel=score;
+      // Déterminer résultat selon type
+      if(prono.type==='victoire'||prono.type==='f5'){
+        const favoriHome=prono.pick.includes(home.team.name);
+        const favoriGagne=favoriHome?hScore>aScore:aScore>hScore;
+        prono.resultat=favoriGagne?'W':'L';
+      }else if(prono.type==='ou'){
+        const total=aScore+hScore;
+        const isOver=prono.pick.includes('OVER')||prono.pick.includes('beaucoup');
+        prono.resultat=(isOver?total>8.5:total<=8.5)?'W':'L';
+      }else if(prono.type==='nrfi'){
+        const noRunFirst=!game.linescore?.innings?.[0]?.away?.runs&&!game.linescore?.innings?.[0]?.home?.runs;
+        const wantNRFI=prono.pick.includes('Aucun');
+        prono.resultat=(wantNRFI&&noRunFirst)||(!wantNRFI&&!noRunFirst)?'W':'L';
+      }else if(prono.type==='btts'){
+        prono.resultat=(aScore>0&&hScore>0)?'W':'L';
+      }else if(prono.type==='marge'){
+        const diff=Math.abs(aScore-hScore);
+        if(prono.pick.includes('1 ou 2'))prono.resultat=(diff<=2)?'W':'L';
+        else if(prono.pick.includes('3 à 5'))prono.resultat=(diff>=3&&diff<=5)?'W':'L';
+        else prono.resultat=(diff>=6)?'W':'L';
+      }else{
+        prono.resultat='L'; // fallback
+      }
+    });
+    sauverHistorique(hist);
+  }catch(e){}
+}
+
+// ═══════════════════════════════════════════════════
+// COORDONNÉES DES STADES MLB
+// ═══════════════════════════════════════════════════
+const STADES={
+  133:{lat:37.7516,lon:-122.2005,nom:'Oakland Coliseum'},
+  134:{lat:40.4469,lon:-80.0057,nom:'PNC Park'},
+  135:{lat:32.7076,lon:-117.1570,nom:'Petco Park'},
+  136:{lat:47.5914,lon:-122.3326,nom:'T-Mobile Park'},
+  137:{lat:37.7786,lon:-122.3893,nom:'Oracle Park'},
+  138:{lat:38.6226,lon:-90.1928,nom:'Busch Stadium'},
+  139:{lat:27.7682,lon:-82.6534,nom:'Tropicana Field'},
+  140:{lat:32.7473,lon:-97.0844,nom:'Globe Life Field'},
+  141:{lat:43.6414,lon:-79.3894,nom:'Rogers Centre'},
+  142:{lat:44.9817,lon:-93.2777,nom:'Target Field'},
+  143:{lat:39.9061,lon:-75.1665,nom:'Citizens Bank Park'},
+  144:{lat:33.8908,lon:-84.4678,nom:'Truist Park'},
+  145:{lat:41.8299,lon:-87.6338,nom:'Guaranteed Rate Field'},
+  146:{lat:25.7781,lon:-80.2197,nom:'LoanDepot Park'},
+  147:{lat:40.8296,lon:-73.9262,nom:'Yankee Stadium'},
+  158:{lat:43.0280,lon:-87.9712,nom:'American Family Field'},
+  108:{lat:33.8003,lon:-117.8827,nom:'Angel Stadium'},
+  109:{lat:33.4453,lon:-112.0667,nom:'Chase Field'},
+  110:{lat:39.2838,lon:-76.6218,nom:'Oriole Park'},
+  111:{lat:42.3467,lon:-71.0972,nom:'Fenway Park'},
+  112:{lat:41.9484,lon:-87.6553,nom:'Wrigley Field'},
+  113:{lat:39.0979,lon:-84.5083,nom:'Great American Ball Park'},
+  114:{lat:41.4962,lon:-81.6852,nom:'Progressive Field'},
+  115:{lat:39.7559,lon:-104.9942,nom:'Coors Field'},
+  116:{lat:42.3390,lon:-83.0485,nom:'Comerica Park'},
+  117:{lat:29.7573,lon:-95.3555,nom:'Minute Maid Park'},
+  118:{lat:39.0517,lon:-94.4803,nom:'Kauffman Stadium'},
+  119:{lat:34.0739,lon:-118.2400,nom:'Dodger Stadium'},
+  120:{lat:38.8730,lon:-77.0074,nom:'Nationals Park'},
+  121:{lat:40.7571,lon:-73.8458,nom:'Citi Field'},
+};
+
+// ═══════════════════════════════════════════════════
+// MOTEUR MATHÉMATIQUE
+// ═══════════════════════════════════════════════════
+
+// Toutes les fonctions de score retournent null si données manquantes
+function sERA(era){
+  if(era===null||era===undefined||isNaN(era))return null;
+  return Math.round(Math.max(8,Math.min(95,95-((era-2.0)/4.5)*80)));
+}
+function sWinPct(w){
+  if(w===null||w===undefined)return null;
+  return Math.round(Math.max(5,Math.min(97,(w-0.33)/0.40*90+5)));
+}
+function sOPS(ops){
+  if(!ops||isNaN(ops))return null;
+  return Math.round(Math.max(8,Math.min(95,(ops-0.55)/0.40*85+8)));
+}
+function sWHIP(whip){
+  if(!whip||isNaN(whip))return null;
+  return Math.round(Math.max(8,Math.min(95,95-((whip-0.85)/1.0)*80)));
+}
+function sKper9(k9){
+  if(!k9||isNaN(k9))return null;
+  return Math.round(Math.max(20,Math.min(95,(k9-5)/7*70+20)));
+}
+function sAVG(avg){
+  if(!avg||isNaN(avg))return null;
+  return Math.round(Math.max(10,Math.min(95,(avg-0.190)/0.120*85+10)));
+}
+function sStreakBoost(streak){
+  if(!streak)return 0;
+  const n=parseInt(streak.slice(1))||0;
+  const isW=streak.startsWith('W');
+  // Surchauffe = équipe en série de 6+ victoires → légère pénalité (régression)
+  if(isW&&n>=6)return -4;
+  if(isW&&n>=3)return 3;
+  if(!isW&&n>=5)return -5;
+  if(!isW&&n>=3)return -3;
+  return 0;
+}
+function pythagorean(rs,ra){
+  if(!rs||!ra||ra===0)return null;
+  const r=Math.pow(rs/ra,1.83);
+  return r/(1+r);
+}
+function windImpact(windSpeed,windDir){
+  // Vents entre 90-270° = face au batteur = moins de HR (défavorable Over)
+  // Vents entre 270-90° = dans le dos = plus de HR (favorable Over)
+  if(!windSpeed||!windDir)return{score:0,label:'Vent inconnu',impact:'neu'};
+  const kmh=windSpeed;
+  if(kmh<10)return{score:0,label:`Vent faible (${kmh}km/h)`,impact:'neu'};
+  const favorable=(windDir>=270||windDir<90);
+  const score=favorable?Math.round(kmh/50*15):-Math.round(kmh/50*15);
+  return{
+    score,
+    label:`Vent ${kmh}km/h ${favorable?'dans le dos (plus de circuits)':'de face (moins de circuits)'}`,
+    impact:favorable?'boost':'down'
+  };
+}
+
+// Indice météo complet : température + humidité + vent → EFFET NET sur le total de points (Over/Under)
+// On combine des effets parfois opposés (vent contraire vs chaleur) en UN seul score net, pour éviter
+// d'afficher des phrases qui semblent se contredire.
+function meteoIndex(meteo){
+  if(!meteo)return{score:0,parts:[],impact:'neu',label:'Météo non disponible',breakdown:''};
+  const parts=[];let score=0;
+  // Vent : dans le dos = plus de circuits / de face = moins
+  const w=windImpact(meteo.wind,meteo.windDir);
+  if(w.score!==0){score+=w.score;parts.push(`${w.score>0?'+':''}${w.score} vent`);}
+  // Température : froid (<10°C) freine la balle / chaud (>27°C) la propulse
+  if(meteo.temp!=null){
+    if(meteo.temp<10){score-=8;parts.push('−8 froid');}
+    else if(meteo.temp>27){score+=6;parts.push('+6 chaleur');}
+  }
+  // Humidité élevée = air dense = balle freinée
+  if(meteo.humidity!=null&&meteo.humidity>=75){score-=4;parts.push('−4 humidité');}
+  score=Math.round(score);
+  const sens=score>3?'penche vers le Over (plus de points)':score<-3?'penche vers le Under (moins de points)':'globalement neutre';
+  return{
+    score,impact:score>3?'boost':score<-3?'down':'neu',
+    label:`Effet net : ${sens}`,
+    breakdown:parts.length?`Détail (pts Over) : ${parts.join(', ')}`:'Conditions neutres'
+  };
+}
+
+// ── Normalisation Z-score : compare une valeur à la moyenne de la ligue ──
+// Calcule moyenne + écart-type d'un tableau de valeurs
+function statsLigue(values){
+  const v=values.filter(x=>x!=null&&!isNaN(x));
+  if(v.length<3)return null;
+  const mean=v.reduce((a,b)=>a+b,0)/v.length;
+  const variance=v.reduce((a,b)=>a+(b-mean)**2,0)/v.length;
+  return{mean,std:Math.sqrt(variance)||1,n:v.length};
+}
+// Convertit une valeur en score 0-100 relatif à la ligue. invert=true quand "plus bas = mieux" (ERA, WHIP)
+function zScore(value,lg,invert){
+  if(value==null||isNaN(value)||!lg||!lg.std)return null;
+  let z=(value-lg.mean)/lg.std;
+  if(invert)z=-z;
+  return Math.round(Math.max(8,Math.min(95,50+z*18)));
+}
+
+// Calcul composite principal
+function calcEquipe(data){
+  const facteurs=[];
+  let scoreTotal=0,totalPoids=0;
+  const scoresContrib=[]; // pour calcul de l'incertitude (intervalle de confiance)
+
+  const add=(score,poids,facteur)=>{
+    if(score===null)return;
+    scoreTotal+=score*poids;
+    totalPoids+=poids;
+    scoresContrib.push({score,poids});
+    facteurs.push({...facteur,score,poids:Math.round(poids*100)});
+  };
+
+  // 1. Win% pythagoricien (28%)
+  const pyth=data.pythWinPct;
+  if(pyth!==null&&pyth!==undefined){
+    add(sWinPct(pyth),0.28,{
+      nom:'Pourcentage de victoires théorique',
+      valeur:`${Math.round(pyth*100)}% de victoires attendues cette saison`,
+      detail:'Calculé sur les points marqués et encaissés réels (formule pythagoricienne de Bill James, 1977)',
+      sense:sWinPct(pyth)>=55?'pos':sWinPct(pyth)<=45?'neg':'neu'
+    });
+  }else if(data.winPct!==null){
+    add(sWinPct(data.winPct),0.22,{
+      nom:'Pourcentage de victoires cette saison',
+      valeur:`${Math.round((data.winPct||0.5)*100)}% de victoires en 2026`,
+      detail:'Bilan victoires/défaites de la saison',
+      sense:sWinPct(data.winPct)>=55?'pos':sWinPct(data.winPct)<=45?'neg':'neu'
+    });
+  }
+
+  // 2. ERA partant (26%) — normalisé Z-score vs ligue si dispo
+  if(data.eraPartant!==null){
+    const s=zScore(data.eraPartant,LG.starterEra,true)??sERA(data.eraPartant);
+    const q=data.eraPartant<2.5?'exceptionnel':data.eraPartant<3.2?'excellent':data.eraPartant<3.8?'très bon':data.eraPartant<4.5?'correct':'faible';
+    const rel=LG.starterEra?` (${data.eraPartant<LG.starterEra.mean?'mieux':'moins bien'} que la moyenne ligue ${LG.starterEra.mean.toFixed(2)})`:'';
+    add(s,0.26,{
+      nom:`Qualité du lanceur de départ`,
+      valeur:`${data.nomPartant||'Lanceur'} : ${data.eraPartant.toFixed(2)} points encaissés/match (${q})${rel}`,
+      detail:'Le lanceur partant influence ~60% du résultat des 9 premières manches',
+      sense:s>=65?'pos':s<=40?'neg':'neu'
+    });
+  }
+
+  // 3. Force offensive — OPS (18%) — split domicile/extérieur si dispo, Z-score
+  if(data.ops!==null){
+    const s=zScore(data.ops,LG.ops,false)??sOPS(data.ops);
+    const q=data.ops>0.820?'excellente':data.ops>0.740?'bonne':data.ops>0.670?'correcte':'faible';
+    const ctx=data.opsSplit?` à ${data.estDomicile?'domicile':'l\'extérieur'}`:'';
+    add(s,0.18,{
+      nom:'Force offensive de l\'équipe',
+      valeur:`${data.ops}${ctx} — attaque ${q}`,
+      detail:data.opsSplit?`Statistique offensive réelle ${data.estDomicile?'à domicile':'en déplacement'} (split contextuel)`:'Mesure la capacité à atteindre les bases et la puissance de frappe combinées',
+      sense:s>=58?'pos':s<=42?'neg':'neu'
+    });
+  }
+
+  // 4. Efficacité du lanceur — WHIP — corrélé à l'ERA partant : poids réduit si ERA déjà présente
+  if(data.whipPartant!==null){
+    const s=zScore(data.whipPartant,LG.whip,true)??sWHIP(data.whipPartant);
+    // Corrélation ERA↔WHIP (~0.8) : on évite le double comptage en réduisant le poids quand l'ERA est dispo
+    const poids=data.eraPartant!==null?0.04:0.10;
+    add(s,poids,{
+      nom:'Efficacité du lanceur (marcheurs + coups sûrs/manche)',
+      valeur:`${data.whipPartant.toFixed(2)} — ${s>=65?'très efficace':s<=40?'peu efficace':'efficacité correcte'}${data.eraPartant!==null?' · poids réduit (corrélé à l\'ERA)':''}`,
+      detail:'Mesure combien de coureurs le lanceur laisse atteindre les bases par manche. Fortement corrélé à l\'ERA, son poids est réduit pour éviter le double comptage.',
+      sense:s>=65?'pos':s<=40?'neg':'neu'
+    });
+  }
+
+  // 5. Strikeouts/manche du lanceur — K/9 (8%)
+  if(data.k9Partant!==null){
+    const s=zScore(data.k9Partant,LG.k9,false)??sKper9(data.k9Partant);
+    add(s,0.08,{
+      nom:'Capacité d\'élimination directe du lanceur',
+      valeur:`${data.k9Partant.toFixed(1)} éliminations directes par manche en moyenne`,
+      detail:'Un lanceur qui élimine beaucoup = moins de risques pour son équipe',
+      sense:s>=65?'pos':s<=40?'neg':'neu'
+    });
+  }
+
+  // 6. ERA générale équipe — défense globale (8%)
+  if(data.eraEquipe!==null){
+    const s=zScore(data.eraEquipe,LG.teamEra,true)??sERA(data.eraEquipe);
+    add(s,0.08,{
+      nom:'Qualité défensive globale de l\'équipe',
+      valeur:`${data.eraEquipe.toFixed(2)} points encaissés/match en moyenne (tous lanceurs)`,
+      detail:'Reflète la qualité du bullpen (lanceurs de remplacement) en plus du partant',
+      sense:s>=58?'pos':s<=42?'neg':'neu'
+    });
+  }
+
+  // 7. Avantage domicile (6%)
+  {
+    const s=data.estDomicile?58:42;
+    scoreTotal+=s*0.06;totalPoids+=0.06;scoresContrib.push({score:s,poids:0.06});
+    facteurs.push({
+      nom:data.estDomicile?'Avantage de jouer à domicile':'Désavantage de jouer à l\'extérieur',
+      valeur:data.estDomicile?'🏠 Reçoit chez lui — avantage statistique de ~54% en MLB':'✈️ En déplacement — légèrement désavantagé statistiquement',
+      detail:'En MLB, l\'équipe qui reçoit gagne en moyenne 54% de ses matchs à domicile',
+      score:s,poids:6,sense:data.estDomicile?'pos':'neg'
+    });
+  }
+
+  // 8. Forme récente réelle (5%) — basée sur les 10 derniers vrais résultats si dispo, sinon série
+  if(data.forme&&data.forme.total>=3){
+    const fPct=data.forme.formePct;
+    const s=Math.round(Math.max(15,Math.min(90,30+fPct*60)));
+    add(s,0.05,{
+      nom:'Forme récente (10 derniers matchs réels)',
+      valeur:`${data.forme.wins}V-${data.forme.total-data.forme.wins}D sur les ${data.forme.total} derniers matchs`,
+      detail:'Résultats réels récupérés via l\'API MLB, pas une estimation',
+      sense:fPct>=0.6?'pos':fPct<=0.4?'neg':'neu'
+    });
+  }else if(data.streak){
+    const boost=sStreakBoost(data.streak);
+    const baseScore=50+boost;
+    add(baseScore,0.04,{
+      nom:'Série en cours et momentum',
+      valeur:`${data.streak.startsWith('W')?`${parseInt(data.streak.slice(1))||0} victoires`:`${parseInt(data.streak.slice(1))||0} défaites`} consécutives`,
+      detail:'Une équipe en série de victoires est en confiance',
+      sense:boost>0?'pos':boost<0?'neg':'neu'
+    });
+  }
+
+  // 9. Fatigue / calendrier (3%) — jours de repos et doubleheaders sur 7 jours
+  if(data.forme&&data.forme.matchs7j!=null){
+    const m7=data.forme.matchs7j,repos=data.forme.reposSemaine,dh=data.forme.doubleHeaders;
+    // Plus de repos = plus frais ; doubleheaders / 0 repos = bullpen fatigué
+    const fatScore=Math.round(Math.max(35,Math.min(62,50+repos*5-dh*6-(m7>=7?5:0))));
+    add(fatScore,0.03,{
+      nom:'Fraîcheur / calendrier',
+      valeur:`${m7} matchs sur 7 jours · ${repos} jour${repos>1?'s':''} de repos${dh>0?` · ${dh} doubleheader${dh>1?'s':''}`:''}`,
+      detail:'Un calendrier chargé sans jour de repos fatigue surtout le bullpen (lanceurs de relève)',
+      sense:fatScore>=52?'pos':fatScore<=44?'neg':'neu'
+    });
+  }
+
+  let score=totalPoids>0?Math.round(scoreTotal/totalPoids):50;
+  const dataDispos=Math.min(100,Math.round(totalPoids*100)); // plafonné : la somme des poids peut dépasser 1.0
+
+  // ── RÉGRESSION VERS LA MOYENNE : impacte réellement le score ──
+  // facteur_regression = max(0, (série_victoires - 4) × 0.03), plafonné à 0.15
+  let facteurReg=0,regInfo=null;
+  if(data.streak&&data.streak.startsWith('W')){
+    const n=parseInt(data.streak.slice(1))||0;
+    facteurReg=Math.min(0.15,Math.max(0,(n-4)*0.03));
+    if(facteurReg>0){
+      const avant=score;
+      score=Math.round(50+(score-50)*(1-facteurReg)); // on régresse vers 50 (la moyenne)
+      regInfo={n,facteur:facteurReg,avant,apres:score};
+      facteurs.push({
+        nom:'Régression vers la moyenne',
+        valeur:`Série de ${n}V → score ajusté ${avant}→${score} (−${Math.round(facteurReg*100)}%)`,
+        detail:`Après ${n}+ victoires consécutives, les équipes reviennent statistiquement vers leur niveau réel. Le score est corrigé à la baisse.`,
+        score,poids:0,sense:'warn'
+      });
+    }
+  }
+
+  // ── INCERTITUDE pour l'intervalle de confiance ──
+  // Écart-type pondéré des scores contributifs + pénalité si peu de données
+  let incertitude=8;
+  if(scoresContrib.length){
+    const moy=scoresContrib.reduce((a,c)=>a+c.score*c.poids,0)/scoresContrib.reduce((a,c)=>a+c.poids,0);
+    const varPond=scoresContrib.reduce((a,c)=>a+c.poids*(c.score-moy)**2,0)/scoresContrib.reduce((a,c)=>a+c.poids,0);
+    incertitude=Math.sqrt(varPond)*0.18;
+  }
+  // Moins de données disponibles = plus d'incertitude
+  incertitude+=(100-dataDispos)*0.06;
+  incertitude=Math.round(Math.max(3,Math.min(12,incertitude)));
+
+  return{score,facteurs,dataDispos,incertitude,facteurReg,regInfo};
+}
+
+function normProba(sA,sB){
+  const t=sA+sB;
+  if(!t)return[50,50];
+  return[pt(sA/t*100),pt(sB/t*100)];
+}
+
+function confiance(dA,dB,ecart){
+  const base=Math.min(dA,dB);
+  let c=1;
+  if(base>=60)c=2;
+  if(base>=75)c=3;
+  if(base>=85)c=4;
+  if(base>=90&&ecart>=10)c=5;
+  return c;
+}
+
+function etoiles(n){
+  return Array.from({length:5},(_,i)=>`<span style="color:${i<n?'var(--amber)':'var(--muted2)'};font-size:11px">${i<n?'★':'☆'}</span>`).join('');
+}
+
+// Score de confiance composite /100 = données×0.4 + écart entre équipes×0.4 + qualité données×0.2
+function confScore100(dataDispos,ecart,qualite){
+  const dataC=Math.max(0,Math.min(100,dataDispos));        // % de critères disponibles
+  const ecartC=Math.max(0,Math.min(100,ecart*2.2));        // écart de proba entre les 2 équipes (amplifié)
+  const qualC=Math.max(0,Math.min(100,qualite));           // qualité/fraîcheur des données
+  return Math.round(dataC*0.4+ecartC*0.4+qualC*0.2);
+}
+function confColor(s){return s>=70?'var(--green)':s>=50?'var(--amber)':'var(--red)';}
+function confLabel(s){return s>=78?'TRÈS FIABLE':s>=62?'FIABLE':s>=45?'MODÉRÉ':'INCERTAIN';}
+
+function ring(proba,color){
+  const r=26,circ=2*Math.PI*r,fill=circ*(proba/100);
+  return `<svg width="62" height="62" viewBox="0 0 62 62">
+    <circle cx="31" cy="31" r="${r}" fill="none" stroke="var(--b2)" stroke-width="5"/>
+    <circle cx="31" cy="31" r="${r}" fill="none" stroke="${color}" stroke-width="5"
+      stroke-dasharray="${fill} ${circ}" stroke-linecap="round"/>
+  </svg><div class="ring-num" style="color:${color}">${Math.round(proba)}%</div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// PAGE PRONOSTICS — CHARGEMENT PRINCIPAL
+// ═══════════════════════════════════════════════════
+let tousLesPronos=[];
+let matchDataMap={}; // données brutes complètes par gamePk (pour l'onglet détail)
+let sortMode='conf';
+let filtreMode='tous';
+
+async function loadPronos(){
+  document.getElementById('date-txt').textContent=fdate();
+  document.getElementById('pronos-list').innerHTML='<div class="loading"><div class="spinner"></div>Connexion à MLB API...</div>';
+
+  try{
+    await majResultatsHier();
+
+    // ── Données parallèles ──
+    const [schedData,standData,teamHitData,teamPitData]=await Promise.all([
+      api(`/schedule?sportId=1&date=${today()}&hydrate=team,probablePitcher,linescore,venue`),
+      api(`/standings?leagueId=103,104&season=${SEASON}&standingsTypes=regularSeason&hydrate=team`),
+      api(`/teams/stats?season=${SEASON}&sportId=1&group=hitting&stats=season`),
+      api(`/teams/stats?season=${SEASON}&sportId=1&group=pitching&stats=season`),
+    ]);
+
+    const games=schedData.dates?.[0]?.games??[];
+    if(!games.length){
+      document.getElementById('pronos-list').innerHTML='<div class="empty">⚾ Aucun match MLB aujourd\'hui.<br>Revenez demain !</div>';
+      return;
+    }
+
+    // Map standings (winPct/bilan/série — l'API standings n'inclut PAS teamStats, le pyth est calculé plus bas)
+    const standMap={};
+    standData.records?.forEach(div=>div.teamRecords?.forEach(t=>{
+      standMap[t.team.id]={
+        winPct:parseFloat(t.winningPercentage)||null,
+        pythWinPct:null,
+        wins:t.wins,losses:t.losses,
+        streak:t.streak?.streakCode??null,
+        runsScored:null,runsAllowed:null
+      };
+    }));
+
+    // Map stats équipes
+    const hitMap={},pitMap={};
+    teamHitData.stats?.[0]?.splits?.forEach(s=>{if(s.team?.id)hitMap[s.team.id]=s.stat;});
+    teamPitData.stats?.[0]?.splits?.forEach(s=>{if(s.team?.id)pitMap[s.team.id]=s.stat;});
+
+    // Win% pythagoricien calculé sur les RUNS RÉELS (marqués via hitting, encaissés via pitching)
+    Object.keys(standMap).forEach(id=>{
+      const rs=hitMap[id]?parseFloat(hitMap[id].runs):null;
+      const ra=pitMap[id]?parseFloat(pitMap[id].runs):null;
+      if(rs&&ra){standMap[id].pythWinPct=pythagorean(rs,ra);standMap[id].runsScored=rs;standMap[id].runsAllowed=ra;}
+    });
+
+    // Moyennes de ligue pour la normalisation Z-score
+    LG.ops=statsLigue(Object.values(hitMap).map(h=>parseFloat(h.ops)));
+    LG.teamEra=statsLigue(Object.values(pitMap).map(p=>parseFloat(p.era)));
+
+    // Stats partants probables
+    const pitcherIds=[...new Set(games.flatMap(g=>[g.teams.away.probablePitcher?.id,g.teams.home.probablePitcher?.id].filter(Boolean)))];
+    const pitcherMap={};
+    await Promise.all(pitcherIds.map(async id=>{
+      try{
+        const d=await api(`/people/${id}/stats?stats=season&group=pitching&season=${SEASON}`);
+        const s=d.stats?.[0]?.splits?.[0]?.stat;
+        if(s)pitcherMap[id]=s;
+      }catch(e){}
+    }));
+
+    // Moyennes de ligue côté lanceurs partants (Z-score)
+    const pvals=Object.values(pitcherMap);
+    LG.starterEra=statsLigue(pvals.map(p=>parseFloat(p.era)));
+    LG.whip=statsLigue(pvals.map(p=>parseFloat(p.whip)));
+    LG.k9=statsLigue(pvals.map(p=>parseFloat(p.strikeoutsPer9Inn)));
+
+    // Équipes du jour
+    const teamIds=[...new Set(games.flatMap(g=>[g.teams.away.team.id,g.teams.home.team.id]))];
+
+    // Forme récente réelle + fatigue (1 appel /équipe)
+    const formeMap={};
+    await Promise.all(teamIds.map(async id=>{formeMap[id]=await getFormeFatigue(id);}));
+
+    // Splits domicile/extérieur (hitting + pitching /équipe)
+    const splitMap={};
+    await Promise.all(teamIds.map(async id=>{splitMap[id]=await getSplits(id);}));
+
+    // Cotes Vegas (best-effort)
+    const vegasMap=await getVegasOdds();
+
+    // Top batteurs de chaque équipe pour props
+    const topBatteurMap={};
+    await Promise.all([...new Set(games.flatMap(g=>[g.teams.away.team.id,g.teams.home.team.id]))].map(async teamId=>{
+      try{
+        const d=await api(`/teams/${teamId}/roster?rosterType=active&season=${SEASON}&hydrate=person`);
+        // Prend les joueurs de champ (position != P)
+        const nonPitchers=d.roster?.filter(r=>r.position?.abbreviation!=='P').slice(0,5)??[];
+        topBatteurMap[teamId]=nonPitchers;
+      }catch(e){}
+    }));
+
+    // Stats batteurs clés
+    const batteurStatMap={};
+    const allBatteurIds=[...new Set(Object.values(topBatteurMap).flat().map(r=>r.person?.id).filter(Boolean))];
+    await Promise.all(allBatteurIds.slice(0,30).map(async id=>{
+      try{
+        const d=await api(`/people/${id}/stats?stats=season&group=hitting&season=${SEASON}`);
+        const s=d.stats?.[0]?.splits?.[0]?.stat;
+        if(s)batteurStatMap[id]=s;
+      }catch(e){}
+    }));
+
+    // Météo des stades — STADES est indexé par ID d'ÉQUIPE (pas par venue.id), donc on prend l'équipe à domicile
+    const meteoMap={};
+    await Promise.all(games.map(async g=>{
+      const stade=STADES[g.teams.home.team.id];
+      if(!stade)return;
+      const w=await getWeather(stade.lat,stade.lon);
+      if(w?.current){
+        meteoMap[g.gamePk]={
+          temp:w.current.temperature_2m,
+          humidity:w.current.relative_humidity_2m,
+          wind:w.current.wind_speed_10m,
+          windDir:w.current.wind_direction_10m,
+          stade:stade.nom
+        };
+      }
+    }));
+
+    // ── GÉNÉRATION DES PRONOSTICS ──
+    const pronos=[];
+    matchDataMap={};
+
+    for(const game of games){
+      const away=game.teams.away,home=game.teams.home;
+      const aId=away.team.id,hId=home.team.id;
+      const aStand=standMap[aId]??{};
+      const hStand=standMap[hId]??{};
+      const aHit=hitMap[aId]??{};
+      const hHit=hitMap[hId]??{};
+      const aPit=pitMap[aId]??{};
+      const hPit=pitMap[hId]??{};
+      const aPitStat=away.probablePitcher?.id?pitcherMap[away.probablePitcher.id]??null:null;
+      const hPitStat=home.probablePitcher?.id?pitcherMap[home.probablePitcher.id]??null:null;
+      const meteo=meteoMap[game.gamePk]??null;
+      const wind=meteoIndex(meteo);
+      const aForme=formeMap[aId]??null,hForme=formeMap[hId]??null;
+      const aSplit=splitMap[aId]??{},hSplit=splitMap[hId]??{};
+      const time=game.gameDate?new Date(game.gameDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
+      const matchLbl=`${away.team.name} @ ${home.team.name}`;
+
+      // OPS split contextuel : équipe visiteuse → split extérieur, équipe domicile → split domicile
+      const aOpsSplit=aSplit.hitA?.ops?parseFloat(aSplit.hitA.ops):null;
+      const hOpsSplit=hSplit.hitH?.ops?parseFloat(hSplit.hitH.ops):null;
+      const aEraSplit=aSplit.pitA?.era?parseFloat(aSplit.pitA.era):null;
+      const hEraSplit=hSplit.pitH?.era?parseFloat(hSplit.pitH.era):null;
+
+      const aData={
+        estDomicile:false,
+        winPct:aStand.winPct??null,
+        pythWinPct:aStand.pythWinPct??null,
+        eraPartant:aPitStat?.era?parseFloat(aPitStat.era):null,
+        nomPartant:away.probablePitcher?.fullName??null,
+        ops:aOpsSplit??(aHit.ops?parseFloat(aHit.ops):null), opsSplit:aOpsSplit!=null,
+        eraEquipe:aEraSplit??(aPit.era?parseFloat(aPit.era):null),
+        whipPartant:aPitStat?.whip?parseFloat(aPitStat.whip):null,
+        k9Partant:aPitStat?.strikeoutsPer9Inn?parseFloat(aPitStat.strikeoutsPer9Inn):null,
+        streak:aStand.streak??null, forme:aForme,
+      };
+      const hData={
+        estDomicile:true,
+        winPct:hStand.winPct??null,
+        pythWinPct:hStand.pythWinPct??null,
+        eraPartant:hPitStat?.era?parseFloat(hPitStat.era):null,
+        nomPartant:home.probablePitcher?.fullName??null,
+        ops:hOpsSplit??(hHit.ops?parseFloat(hHit.ops):null), opsSplit:hOpsSplit!=null,
+        eraEquipe:hEraSplit??(hPit.era?parseFloat(hPit.era):null),
+        whipPartant:hPitStat?.whip?parseFloat(hPitStat.whip):null,
+        k9Partant:hPitStat?.strikeoutsPer9Inn?parseFloat(hPitStat.strikeoutsPer9Inn):null,
+        streak:hStand.streak??null, forme:hForme,
+      };
+
+      const rA=calcEquipe(aData);
+      const rH=calcEquipe(hData);
+      const[pA,pH]=normProba(rA.score,rH.score);
+      const ecart=Math.abs(pA-pH);
+      const conf=confiance(rA.dataDispos,rH.dataDispos,ecart);
+      const favH=pH>=pA;
+      const favTeam=favH?home.team:away.team;
+      const favProba=favH?pH:pA;
+      const favRes=favH?rH:rA;
+      const favForme=favH?hForme:aForme;
+
+      // Score de confiance composite /100 (données + écart + qualité)
+      const qualite=Math.round((rA.dataDispos+rH.dataDispos)/2*(favForme?1:0.85)); // forme réelle = données plus fraîches
+      const cScore=confScore100(Math.min(rA.dataDispos,rH.dataDispos),ecart,qualite);
+      // Intervalle de confiance sur la proba du favori
+      const margeCI=Math.round((rA.incertitude+rH.incertitude)/2);
+
+      // Alerte régression (le favori est-il sur une série régressée ?)
+      const alerteReg=favRes.regInfo?{valeur:`${favTeam.name} sur ${favRes.regInfo.n} victoires — score corrigé de la surchauffe (régression vers la moyenne appliquée)`}:null;
+
+      // ── VALEUR INVERSÉE / Vegas ──
+      const vkey=`${away.team.name}@${home.team.name}`;
+      const vegas=vegasMap?.[vkey]??null;
+      let valueAlert=null,vegasHTML='';
+      if(vegas){
+        const ourFav=favProba, vegasFav=favH?vegas.probaH:vegas.probaA;
+        const edge=pt(ourFav-vegasFav,1);
+        const coteFav=favH?vegas.coteH:vegas.coteA;
+        vegasHTML=`<div class="vegas-row"><span class="vegas-chip">Vegas : ${vegasFav.toFixed(1)}% (cote ${coteFav.toFixed(2)})</span><span class="vegas-chip">Notre modèle : ${ourFav.toFixed(1)}%</span><span class="${edge>=0?'edge-pos':'edge-neg'}">Edge ${edge>=0?'+':''}${edge}%</span></div>`;
+        if(edge<=-4)valueAlert=`Valeur inversée : le marché donne ${favTeam.name} plus probable (${vegasFav.toFixed(1)}%) que notre modèle (${ourFav.toFixed(1)}%). Signal contrarian — prudence sur ce favori.`;
+        else if(edge>=5)valueAlert=`Value bet : notre modèle voit ${favTeam.name} plus fort (${ourFav.toFixed(1)}%) que le marché (${vegasFav.toFixed(1)}%). Edge potentiellement rentable.`;
+      }else{
+        // Sans cotes réelles : contrarian basé sur le bilan saison vs modèle
+        const favWinPct=favH?hStand.winPct:aStand.winPct;
+        const dogWinPct=favH?aStand.winPct:hStand.winPct;
+        if(favWinPct!=null&&dogWinPct!=null&&favWinPct<dogWinPct-0.03&&favProba>52){
+          valueAlert=`Value contrarian : ${favTeam.name} a un moins bon bilan saison (${Math.round(favWinPct*100)}%) que l'adversaire (${Math.round(dogWinPct*100)}%), mais le modèle le favorise (${favProba.toFixed(1)}%) grâce au matchup du jour (lanceur, splits, météo).`;
+        }
+      }
+
+      // Forme récente du favori (dots) pour affichage
+      const formeDots=favForme&&favForme.last10?.length
+        ?`<span class="forme-dots">${favForme.last10.map(x=>`<span class="forme-dot ${x.w?'forme-w':'forme-l'}">${x.w?'V':'D'}</span>`).join('')}</span>`:'';
+      const fatigueBadge=favForme&&(favForme.reposSemaine===0||favForme.doubleHeaders>0)?`<span class="fatigue-badge">😴 ${favForme.matchs7j} matchs/7j${favForme.doubleHeaders>0?` · ${favForme.doubleHeaders} doubleheader`:' · 0 repos'}</span>`:'';
+
+      const meteoHTML=meteo?`<div class="meteo-badge" title="${wind.breakdown}">🌡️ ${meteo.temp}°C${meteo.humidity!=null?` · 💧${meteo.humidity}%`:''} · 💨 ${Math.round(meteo.wind)}km/h<span class="meteo-impact ${wind.impact}">net ${wind.score>0?'+':''}${wind.score} pts Over</span></div>`:'';
+
+      // ── 1. VICTOIRE DU MATCH ──
+      const regAlertHTML=alerteReg?`<div class="reg-alert">⚠️ ${alerteReg.valeur}</div>`:'';
+      const valueAlertHTML=valueAlert?`<div class="value-alert">💎 ${valueAlert}</div>`:'';
+
+      // Stocke toutes les données brutes du match pour l'onglet détail
+      matchDataMap[game.gamePk]={
+        away:away.team, home:home.team, heure:time, state:game.status.abstractGameState,
+        probaAway:pA, probaHome:pH, scoreA:rA.score, scoreH:rH.score,
+        confScore:cScore, marge:margeCI,
+        aData, hData, aStand, hStand, aPitStat, hPitStat,
+        aForme, hForme, aSplit, hSplit, meteo, meteoIdx:wind, vegas,
+        nomPartantA:away.probablePitcher?.fullName, nomPartantH:home.probablePitcher?.fullName
+      };
+
+      pronos.push({
+        id:`${game.gamePk}-V`, gamePk:game.gamePk, type:'victoire', typeLabel:'Victoire du match',
+        heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+        pick:`${favTeam.name} remporte le match`,
+        explication:`Sur la base de ${favRes.dataDispos}% des critères disponibles, ${favTeam.name} a ${favProba.toFixed(1)}% de probabilité de gagner ce match (intervalle ${Math.max(0,favProba-margeCI).toFixed(0)}–${Math.min(100,favProba+margeCI).toFixed(0)}%).`,
+        proba:favProba, confiance:conf, confScore:cScore, marge:margeCI,
+        facteurs:favRes.facteurs,
+        probaAway:pA, probaHome:pH,
+        dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),
+        regAlertHTML, meteoHTML, valueAlertHTML, vegasHTML, formeDots, fatigueBadge,
+        state:game.status.abstractGameState,
+        scoreA:rA.score, scoreH:rH.score
+      });
+
+      // ── 2. NRFI / YRFI — Aucun point en 1ère manche ──
+      if(aData.eraPartant!==null&&hData.eraPartant!==null){
+        const eraCombi=(aData.eraPartant+hData.eraPartant)/2;
+        // NRFI proba : ERA faible = plus de chance de 1ère manche sans point
+        // En MLB, NRFI arrive ~55-65% du temps selon ERA des partants
+        const nrfiBase=55+(3.50-eraCombi)*5;
+        const nrfiProba=Math.min(72,Math.max(50,nrfiBase));
+        const wantNRFI=nrfiProba>=55;
+        pronos.push({
+          id:`${game.gamePk}-NRFI`, gamePk:game.gamePk, type:'nrfi', typeLabel:'1ère manche sans point',
+          heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+          pick:wantNRFI?`Aucun point en 1ère manche (NRFI)`:`Au moins 1 point en 1ère manche (YRFI)`,
+          explication:wantNRFI
+            ?`Avec des lanceurs de qualité des deux côtés, la 1ère manche devrait rester sans point. Ce type de pari arrive ~${Math.round(nrfiProba)}% du temps dans ces configurations.`
+            :`Les partants de ce match ont tendance à concéder des points tôt dans la partie.`,
+          proba:pt(nrfiProba), confiance:Math.max(1,conf-1),
+          facteurs:[
+            {nom:`Lanceur visiteur — ${aData.nomPartant||'TBD'}`,valeur:`${aData.eraPartant.toFixed(2)} pts/match`,detail:'Un bon partant protège mieux la 1ère manche',score:sERA(aData.eraPartant),poids:45,sense:sERA(aData.eraPartant)>=60?'pos':'neg'},
+            {nom:`Lanceur domicile — ${hData.nomPartant||'TBD'}`,valeur:`${hData.eraPartant.toFixed(2)} pts/match`,detail:'Les deux partants combinés déterminent la NRFI',score:sERA(hData.eraPartant),poids:45,sense:sERA(hData.eraPartant)>=60?'pos':'neg'},
+          ],
+          probaAway:pA, probaHome:pH,
+          dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),
+          meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+        });
+      }
+
+      // ── 3. OVER / UNDER TOTAL POINTS ──
+      const hasOUData=aData.eraPartant!==null||hData.eraPartant!==null||aData.ops!==null||hData.ops!==null;
+      if(hasOUData){
+        const eraC=((aData.eraPartant??4.1)+(hData.eraPartant??4.1))/2;
+        const opsC=((aData.ops??0.710)+(hData.ops??0.710))/2;
+        const sOff=sOPS(opsC)??50;
+        const sDef=sERA(eraC)??50;
+        // Score offensif total + impact météo
+        const rawScore=sOff*0.55+(100-sDef)*0.45+wind.score;
+        const isOver=rawScore>50;
+        const ouProba=Math.min(70,Math.max(51,50+Math.abs(rawScore-50)*0.55));
+        pronos.push({
+          id:`${game.gamePk}-OU`, gamePk:game.gamePk, type:'ou', typeLabel:'Total de points',
+          heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+          pick:isOver?`OVER 8.5 — Match avec beaucoup de points`:`UNDER 8.5 — Match avec peu de points`,
+          explication:isOver
+            ?`La combinaison des forces offensives et de la météo suggère un match prolifique avec plus de 8.5 points au total.`
+            :`Les lanceurs de ce match ont de bonnes statistiques. Le total de points devrait rester bas.`,
+          proba:pt(ouProba), confiance:Math.max(1,conf-1),
+          facteurs:[
+            aData.eraPartant!==null?{nom:`Lanceur visiteur (points encaissés/match)`,valeur:`${aData.nomPartant||'TBD'} : ${aData.eraPartant.toFixed(2)}`,detail:'',score:sERA(aData.eraPartant),poids:22,sense:sERA(aData.eraPartant)>=55?'pos':'neg'}:null,
+            hData.eraPartant!==null?{nom:`Lanceur domicile (points encaissés/match)`,valeur:`${hData.nomPartant||'TBD'} : ${hData.eraPartant.toFixed(2)}`,detail:'',score:sERA(hData.eraPartant),poids:22,sense:sERA(hData.eraPartant)>=55?'pos':'neg'}:null,
+            aData.ops!==null?{nom:`Force offensive visiteur`,valeur:`${away.team.name} : ${aData.ops}`,detail:'Plus la force offensive est haute, plus l\'équipe marque',score:sOPS(aData.ops),poids:18,sense:sOPS(aData.ops)>=58?'pos':'neg'}:null,
+            hData.ops!==null?{nom:`Force offensive domicile`,valeur:`${home.team.name} : ${hData.ops}`,detail:'',score:sOPS(hData.ops),poids:18,sense:sOPS(hData.ops)>=58?'pos':'neg'}:null,
+            meteo&&wind.score!==0?{nom:`Impact météo (net)`,valeur:wind.label,detail:wind.breakdown+'. Les effets opposés (vent, température, humidité) sont combinés en un seul score net.',score:50+wind.score*2,poids:10,sense:wind.impact}:null,
+          ].filter(Boolean),
+          probaAway:pA, probaHome:pH, dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),
+          meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+        });
+      }
+
+      // ── 4. LES DEUX ÉQUIPES MARQUENT (BTTS) ──
+      if(aData.ops!==null&&hData.ops!==null){
+        const bttsProba=Math.min(72,Math.max(48,(sOPS(aData.ops)??50)*0.45+(sOPS(hData.ops)??50)*0.35+(50*(1-(sERA(aData.eraPartant??4.1)??50)/100))*0.20));
+        pronos.push({
+          id:`${game.gamePk}-BTTS`, gamePk:game.gamePk, type:'btts', typeLabel:'Les 2 équipes marquent',
+          heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+          pick:`Les deux équipes marquent au moins 1 point`,
+          explication:`En se basant sur les forces offensives des deux équipes, chacune devrait réussir à scorer au moins 1 point dans ce match.`,
+          proba:pt(bttsProba), confiance:Math.max(1,conf-1),
+          facteurs:[
+            {nom:`Attaque visiteur`,valeur:`${away.team.name} : force offensive ${aData.ops}`,detail:'Capacité à marquer des points',score:sOPS(aData.ops)??50,poids:40,sense:(sOPS(aData.ops)??50)>=55?'pos':'neg'},
+            {nom:`Attaque domicile`,valeur:`${home.team.name} : force offensive ${hData.ops}`,detail:'',score:sOPS(hData.ops)??50,poids:40,sense:(sOPS(hData.ops)??50)>=55?'pos':'neg'},
+            aData.eraPartant!==null?{nom:`Risque défensif visiteur`,valeur:`Partant encaisse ${aData.eraPartant.toFixed(2)} pts/match`,detail:'Un mauvais lanceur = plus de points pour l\'adversaire',score:100-(sERA(aData.eraPartant)??50),poids:20,sense:(sERA(aData.eraPartant)??50)<=45?'pos':'neg'}:null,
+          ].filter(Boolean),
+          probaAway:pA, probaHome:pH, dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),
+          meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+        });
+      }
+
+      // ── 5. PREMIÈRES 5 MANCHES ──
+      if(aData.eraPartant!==null&&hData.eraPartant!==null){
+        const rA5=calcEquipe({...aData,eraEquipe:null,streak:null});
+        const rH5=calcEquipe({...hData,eraEquipe:null,streak:null});
+        const[p5A,p5H]=normProba(rA5.score,rH5.score);
+        const fav5H=p5H>=p5A;
+        const fav5Team=fav5H?home.team:away.team;
+        const fav5Proba=Math.max(p5A,p5H);
+        pronos.push({
+          id:`${game.gamePk}-F5`, gamePk:game.gamePk, type:'f5', typeLabel:'5 premières manches',
+          heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+          pick:`${fav5Team.name} mène après 5 manches`,
+          explication:`Sur les 5 premières manches, seuls les lanceurs partants comptent. Pas de remplaçants. ${fav5Team.name} a ${fav5Proba.toFixed(1)}% de chances de mener.`,
+          proba:pt(fav5Proba), confiance:Math.max(1,conf-1),
+          facteurs:[
+            {nom:`Lanceur partant visiteur`,valeur:`${aData.nomPartant||'TBD'} — ${aData.eraPartant.toFixed(2)} pts/match`,detail:'Sur 5 manches, c\'est lui qui fait tout le travail défensif',score:sERA(aData.eraPartant)??50,poids:42,sense:(sERA(aData.eraPartant)??50)>=60?'pos':'neg'},
+            {nom:`Lanceur partant domicile`,valeur:`${hData.nomPartant||'TBD'} — ${hData.eraPartant.toFixed(2)} pts/match`,detail:'',score:sERA(hData.eraPartant)??50,poids:42,sense:(sERA(hData.eraPartant)??50)>=60?'pos':'neg'},
+            aData.ops!==null?{nom:'Force offensive visiteur',valeur:`${aData.ops}`,detail:'',score:sOPS(aData.ops)??50,poids:16,sense:(sOPS(aData.ops)??50)>=55?'pos':'neg'}:null,
+          ].filter(Boolean),
+          probaAway:p5A, probaHome:p5H, dataDispos:Math.round(Math.min(rA5.dataDispos,rH5.dataDispos)),
+          meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+        });
+      }
+
+      // ── 6. ÉCART FINAL ──
+      if(rA.dataDispos>60&&rH.dataDispos>60){
+        const diffScore=Math.abs(rA.score-rH.score);
+        const probSerrée=Math.max(35,60-diffScore*1.2);
+        const probMoyenne=Math.max(25,30-Math.abs(diffScore-15)*0.8);
+        const probGrande=Math.max(10,10+diffScore*0.5-5);
+        const maxProb=Math.max(probSerrée,probMoyenne,probGrande);
+        const margePick=probSerrée===maxProb?'Victoire serrée (1 ou 2 points d\'écart)':probMoyenne===maxProb?'Victoire nette (3 à 5 points d\'écart)':'Victoire large (6 points ou plus)';
+        pronos.push({
+          id:`${game.gamePk}-MG`, gamePk:game.gamePk, type:'marge', typeLabel:'Écart final',
+          heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+          pick:margePick,
+          explication:`Basé sur l'écart de qualité entre les deux équipes (${diffScore} points de score composite), le match devrait se terminer avec ${margePick.toLowerCase()}.`,
+          proba:pt(maxProb), confiance:Math.max(1,conf-2),
+          facteurs:[
+            {nom:'Écart de force entre les deux équipes',valeur:`${diffScore} points d'écart sur 100 dans le modèle`,detail:'Plus l\'écart est grand, plus la victoire risque d\'être large',score:50+diffScore/2,poids:60,sense:diffScore>15?'pos':'neu'},
+            {nom:`Force de ${favTeam.name}`,valeur:`Score composite ${favH?rH.score:rA.score}/100`,detail:'',score:favH?rH.score:rA.score,poids:40,sense:(favH?rH.score:rA.score)>=60?'pos':'neg'},
+          ],
+          probaAway:pA, probaHome:pH, dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),
+          meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+        });
+      }
+
+      // ── 7. PROPS JOUEURS — Top batteurs ──
+      const genPropsBatteur=(teamId,teamName,estDomicile)=>{
+        const roster=topBatteurMap[teamId]??[];
+        const lanceurAdv=estDomicile?aPitStat:hPitStat;
+        roster.slice(0,2).forEach(r=>{
+          const pid=r.person?.id;
+          const stat=pid?batteurStatMap[pid]:null;
+          if(!stat||!stat.avg)return;
+          const avg=parseFloat(stat.avg);
+          const hr=parseInt(stat.homeRuns)||0;
+          const ops=parseFloat(stat.ops)||0;
+          const sBat=sAVG(avg)??50;
+          const sLanc=lanceurAdv?.era?100-sERA(parseFloat(lanceurAdv.era)):50;
+          const hrProba=Math.min(40,Math.max(8,hr/162*9*100+(sLanc-50)*0.3));
+          const hitsProba=Math.min(72,Math.max(40,sBat*0.6+sLanc*0.4));
+          pronos.push({
+            id:`${game.gamePk}-P-${pid}-HR`, gamePk:game.gamePk, type:'prop', typeLabel:'Prop joueur',
+            heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+            pick:`${r.person.fullName} frappe un circuit dans ce match`,
+            explication:`Basé sur le rythme de circuits de ${r.person.fullName} cette saison (${hr} en 2026) et la qualité du lanceur adverse.`,
+            proba:pt(hrProba), confiance:hrProba>25?3:hrProba>15?2:1,
+            facteurs:[
+              {nom:`Rythme de circuits de ${r.person.fullName}`,valeur:`${hr} circuits en 2026 — rythme ${(hr/162*162).toFixed(0)}/saison`,detail:'Basé sur son rythme actuel extrapolé sur 162 matchs',score:Math.min(90,hr*4),poids:50,sense:hr>=15?'pos':hr>=8?'neu':'neg'},
+              {nom:'Qualité du lanceur adverse',valeur:lanceurAdv?.era?`${parseFloat(lanceurAdv.era).toFixed(2)} pts/match`:'Non annoncé',detail:'Un lanceur faible = plus de risque de circuit',score:sLanc,poids:35,sense:sLanc>=55?'pos':'neg'},
+              {nom:'Force offensive du joueur',valeur:`Moyenne : ${avg} · Force totale : ${ops}`,detail:'',score:sBat,poids:15,sense:sBat>=60?'pos':'neg'},
+            ],
+            probaAway:pA, probaHome:pH, dataDispos:75,
+            meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+          });
+          // Prop : joueur avec 1+ coup sûr
+          if(hitsProba>50){
+            pronos.push({
+              id:`${game.gamePk}-P-${pid}-H`, gamePk:game.gamePk, type:'prop', typeLabel:'Prop joueur',
+              heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+              pick:`${r.person.fullName} réussit au moins 1 coup sûr`,
+              explication:`${r.person.fullName} a une moyenne de ${avg} cette saison. En face d'un lanceur avec ces statistiques, probabilité de ${hitsProba.toFixed(1)}% de réussir au moins un coup sûr.`,
+              proba:pt(hitsProba), confiance:hitsProba>62?4:hitsProba>55?3:2,
+              facteurs:[
+                {nom:`Moyenne au bâton de ${r.person.fullName}`,valeur:`${avg} cette saison`,detail:'Sa capacité habituelle à frapper des coups sûrs',score:sBat,poids:55,sense:sBat>=55?'pos':'neg'},
+                {nom:'Qualité du lanceur adverse',valeur:lanceurAdv?.era?`${parseFloat(lanceurAdv.era).toFixed(2)} pts/match`:'Non annoncé',detail:'',score:sLanc,poids:45,sense:sLanc>=55?'pos':'neg'},
+              ],
+              probaAway:pA, probaHome:pH, dataDispos:70,
+              meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+            });
+          }
+        });
+      };
+      genPropsBatteur(aId,away.team.name,false);
+      genPropsBatteur(hId,home.team.name,true);
+    }
+
+    // Score de confiance /100 + intervalle pour TOUS les pronos (générique si non défini)
+    pronos.forEach(p=>{
+      if(p.confScore==null){
+        const decisif=Math.abs(p.proba-50); // à quel point le prono tranche
+        p.confScore=confScore100(p.dataDispos,decisif,p.dataDispos);
+      }
+      if(p.marge==null)p.marge=Math.round(Math.max(3,Math.min(12,12-(p.confScore/100)*6)));
+    });
+
+    // ── BEST BET DU JOUR : meilleur score composite (confiance × proba × données) ──
+    const eligibles=pronos.filter(p=>p.proba>=55);
+    if(eligibles.length){
+      const best=eligibles.reduce((a,b)=>
+        (b.confScore*b.proba*b.dataDispos)>(a.confScore*a.proba*a.dataDispos)?b:a);
+      renderBestBet(best);
+    }
+
+    tousLesPronos=pronos;
+    ajouterPronos(pronos);
+    renderKPIs(pronos);
+    afficherPronos(pronos);
+    if(loaded['bankroll'])renderBankroll();
+
+  }catch(e){
+    console.error(e);
+    document.getElementById('pronos-list').innerHTML=`<div class="empty">⚠️ Impossible de charger les données MLB.<br><small>${e.message}</small><br><br>Vérifiez votre connexion internet et rechargez la page.</div>`;
+  }
+}
+
+function renderBestBet(p){
+  const el=document.getElementById('best-bet');
+  if(!el)return;
+  el.innerHTML=`<div class="bestbet">
+    <div class="bestbet-meta">${p.matchLabel} · ${p.heure} · ${p.typeLabel}</div>
+    <div class="bestbet-pick">${p.pick}</div>
+    <div class="bestbet-row">
+      <div class="bestbet-stat"><span class="bestbet-stat-v" style="color:var(--green)">${p.proba.toFixed(1)}%</span><span class="bestbet-stat-l">Probabilité (±${p.marge}%)</span></div>
+      <div class="bestbet-stat"><span class="bestbet-stat-v" style="color:${confColor(p.confScore)}">${p.confScore}/100</span><span class="bestbet-stat-l">Confiance · ${confLabel(p.confScore)}</span></div>
+      <div class="bestbet-stat"><span class="bestbet-stat-v" style="color:var(--blue)">${p.dataDispos}%</span><span class="bestbet-stat-l">Données réelles</span></div>
+      ${p.formeDots?`<div class="bestbet-stat"><span>${p.formeDots}</span><span class="bestbet-stat-l">Forme récente</span></div>`:''}
+    </div>
+  </div>`;
+}
+
+function renderKPIs(pronos){
+  document.getElementById('k-tot').textContent=pronos.length;
+  document.getElementById('k-forte').textContent=pronos.filter(p=>(p.confScore??0)>=70).length;
+  document.getElementById('k-best').textContent=(Math.max(...pronos.map(p=>p.proba))).toFixed(1)+'%';
+  document.getElementById('k-games').textContent=new Set(pronos.map(p=>p.gamePk)).size;
+  document.getElementById('k-data').textContent=Math.round(pronos.reduce((a,p)=>a+p.dataDispos,0)/pronos.length)+'%';
+}
+
+function filtrer(type,btn){
+  document.querySelectorAll('#filtres .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filtreMode=type;
+  const liste=type==='tous'?tousLesPronos:tousLesPronos.filter(p=>p.type===type);
+  afficherPronos(liste);
+}
+
+function trierPar(mode){
+  sortMode=mode;
+  const liste=filtreMode==='tous'?tousLesPronos:tousLesPronos.filter(p=>p.type===filtreMode);
+  afficherPronos(liste);
+}
+
+function afficherPronos(pronos){
+  if(!pronos.length){document.getElementById('pronos-list').innerHTML='<div class="empty">Aucun pronostic pour ce filtre</div>';return;}
+  const sorted=[...pronos].sort((a,b)=>sortMode==='conf'?(b.confScore??0)-(a.confScore??0)||b.proba-a.proba:b.proba-a.proba);
+  document.getElementById('pronos-list').innerHTML=sorted.map(mkProno).join('');
+}
+
+function mkProno(p){
+  const cs=p.confScore??50;
+  const isFort=cs>=70,isMoyen=cs>=50;
+  const col=isFort?'var(--green)':isMoyen?'var(--amber)':'var(--muted)';
+  const tagClass={victoire:'tag-v',nrfi:'tag-nrfi',ou:'tag-ou',btts:'tag-btts',f5:'tag-f5',marge:'tag-marge',prop:'tag-prop'}[p.type]||'tag-v';
+  const raisons=p.facteurs.map(f=>{
+    const icon=f.sense==='pos'?'✅':f.sense==='neg'?'⚠️':f.sense==='warn'?'🔄':'ℹ️';
+    return `<div class="raison ${f.sense}">
+      <span class="raison-icon">${icon}</span>
+      <div><div class="raison-main">${f.nom} — <strong>${f.valeur}</strong></div>${f.detail?`<div class="raison-detail">${f.detail}</div>`:''}</div>
+    </div>`;
+  }).join('');
+
+  // Poids des critères — barres horizontales, labels complets (sans troncature)
+  const chartFact=p.facteurs.filter(f=>f.score!==null&&f.poids>0);
+  const maxPoids=Math.max(1,...chartFact.map(f=>f.poids));
+  const chartCols=chartFact.slice(0,6).map(f=>{
+    const w=Math.round((f.poids/maxPoids)*100);
+    const c=f.sense==='pos'?'var(--green)':f.sense==='neg'?'var(--red)':'var(--amber)';
+    return `<div class="poids-line">
+      <span class="poids-line-lbl">${f.nom}</span>
+      <span class="poids-line-track"><span class="poids-line-fill" style="width:${w}%;background:${c}"></span></span>
+      <span class="poids-line-pct">${f.poids}%</span>
+    </div>`;
+  }).join('');
+
+  // Score de confiance composite /100
+  const conf100HTML=`<div class="conf100">
+    <div class="conf100-val" style="color:${confColor(cs)}">${cs}<span style="font-size:10px;color:var(--muted)">/100</span></div>
+    <div class="conf100-bar"><div class="conf100-fill" style="width:${cs}%;background:${confColor(cs)}"></div></div>
+    <div class="conf100-lbl">${confLabel(cs)}</div>
+  </div>`;
+  const ciHTML=p.marge?`<div class="proba-ci">${Math.max(0,p.proba-p.marge).toFixed(0)}–${Math.min(100,p.proba+p.marge).toFixed(0)}%</div>`:'';
+
+  return `<div class="prono ${isFort?'forte':isMoyen?'moyenne':''}">
+    <div class="prono-top">
+      <div class="prono-meta">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">⏱ ${p.heure}</span>
+        <span style="font-size:10px;color:var(--muted)">${p.matchLabel}</span>
+        <span class="tag ${tagClass}">${p.typeLabel}</span>
+        ${isFort?'<span class="pill pg">🔥 FORTE CONFIANCE</span>':isMoyen?'<span class="pill py">✅ BONNE CONFIANCE</span>':''}
+        ${p.fatigueBadge||''}
+      </div>
+      ${p.regAlertHTML||''}
+      ${p.valueAlertHTML||''}
+      ${p.meteoHTML?`<div style="margin-bottom:8px">${p.meteoHTML}</div>`:''}
+      <div class="prono-body">
+        <div class="ring-wrap">
+          <div class="ring">${ring(p.proba,col)}</div>
+          <div class="ring-lbl">PROBABILITÉ</div>
+          ${ciHTML}
+          ${conf100HTML}
+        </div>
+        <div class="prono-cnt">
+          <div class="prono-pick">${p.pick}</div>
+          <div class="prono-exp">${p.explication}</div>
+          ${p.formeDots?`<div style="font-size:10px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px">Forme (récent → ancien) : ${p.formeDots}</div>`:''}
+          <div class="raisons">${raisons}</div>
+          ${chartCols?`<div style="margin-top:12px;border-top:1px solid var(--b1);padding-top:10px">
+            <div style="font-size:10px;color:var(--white);font-weight:700;letter-spacing:.5px;margin-bottom:8px">⚖️ POIDS DE CHAQUE CRITÈRE</div>
+            <div class="poids-rows">${chartCols}</div>
+          </div>`:''}
+          ${p.vegasHTML||''}
+        </div>
+      </div>
+    </div>
+    <div class="prono-footer" style="flex-direction:column;align-items:stretch;gap:9px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:3px">
+            <span>${p.awayTeam.abbreviation} ${p.probaAway.toFixed(1)}%</span>
+            <span>${p.homeTeam.abbreviation} ${p.probaHome.toFixed(1)}%</span>
+          </div>
+          <div style="height:5px;background:var(--b2);border-radius:3px;overflow:hidden;display:flex">
+            <div style="width:${p.probaAway}%;background:var(--blue)"></div>
+            <div style="width:${p.probaHome}%;background:var(--red)"></div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);text-align:right;min-width:74px">${p.dataDispos}% données<br>cote estimée <span style="font-family:var(--mono);color:var(--white)">${p.proba>0?(100/p.proba).toFixed(2):'—'}</span></div>
+      </div>
+      ${betButtonHTML(p)}
+    </div>
+  </div>`;
+}
+
+// ── Bouton de pari sur chaque prono ──
+function betButtonHTML(p){
+  const bet=parieExistante(p.id);
+  if(bet&&bet.parie){
+    const res=bet.resultat;
+    const statut=res==='W'?`<span style="color:var(--green);font-weight:700">✅ Gagné +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`
+      :res==='L'?`<span style="color:var(--red);font-weight:700">❌ Perdu −${bet.mise.toFixed(2)}€</span>`
+      :`<span style="color:var(--amber);font-weight:700">⏳ En attente</span>`;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card2);border:1px solid var(--b2);border-radius:7px;padding:7px 11px">
+      <div style="font-size:11px">🎟️ Parié <strong>${bet.mise.toFixed(2)}€</strong> · cote ${bet.cote.toFixed(2)} · ${statut}</div>
+      ${res==='P'?`<button onclick="annulerPari('${p.id}')" style="background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer;text-decoration:underline">annuler</button>`:''}
+    </div>`;
+  }
+  const cap=getBankrollActuel();
+  if(!cap||cap<=0){
+    return `<button class="bet-btn bet-btn-off" onclick="goTo('bankroll')">💰 Définir ma bankroll pour parier</button>`;
+  }
+  const {mise}=miseKelly(p.proba/100,cap);
+  if(mise<0.5){
+    return `<button class="bet-btn bet-btn-off" disabled>Mise recommandée trop faible (proba insuffisante)</button>`;
+  }
+  return `<button class="bet-btn" onclick="placerPari('${p.id}',this)">🎯 Parier ${mise.toFixed(2)}€ <span style="opacity:.7;font-weight:400">(mise optimale Kelly)</span></button>`;
+}
+
+// Export
+function exporterPDF(){
+  const w=window.open('','_blank');
+  const pronos=filtreMode==='tous'?tousLesPronos:tousLesPronos.filter(p=>p.type===filtreMode);
+  const sorted=[...pronos].sort((a,b)=>b.confiance-a.confiance);
+  w.document.write(`<html><head><title>DataBaseball — Pronos ${fdate()}</title>
+  <style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333}
+  h1{color:#E8192C;font-size:22px}h2{font-size:14px;color:#666;font-weight:normal;margin-bottom:20px}
+  .prono{border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:12px;page-break-inside:avoid}
+  .prono.forte{border-color:#00C896}.prono.moy{border-color:#F5A623}
+  .tag{background:#f0f0f0;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:bold}
+  .pick{font-size:16px;font-weight:bold;margin:6px 0}
+  .proba{font-size:24px;font-weight:bold;color:#E8192C}
+  .reason{margin:4px 0;font-size:12px;color:#555}
+  @media print{body{margin:0}}</style>
+  </head><body>
+  <h1>⚾ DataBaseball — Pronostics MLB</h1>
+  <h2>${fdate()} · ${sorted.length} pronostics · Données réelles MLB</h2>
+  ${sorted.map(p=>`<div class="prono ${p.confiance>=4?'forte':p.confiance>=3?'moy':''}">
+    <span class="tag">${p.typeLabel}</span> <span style="color:#999;font-size:11px">${p.matchLabel} · ${p.heure}</span>
+    <div class="pick">${p.pick}</div>
+    <div class="proba">${p.proba.toFixed(1)}% ${'★'.repeat(p.confiance)}${'☆'.repeat(5-p.confiance)}</div>
+    <div style="color:#666;font-size:12px;margin:5px 0">${p.explication}</div>
+    ${p.facteurs.map(f=>`<div class="reason">${f.sense==='pos'?'✅':f.sense==='neg'?'⚠️':'ℹ️'} ${f.nom} : ${f.valeur}</div>`).join('')}
+  </div>`).join('')}
+  <p style="color:#999;font-size:10px;margin-top:20px">Généré par DataBaseball · ${new Date().toLocaleString('fr-FR')} · Aucune simulation, données réelles MLB uniquement</p>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+}
+
+// ═══════════════════════════════════════════════════
+// PAGE MATCHS
+// ═══════════════════════════════════════════════════
+const TCOLORS={NYY:'#003087',BOS:'#BD3039',TOR:'#134A8E',BAL:'#DF4601',TBR:'#092C5C',CLE:'#E31937',CWS:'#27251F',DET:'#FA4616',KCR:'#004687',MIN:'#002B5C',HOU:'#EB6E1F',LAA:'#BA0021',OAK:'#003831',SEA:'#0C2C56',TEX:'#C0111F',NYM:'#002D72',ATL:'#CE1141',PHI:'#E81828',MIA:'#00A3E0',WSN:'#AB0003',CHC:'#0E3386',STL:'#C41E3A',MIL:'#FFC52F',CIN:'#C6011F',PIT:'#FDB827',LAD:'#005A9C',SFG:'#FD5A1E',ARI:'#A71930',COL:'#33006F',SDP:'#2F241D'};
+
+async function loadMatchs(){
+  try{
+    const d=await api(`/schedule?sportId=1&date=${today()}&hydrate=team,probablePitcher,linescore,venue`);
+    const games=d.dates?.[0]?.games??[];
+    if(!games.length){document.getElementById('matchs-list').innerHTML='<div class="empty">Aucun match aujourd\'hui</div>';return;}
+    document.getElementById('matchs-list').innerHTML=games.map(g=>{
+      const aw=g.teams.away,hm=g.teams.home;
+      const st=g.status.abstractGameState;
+      const as=aw.score??'—',hs=hm.score??'—';
+      const t=g.gameDate?new Date(g.gameDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
+      const awP=aw.probablePitcher?.fullName??'Partant non annoncé';
+      const hmP=hm.probablePitcher?.fullName??'Partant non annoncé';
+      const stBadge=st==='Live'?'<span class="pill pr">EN COURS</span>':st==='Final'?'<span class="pill pm">TERMINÉ</span>':'<span class="pill py">À VENIR</span>';
+      return `<div class="card mb12" style="cursor:pointer" onclick="ouvrirMatch(${g.gamePk})">
+        <div style="padding:14px 16px">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:7px">${t} · ${stBadge}</div>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px">
+            <div><div style="font-size:13px;font-weight:700">${aw.team.name}</div><div style="font-size:10px;color:var(--muted)">${aw.leagueRecord?.wins??'—'}V - ${aw.leagueRecord?.losses??'—'}D</div></div>
+            <div style="text-align:center">
+              ${st!=='Preview'?`<div style="font-family:var(--display);font-size:24px">${as} - ${hs}</div>`:'<div style="color:var(--muted);font-weight:700;font-size:13px">@</div>'}
+            </div>
+            <div style="text-align:right"><div style="font-size:13px;font-weight:700">${hm.team.name}</div><div style="font-size:10px;color:var(--muted)">${hm.leagueRecord?.wins??'—'}V - ${hm.leagueRecord?.losses??'—'}D</div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);border-top:1px solid var(--b1);padding-top:8px">
+            <span>⚾ ${awP}</span><span>${hmP} ⚾</span>
+          </div>
+        </div>
+        <div style="padding:7px 16px;background:var(--card2);border-top:1px solid var(--b1);font-size:10px;color:var(--red);font-weight:600">Voir l'analyse complète avec tous les pronostics →</div>
+      </div>`;
+    }).join('');
+  }catch(e){document.getElementById('matchs-list').innerHTML='<div class="empty">⚠️ Données indisponibles</div>';}
+}
+
+async function ouvrirMatch(gamePk){
+  document.getElementById('matchs-list').style.display='none';
+  document.getElementById('match-detail').style.display='block';
+  const matchPronos=tousLesPronos.filter(p=>p.gamePk===gamePk);
+  const vProno=matchPronos.find(p=>p.type==='victoire');
+  if(!vProno){
+    document.getElementById('match-detail').innerHTML=`<button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">← Retour</button><div class="empty">Chargez d'abord les pronostics (onglet ⚡)</div>`;
+    return;
+  }
+  document.getElementById('match-detail').innerHTML=`
+    <button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">← Retour aux matchs</button>
+    <div class="card mb12" style="padding:18px">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:12px">
+        <div style="text-align:center">
+          <div style="font-family:var(--display);font-size:22px;margin-bottom:4px">${vProno.awayTeam.name}</div>
+          <div style="font-family:var(--display);font-size:28px;color:var(--blue)">${vProno.probaAway.toFixed(1)}%</div>
+          <div style="font-size:10px;color:var(--muted)">chances de gagner</div>
+        </div>
+        <div style="font-family:var(--display);font-size:18px;color:var(--muted);text-align:center">@</div>
+        <div style="text-align:center">
+          <div style="font-family:var(--display);font-size:22px;margin-bottom:4px">${vProno.homeTeam.name}</div>
+          <div style="font-family:var(--display);font-size:28px;color:var(--red)">${vProno.probaHome.toFixed(1)}%</div>
+          <div style="font-size:10px;color:var(--muted)">chances de gagner</div>
+        </div>
+      </div>
+      <div style="height:8px;background:var(--b2);border-radius:4px;overflow:hidden;display:flex">
+        <div style="width:${vProno.probaAway}%;background:var(--blue)"></div>
+        <div style="width:${vProno.probaHome}%;background:var(--red)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:9px;font-weight:700">
+        <span style="color:var(--blue)">${vProno.awayTeam.abbreviation}</span>
+        <span style="color:var(--red)">${vProno.homeTeam.abbreviation}</span>
+      </div>
+    </div>
+    <div class="match-tabs">
+      <button class="tab-btn active" onclick="switchMatchTab('pronos',this)">⚡ Pronostics (${matchPronos.length})</button>
+      <button class="tab-btn" onclick="switchMatchTab('data',this)">📋 Données complètes</button>
+    </div>
+    <div id="md-pronos">${matchPronos.map(mkProno).join('')}</div>
+    <div id="md-data" style="display:none"><div class="card">${renderMatchData(gamePk)}</div></div>`;
+}
+
+function switchMatchTab(t,btn){
+  btn.closest('.match-tabs').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('md-pronos').style.display=t==='pronos'?'block':'none';
+  document.getElementById('md-data').style.display=t==='data'?'block':'none';
+}
+
+// Tableau comparatif de TOUTES les données récoltées pour un match
+function renderMatchData(gamePk){
+  const m=matchDataMap[gamePk];
+  if(!m)return '<div class="empty" style="padding:24px">Données non disponibles. Ouvrez d\'abord l\'onglet ⚡ Pronostics pour les charger.</div>';
+  const a=m.aData,h=m.hData,as=m.aStand,hs=m.hStand,af=m.aForme,hf=m.hForme;
+  const num=(v,d=2)=>v!=null&&!isNaN(v)?(+v).toFixed(d):'—';
+  const pct=v=>v!=null&&!isNaN(v)?Math.round(v*100)+'%':'—';
+  // surligne en vert la meilleure valeur (lo=true => plus petit = mieux)
+  const row=(label,av,hv,aN,hN,lo,hint)=>{
+    let aw='',hw='';
+    if(aN!=null&&hN!=null&&aN!==hN){const aBetter=lo?aN<hN:aN>hN;aBetter?aw='win':hw='win';}
+    return `<div class="data-row"><span class="data-cell a ${aw}">${av}</span><span class="data-mid">${label}${hint?`<div class="data-hint">${hint}</div>`:''}</span><span class="data-cell h ${hw}">${hv}</span></div>`;
+  };
+  const formeStr=f=>f&&f.total?`${f.wins}V-${f.total-f.wins}D`:'—';
+  const meteoBlock=m.meteo?`<div class="data-row" style="grid-template-columns:1fr"><div style="text-align:center;font-size:11px">🌡️ <strong>${num(m.meteo.temp,0)}°C</strong> · 💧 ${m.meteo.humidity!=null?m.meteo.humidity+'%':'—'} · 💨 ${num(m.meteo.wind,0)} km/h → <strong style="color:${m.meteoIdx?.score>0?'var(--red)':m.meteoIdx?.score<0?'var(--blue)':'var(--muted)'}">net ${m.meteoIdx?.score>0?'+':''}${m.meteoIdx?.score||0} pts Over</strong><div class="data-hint">${m.meteoIdx?.breakdown||''}</div></div></div>`:'';
+  const vegasBlock=m.vegas?row('Cotes Vegas (marché)',`${m.vegas.probaA.toFixed(1)}% @${m.vegas.coteA.toFixed(2)}`,`${m.vegas.probaH.toFixed(1)}% @${m.vegas.coteH.toFixed(2)}`,null,null,false,'Probabilités implicites du marché'):'';
+  return `
+    <div class="data-head"><span>${m.away.name}</span><span>visiteur / domicile</span><span>${m.home.name}</span></div>
+    ${row('🏆 Score composite du modèle',m.scoreA+'/100',m.scoreH+'/100',m.scoreA,m.scoreH,false,'Note globale sur tous les critères croisés')}
+    ${row('Probabilité de victoire',m.probaAway.toFixed(1)+'%',m.probaHome.toFixed(1)+'%',m.probaAway,m.probaHome,false)}
+    ${row('Bilan saison',as.wins!=null?`${as.wins}V-${as.losses}D`:'—',hs.wins!=null?`${hs.wins}V-${hs.losses}D`:'—',as.winPct,hs.winPct,false)}
+    ${row('% victoires théorique',pct(a.pythWinPct),pct(h.pythWinPct),a.pythWinPct,h.pythWinPct,false,'Formule pythagoricienne (runs réels)')}
+    ${row('Forme (10 derniers réels)',formeStr(af),formeStr(hf),af?.formePct,hf?.formePct,false,'Vrais résultats via API MLB')}
+    ${row('Repos sur 7 jours',af?af.reposSemaine+' j ('+af.matchs7j+' matchs)':'—',hf?hf.reposSemaine+' j ('+hf.matchs7j+' matchs)':'—',af?.reposSemaine,hf?.reposSemaine,false,'Plus de repos = plus frais')}
+    ${row('💪 Force offensive (OPS)',num(a.ops,3),num(h.ops,3),a.ops,h.ops,false,a.opsSplit||h.opsSplit?'Split domicile/extérieur réel':'Saison complète')}
+    ${row('🛡️ ERA équipe (défense)',num(a.eraEquipe),num(h.eraEquipe),a.eraEquipe,h.eraEquipe,true,'Points encaissés/9 manches, tous lanceurs')}
+    ${row('⚾ Lanceur partant',m.nomPartantA||'Non annoncé',m.nomPartantH||'Non annoncé',null,null,false)}
+    ${row('ERA partant',num(a.eraPartant),num(h.eraPartant),a.eraPartant,h.eraPartant,true,'Plus bas = meilleur lanceur')}
+    ${row('WHIP partant',num(a.whipPartant),num(h.whipPartant),a.whipPartant,h.whipPartant,true,'Coureurs concédés/manche')}
+    ${row('K/9 partant',num(a.k9Partant,1),num(h.k9Partant,1),a.k9Partant,h.k9Partant,false,'Éliminations directes/9 manches')}
+    ${vegasBlock}
+    ${meteoBlock}
+    <div style="padding:10px 14px;font-size:9px;color:var(--muted);border-top:1px solid var(--b1)">✅ = meilleure valeur. Toutes ces données proviennent en temps réel de l'API officielle MLB${m.meteo?' et d\'Open-Meteo':''}.</div>`;
+}
+
+function fermerMatch(){
+  document.getElementById('match-detail').style.display='none';
+  document.getElementById('matchs-list').style.display='block';
+}
+
+// ═══════════════════════════════════════════════════
+// PAGE HISTORIQUE
+// ═══════════════════════════════════════════════════
+function loadHistorique(){
+  const hist=getHistorique();
+  renderHistStats(hist);
+  renderHistList(hist,'tous');
+}
+
+function renderHistStats(hist){
+  const finis=hist.filter(h=>h.resultat!=='P');
+  const wins=finis.filter(h=>h.resultat==='W').length;
+  const taux=finis.length?Math.round(wins/finis.length*100):0;
+  let roi=0;
+  finis.forEach(h=>{roi+=h.resultat==='W'?0.9:-1;});
+
+  document.getElementById('h-taux').textContent=taux+'%';
+  document.getElementById('h-total').textContent=hist.length;
+  document.getElementById('h-roi').textContent=(roi>=0?'+':'')+roi.toFixed(1)+'u';
+  document.getElementById('h-attente').textContent=hist.filter(h=>h.resultat==='P').length;
+
+  // Par confiance
+  const byConf=[1,2,3,4,5].map(c=>{
+    const items=finis.filter(h=>h.confiance===c);
+    const w=items.filter(h=>h.resultat==='W').length;
+    const pct=items.length?Math.round(w/items.length*100):null;
+    return{c,n:items.length,pct};
+  });
+  document.getElementById('hist-by-conf').innerHTML=byConf.map(b=>`
+    <div class="roi-line">
+      <span class="roi-label">${'★'.repeat(b.c)}${'☆'.repeat(5-b.c)} (${b.n} pronos)</span>
+      <div class="roi-bar-wrap">
+        ${b.pct!==null?`<div class="roi-bar-fill" style="width:${b.pct}%;background:${b.pct>=60?'var(--green)':b.pct>=50?'var(--amber)':'var(--red)'}"></div>`:''}
+      </div>
+      <span class="roi-val" style="color:${b.pct===null?'var(--muted)':b.pct>=60?'var(--green)':b.pct>=50?'var(--amber)':'var(--red)'}">${b.pct!==null?b.pct+'%':'—'}</span>
+    </div>`).join('');
+
+  // Par type
+  const types=['victoire','nrfi','ou','btts','f5','marge','prop'];
+  const typeLabels={victoire:'Victoire',nrfi:'1ère manche',ou:'Total pts',btts:'2 marquent',f5:'5 manches',marge:'Écart',prop:'Joueurs'};
+  document.getElementById('hist-by-type').innerHTML=types.map(tp=>{
+    const items=finis.filter(h=>h.type===tp);
+    const w=items.filter(h=>h.resultat==='W').length;
+    const pct=items.length?Math.round(w/items.length*100):null;
+    return`<div class="roi-line">
+      <span class="roi-label">${typeLabels[tp]||tp} (${items.length})</span>
+      <div class="roi-bar-wrap">${pct!==null?`<div class="roi-bar-fill" style="width:${pct}%;background:${pct>=60?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}"></div>`:''}</div>
+      <span class="roi-val" style="color:${pct===null?'var(--muted)':pct>=60?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${pct!==null?pct+'%':'—'}</span>
+    </div>`;
+  }).join('');
+
+  // ── CALIBRATION : proba annoncée vs taux de victoire réel ──
+  const buckets=[[50,60],[60,70],[70,80],[80,90],[90,101]];
+  const calEl=document.getElementById('hist-calibration');
+  if(calEl){
+    const totalFinis=finis.length;
+    calEl.innerHTML=totalFinis<5
+      ?`<div class="empty" style="padding:16px;font-size:11px">Calibration disponible après ~5 pronostics terminés (actuellement ${totalFinis}).</div>`
+      :buckets.map(([lo,hi])=>{
+        const items=finis.filter(h=>h.proba>=lo&&h.proba<hi);
+        const w=items.filter(h=>h.resultat==='W').length;
+        const reel=items.length?Math.round(w/items.length*100):null;
+        const annonce=(lo+Math.min(hi,100))/2;
+        const ecartCal=reel!==null?reel-annonce:null;
+        const col=reel===null?'var(--muted)':Math.abs(ecartCal)<=7?'var(--green)':Math.abs(ecartCal)<=15?'var(--amber)':'var(--red)';
+        return`<div class="roi-line">
+          <span class="roi-label">Annoncé ${lo}-${Math.min(hi,100)}% (${items.length})</span>
+          <div class="roi-bar-wrap">${reel!==null?`<div class="roi-bar-fill" style="width:${reel}%;background:${col}"></div><div style="position:absolute;top:0;left:${annonce}%;width:2px;height:100%;background:var(--white);opacity:.5"></div>`:''}</div>
+          <span class="roi-val" style="color:${col}">${reel!==null?`${reel}% réel`:'—'}</span>
+        </div>`;
+      }).join('')+`<div style="font-size:9px;color:var(--muted);margin-top:6px;line-height:1.4">La barre blanche = probabilité annoncée. Si le remplissage coloré l'atteint, le modèle est bien calibré. Vert = écart &lt;7%.</div>`;
+  }
+}
+
+function renderHistList(hist,filtre){
+  const filtered=filtre==='tous'?hist:hist.filter(h=>h.resultat===filtre);
+  const sorted=[...filtered].sort((a,b)=>b.date.localeCompare(a.date)||b.confiance-a.confiance);
+  if(!sorted.length){document.getElementById('hist-list').innerHTML='<div class="empty">Aucun pronostic dans l\'historique</div>';return;}
+  document.getElementById('hist-list').innerHTML=`
+    <div style="overflow-x:auto">
+    <div style="min-width:500px">
+    <div style="display:flex;padding:6px 14px;font-size:10px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--b1)">
+      <span style="min-width:54px">DATE</span>
+      <span style="min-width:70px">TYPE</span>
+      <span style="flex:1">PRONOSTIC</span>
+      <span style="min-width:36px;text-align:right">PROBA</span>
+      <span style="min-width:56px;text-align:center">CONFIANCE</span>
+      <span style="min-width:60px;text-align:right">RÉSULTAT</span>
+    </div>
+    ${sorted.map(h=>`
+    <div class="hist-item">
+      <span class="hist-date">${h.date.slice(5)}</span>
+      <span class="hist-type"><span class="pill pm">${h.typeLabel?.slice(0,8)||h.type}</span></span>
+      <span class="hist-pick">${h.pick}</span>
+      <span class="hist-proba">${h.proba.toFixed(0)}%</span>
+      <span class="hist-conf">${h.confScore!=null?`<span style="font-family:var(--mono);font-size:11px;color:${confColor(h.confScore)}">${h.confScore}/100</span>`:etoiles(h.confiance)}</span>
+      <span class="hist-res ${h.resultat==='W'?'w':h.resultat==='L'?'l':'p'}">${h.resultat==='W'?'✅ Gagné':h.resultat==='L'?'❌ Perdu':'⏳ En attente'}</span>
+    </div>`).join('')}
+    </div></div>`;
+}
+
+function filtrerHist(filtre,btn){
+  btn.closest('.card-h').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHistList(getHistorique(),filtre);
+}
+
+function viderHistorique(){
+  if(!confirm('Effacer tout l\'historique ? Cette action est irréversible.'))return;
+  lsRemove('db_pronos');
+  loadHistorique();
+}
+
+// ═══════════════════════════════════════════════════
+// PAGE BANKROLL
+// ═══════════════════════════════════════════════════
+// ── MISE OPTIMALE ──
+// Sans cotes réelles de bookmaker, on estime une cote "juste" (1/proba) et on dimensionne
+// la mise via un demi-Kelly sur l'avantage perçu (proba au-dessus de 50/50), plafonné à 5% du capital.
+function miseKelly(prob,capital){
+  const cote=1/prob;                              // cote décimale juste
+  const edge=Math.max(0,prob-0.5);                // avantage vs pile ou face
+  const f=Math.min(edge*0.5,0.05);                // demi-Kelly prudent, plafond 5%
+  const mise=Math.round(capital*f*100)/100;
+  return{mise:Math.max(0,mise),cote:Math.round(cote*100)/100};
+}
+function parieExistante(id){return getHistorique().find(h=>h.id===id&&h.parie);}
+
+function placerPari(id,btn){
+  const p=tousLesPronos.find(x=>x.id===id);if(!p)return;
+  const cap=getBankrollActuel();
+  if(!cap||cap<=0){alert('Définissez d\'abord votre capital dans l\'onglet 💰 Bankroll');goTo('bankroll');return;}
+  const {mise,cote}=miseKelly(p.proba/100,cap);
+  if(mise<0.5){alert('Mise recommandée trop faible pour ce pronostic (probabilité insuffisante).');return;}
+  const gain=(mise*(cote-1)).toFixed(2);
+  if(!confirm(`Parier ${mise.toFixed(2)}€ sur :\n«${p.pick}»\n\nCote estimée : ${cote.toFixed(2)}\nGain potentiel : +${gain}€\n\nMise calculée automatiquement (demi-Kelly, plafond 5% du capital).`))return;
+  const hist=getHistorique();
+  let entry=hist.find(h=>h.id===id);
+  if(!entry){
+    entry={id:p.id,date:today(),type:p.type,typeLabel:p.typeLabel,matchLabel:p.matchLabel,pick:p.pick,proba:p.proba,confiance:p.confiance,confScore:p.confScore,marge:p.marge,resultat:'P',scoreReel:null,gamePk:p.gamePk};
+    hist.push(entry);
+  }
+  entry.parie=true;entry.mise=mise;entry.cote=cote;entry.datePari=today();
+  sauverHistorique(hist);
+  if(btn)btn.outerHTML=betButtonHTML(p); // remplace juste le bouton (préserve le scroll)
+}
+
+function annulerPari(id){
+  if(!confirm('Annuler ce pari ?'))return;
+  const hist=getHistorique();
+  const entry=hist.find(h=>h.id===id);
+  if(entry&&entry.resultat==='P'){delete entry.parie;delete entry.mise;delete entry.cote;delete entry.datePari;sauverHistorique(hist);}
+  afficherPronos(filtreMode==='tous'?tousLesPronos:tousLesPronos.filter(x=>x.type===filtreMode));
+}
+
+function sauverBankroll(){
+  const v=parseFloat(document.getElementById('bk-input').value);
+  if(!v||v<=0){alert('Entrez un montant valide');return;}
+  setBankrollLS(v);
+  renderBankroll();
+  // Réaffiche les pronos pour débloquer/mettre à jour les boutons « Parier »
+  if(loaded['pronos']&&tousLesPronos.length)afficherPronos(filtreMode==='tous'?tousLesPronos:tousLesPronos.filter(p=>p.type===filtreMode));
+  alert('Bankroll enregistrée ✅ Vous pouvez maintenant parier depuis l\'onglet ⚡ Pronostics.');
+}
+
+// Courbe d'évolution du capital (SVG) à partir des paris terminés
+function drawCurve(init,settled){
+  if(settled.length<1)return '<div class="empty" style="padding:30px;font-size:11px">La courbe apparaîtra dès qu\'un pari sera terminé (gagné ou perdu).</div>';
+  const pts=[init];let run=init;
+  settled.forEach(h=>{run+=h.resultat==='W'?h.mise*(h.cote-1):-h.mise;pts.push(Math.round(run*100)/100);});
+  const W=300,H=140,pad=10;
+  const min=Math.min(...pts,init),max=Math.max(...pts,init);
+  const range=(max-min)||1;
+  const x=i=>pad+(i/(pts.length-1||1))*(W-2*pad);
+  const y=v=>H-pad-((v-min)/range)*(H-2*pad);
+  const line=pts.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area=`${line} L${x(pts.length-1).toFixed(1)},${H-pad} L${x(0).toFixed(1)},${H-pad} Z`;
+  const yInit=y(init).toFixed(1);
+  const up=pts[pts.length-1]>=init;
+  const col=up?'var(--green)':'var(--red)';
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="160" preserveAspectRatio="none">
+    <defs><linearGradient id="bkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".25"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${pad}" y1="${yInit}" x2="${W-pad}" y2="${yInit}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
+    <path d="${area}" fill="url(#bkg)"/>
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.5" fill="${col}"/>`).join('')}
+  </svg>`;
+}
+
+function renderBankroll(){
+  const init=getBankroll();
+  document.getElementById('bk-input').value=init||'';
+  const paris=getHistorique().filter(h=>h.parie).sort((a,b)=>(a.datePari||a.date).localeCompare(b.datePari||b.date));
+  const settled=paris.filter(h=>h.resultat==='W'||h.resultat==='L');
+  const pending=paris.filter(h=>h.resultat==='P');
+  const actuel=getBankrollActuel();
+  const delta=actuel-init;
+  const roi=init>0?delta/init*100:0;
+  const enJeu=pending.reduce((a,h)=>a+(h.mise||0),0);
+
+  document.getElementById('bk-actuel').textContent=init?actuel.toFixed(2)+'€':'Non défini';
+  const delEl=document.getElementById('bk-delta');
+  delEl.textContent=(delta>=0?'+':'')+delta.toFixed(2)+'€';delEl.style.color=delta>=0?'var(--green)':'var(--red)';
+  const roiEl=document.getElementById('bk-roi');
+  roiEl.textContent=(roi>=0?'+':'')+roi.toFixed(1)+'%';roiEl.style.color=roi>=0?'var(--green)':'var(--red)';
+  document.getElementById('bk-nb').textContent=paris.length;
+  document.getElementById('bk-jeu').textContent=enJeu.toFixed(2)+'€';
+
+  document.getElementById('bk-curve').innerHTML=drawCurve(init||0,settled);
+
+  const el=document.getElementById('paris-list');
+  if(!paris.length){el.innerHTML='<div class="empty" style="padding:24px">Aucun pari placé pour l\'instant.<br>Allez dans ⚡ Pronostics et cliquez sur <strong>🎯 Parier</strong> sous un pronostic.</div>';return;}
+  el.innerHTML=[...paris].reverse().map(h=>{
+    const res=h.resultat;
+    const pnl=res==='W'?`+${(h.mise*(h.cote-1)).toFixed(2)}€`:res==='L'?`−${h.mise.toFixed(2)}€`:'en attente';
+    const col=res==='W'?'var(--green)':res==='L'?'var(--red)':'var(--amber)';
+    return`<div class="pari-row">
+      <span class="hist-date">${(h.datePari||h.date).slice(5)}</span>
+      <span style="flex:1;font-size:11px">${h.pick}<div style="font-size:9px;color:var(--muted)">${h.matchLabel}</div></span>
+      <span class="pari-mise">${h.mise.toFixed(2)}€<div style="font-size:9px;color:var(--muted)">@${h.cote.toFixed(2)}</div></span>
+      <span class="pari-res" style="color:${col}">${pnl}</span>
+    </div>`;
+  }).join('');
+}
+
+function loadBankroll(){renderBankroll();}
+
+// ═══════════════════════════════════════════════════
+// PAGE CLASSEMENTS
+// ═══════════════════════════════════════════════════
+let pythMap={}; // teamId -> {rs,ra,pyth} pour la page Classements
+async function loadClassements(){
+  try{
+    const [d,hit,pit]=await Promise.all([
+      api(`/standings?leagueId=103,104&season=${SEASON}&standingsTypes=regularSeason&hydrate=team`),
+      api(`/teams/stats?season=${SEASON}&sportId=1&group=hitting&stats=season`),
+      api(`/teams/stats?season=${SEASON}&sportId=1&group=pitching&stats=season`),
+    ]);
+    pythMap={};
+    const rsMap={},raMap={};
+    hit.stats?.[0]?.splits?.forEach(s=>{if(s.team?.id)rsMap[s.team.id]=parseFloat(s.stat.runs);});
+    pit.stats?.[0]?.splits?.forEach(s=>{if(s.team?.id)raMap[s.team.id]=parseFloat(s.stat.runs);});
+    Object.keys(rsMap).forEach(id=>{const rs=rsMap[id],ra=raMap[id];if(rs&&ra)pythMap[id]={rs,ra,pyth:pythagorean(rs,ra)};});
+    const recs=d.records??[];
+    const al=recs.filter(r=>[200,201,202].includes(r.division?.id));
+    const nl=recs.filter(r=>[203,204,205].includes(r.division?.id));
+    renderStands('stand-al',al.length?al:recs.slice(0,3));
+    renderStands('stand-nl',nl.length?nl:recs.slice(3));
+  }catch(e){document.getElementById('stand-al').innerHTML='<div class="empty">⚠️ Données indisponibles</div>';}
+}
+
+function renderStands(id,recs){
+  document.getElementById(id).innerHTML=recs.map(div=>{
+    const rows=div.teamRecords.map((t,i)=>{
+      const abbr=t.team.abbreviation;
+      const col=TCOLORS[abbr]??'#C8102E';
+      const pctN=parseFloat(t.winningPercentage)||0;
+      const pctCol=pctN>=.580?'var(--green)':pctN>=.480?'var(--white)':'var(--red)';
+      const gb=!t.gamesBack||t.gamesBack==='0'?'<span class="pill pr">1er</span>':t.gamesBack;
+      const streak=t.streak?.streakCode??'—';
+      const sc=streak.startsWith('W')?'pg':streak.startsWith('L')?'pr':'pm';
+      // Win% pythagoricien (depuis les runs réels récupérés dans loadClassements)
+      const pyth=pythMap[t.team.id]?.pyth??null;
+      const pythHtml=pyth?`<span style="font-family:var(--mono);font-size:9px;color:var(--muted)">(${Math.round(pyth*100)}% théo.)</span>`:'';
+      return`<div class="stand-row">
+        <span class="srank">${i+1}</span>
+        <span class="sname"><span class="sdot" style="background:${col}"></span>${t.team.name}</span>
+        <span class="swl">${t.wins}V-${t.losses}D</span>
+        <span class="sgb">${gb}</span>
+        <span class="spct" style="color:${pctCol}">${t.winningPercentage} ${pythHtml}</span>
+        <span class="sstreak"><span class="pill ${sc}">${streak}</span></span>
+      </div>`;
+    }).join('');
+    return`<div class="div-block"><div class="div-title">${div.division?.name??'Division'}</div>${rows}</div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// PAGE JOUEURS
+// ═══════════════════════════════════════════════════
+const LEAD_DEFS=[
+  ['hr','homeRuns','red'],['avg','battingAverage','green'],['rbi','rbi','amber'],
+  ['ops','ops','blue'],['sb','stolenBases','green'],['runs','runs','amber'],
+  ['era','era','green'],['so','strikeOuts','red'],['wins','wins','green'],
+  ['whip','whip','amber'],['saves','saves','blue'],['k9','strikeoutsPer9Inn','red']
+];
+async function loadJoueurs(){
+  for(const[key,cat,col]of LEAD_DEFS){
+    const el=document.getElementById(`l-${key}`);
+    if(!el)continue;
+    try{
+      const d=await api(`/stats/leaders?leaderCategories=${cat}&season=${SEASON}&sportId=1&limit=8`);
+      const leaders=d.leagueLeaders?.[0]?.leaders??[];
+      el.innerHTML=leaders.length?leaders.map((l,i)=>`
+        <div class="lead-item">
+          <span class="lr-rank ${i<3?'top':''}">${i+1}</span>
+          <div class="lr-info"><div class="lr-name">${l.person?.fullName??'—'}</div><div class="lr-team">${l.team?.name??''}</div></div>
+          <span class="lr-val" style="color:var(--${col})">${l.value??'—'}</span>
+        </div>`).join('')
+      :'<div class="empty" style="padding:16px">Données indisponibles</div>';
+    }catch(e){el.innerHTML='<div class="empty" style="padding:12px;font-size:11px">Indisponible</div>';}
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+const pages={pronos:loadPronos,matchs:loadMatchs,historique:loadHistorique,bankroll:loadBankroll,classements:loadClassements,joueurs:loadJoueurs};
+
+// Avertissement si le stockage du navigateur est bloqué (fichier local content://)
+if(!STORAGE_OK){
+  const b=document.createElement('div');
+  b.style.cssText='background:var(--amber-d);border-bottom:1px solid var(--amber-b);color:var(--amber);font-size:11px;padding:8px 14px;text-align:center;line-height:1.4';
+  b.innerHTML='⚠️ Stockage du navigateur bloqué (fichier local) — vos paris et historique <strong>ne seront pas conservés après fermeture</strong>. Exportez en JSON (onglet Historique) ou hébergez l\'app sur GitHub Pages.';
+  document.body.insertBefore(b,document.body.firstChild);
+}
+
+loaded['pronos']=true;
+loadPronos();
+</script>
+</body>
+</html>
