@@ -3,7 +3,6 @@ name: Build DataBaseball snapshot
 on:
   schedule:
     - cron: '0 13 * * *'
-    - cron: '0 21 * * *'
   workflow_dispatch:
 
 concurrency:
