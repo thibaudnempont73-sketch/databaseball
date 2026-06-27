@@ -199,6 +199,66 @@ function raisonPick(p){
 }
 
 // ═══════════════════════════════════════════════════
+// CALIBRATION / TRACK RECORD (boucle serveur : stocke les résultats, mesure, recalibre)
+// ═══════════════════════════════════════════════════
+function supaConf(){
+  let url=(process.env.SUPABASE_URL||'').trim().replace(/\/rest\/v1.*$/i,'').replace(/\/+$/,'');
+  if(url&&!/^https?:\/\//i.test(url))url='https://'+url;
+  return {url,key:(process.env.SUPABASE_SERVICE_KEY||'').trim()};
+}
+// Règle une ligne de résultat avec les scores finaux (byPk: gamePk→game). 'W' / 'L' / null (pas fini).
+function settleResultRow(r,byPk){
+  const g=byPk[r.gamepk]; if(!g||g.status?.abstractGameState!=='Final')return null;
+  const a=g.teams.away.score??0,h=g.teams.home.score??0,homeName=g.teams.home.team.name;
+  if(r.type==='victoire')return ((r.pick||'').includes(homeName)?h>a:a>h)?'W':'L';
+  if(r.type==='ou'){const tot=a+h,line=r.ou_line??8.5;return (r.ou_side==='over'?tot>line:tot<line)?'W':'L';}
+  if(r.type==='runline'){const my=r.rl_is_home?h:a,opp=r.rl_is_home?a:h;return (my+(r.rl_point??0))>opp?'W':'L';}
+  return 'L';
+}
+// Bilan global + calibration (par tranche de proba) depuis les lignes réglées. PURE (testable).
+export function computeTrackRecord(rows){
+  const fin=rows.filter(r=>r.resultat==='W'||r.resultat==='L');
+  const n=fin.length,wins=fin.filter(r=>r.resultat==='W').length;
+  let roi=0;fin.forEach(r=>{roi+=r.resultat==='W'?((+r.cote||2)-1):-1;});
+  const buckets=[[50,60],[60,70],[70,80],[80,90],[90,101]].map(([lo,hi])=>{
+    const it=fin.filter(r=>r.proba>=lo&&r.proba<hi),w=it.filter(r=>r.resultat==='W').length;
+    return {lo,hi:Math.min(hi,100),n:it.length,real:it.length?Math.round(w/it.length*100):null,annonce:(lo+Math.min(hi,100))/2};
+  });
+  return {n,wins,winRate:n?Math.round(wins/n*100):null,roiPct:n?Math.round(roi/n*1000)/10:null,buckets,maj:today()};
+}
+// Recalibration par tranche avec atténuation (shrinkage). Renvoie {apply, n, active}. Identité si données insuffisantes.
+export function buildRecalibrator(rows,minN=150,K=40){
+  const fin=rows.filter(r=>(r.resultat==='W'||r.resultat==='L')&&typeof r.proba==='number');
+  if(fin.length<minN)return {apply:p=>p,n:fin.length,active:false};
+  const bins={};
+  fin.forEach(r=>{const b=Math.min(95,Math.floor(r.proba/5)*5);(bins[b]=bins[b]||{w:0,n:0}).n++;if(r.resultat==='W')bins[b].w++;});
+  const corr=p=>{const b=Math.min(95,Math.floor(p/5)*5),bin=bins[b];if(!bin||!bin.n)return p;const obs=bin.w/bin.n*100,w=bin.n/(bin.n+K);return p*(1-w)+obs*w;};
+  return {apply:p=>Math.max(1,Math.min(99,corr(p))),n:fin.length,active:true};
+}
+// Stocke les pronos du jour + règle ceux d'hier en base, renvoie toutes les lignes réglées. Non bloquant.
+async function recordAndSettleResults(pronos){
+  const {url,key}=supaConf(); if(!url||!key)return [];
+  const H={apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json'};
+  const POST=body=>fetch(`${url}/rest/v1/results`,{method:'POST',headers:{...H,Prefer:'resolution=merge-duplicates'},body:JSON.stringify(body)});
+  // 1) Régler hier
+  const ydate=yesterday();
+  let games=[];try{const s=await api(`/schedule?sportId=1&date=${ydate}&hydrate=team,linescore`);games=s?.dates?.[0]?.games||[];}catch(e){}
+  if(games.length){
+    const byPk={};games.forEach(g=>byPk[g.gamePk]=g);
+    const pend=await fetch(`${url}/rest/v1/results?select=*&resultat=eq.P&date=eq.${ydate}`,{headers:H}).then(r=>r.ok?r.json():[]).catch(()=>[]);
+    const settled=pend.map(r=>{const res=settleResultRow(r,byPk);return res?{...r,resultat:res}:null;}).filter(Boolean);
+    if(settled.length)await POST(settled);
+    console.log(`📊 Résultats réglés (${ydate}) : ${settled.length}/${pend.length}`);
+  }
+  // 2) Enregistrer les pronos d'aujourd'hui (proba BRUTE, avant recalibration)
+  const td=today();
+  const rows=pronos.filter(p=>p.coteVegas).map(p=>({id:p.id,date:td,type:p.type,proba:p.proba,cote:p.coteVegas,fair_proba:p.fairProba??null,gamepk:p.gamePk,pick:p.pick,ou_line:p.ouLine??null,ou_side:p.ouSide??null,rl_is_home:p.rlIsHome??null,rl_point:p.rlPoint??null,resultat:'P'}));
+  if(rows.length)await POST(rows);
+  // 3) Toutes les lignes réglées (pour bilan + recalibration)
+  return await fetch(`${url}/rest/v1/results?select=proba,cote,resultat,type&resultat=in.(W,L)`,{headers:H}).then(r=>r.ok?r.json():[]).catch(()=>[]);
+}
+
+// ═══════════════════════════════════════════════════
 // PIPELINE PRINCIPAL (réplique loadPronos, sans le DOM)
 // ═══════════════════════════════════════════════════
 async function build(){
@@ -321,7 +381,18 @@ async function build(){
   // matchs (liste brute pour l'onglet Matchs)
   const matchs=games.map(g=>({gamePk:g.gamePk,away:slim(g.teams.away.team),home:slim(g.teams.home.team),awayRec:g.teams.away.leagueRecord,homeRec:g.teams.home.leagueRecord,awayScore:g.teams.away.score,homeScore:g.teams.home.score,state:g.status.abstractGameState,gameDate:g.gameDate,awayP:g.teams.away.probablePitcher?.fullName,homeP:g.teams.home.probablePitcher?.fullName}));
 
-  return {date:today(),generatedAt:new Date().toISOString(),pronos,matchDataMap,tendancesJour,standings:standData.records??[],pythMap,leaders,matchs};
+  // ── Boucle de calibration (non bloquant) : enregistre/règle en base, mesure, recalibre les probas ──
+  let trackRecord=null;
+  try{
+    const settledRows=await recordAndSettleResults(pronos);
+    trackRecord=computeTrackRecord(settledRows);
+    const recal=buildRecalibrator(settledRows);
+    if(recal.active)pronos.forEach(p=>{if(typeof p.proba==='number')p.proba=pt(recal.apply(p.proba));});
+    trackRecord.recalActive=recal.active;
+    console.log(`📈 Track record : ${trackRecord.n} réglés · ${trackRecord.winRate??'—'}% · ROI ${trackRecord.roiPct??'—'}% · recalibration:${recal.active?'ON':'OFF'}`);
+  }catch(e){console.log('ℹ️ Track record indisponible :',e.message);}
+
+  return {date:today(),generatedAt:new Date().toISOString(),pronos,matchDataMap,tendancesJour,standings:standData.records??[],pythMap,leaders,matchs,trackRecord};
 }
 
 async function upsertSupabase(snapshot){

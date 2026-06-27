@@ -378,6 +378,15 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 
 /* SÉLECTION DU JOUR */
 .selection{background:linear-gradient(135deg,rgba(0,200,150,.10),rgba(75,158,255,.05));border:1px solid var(--green-b);border-radius:14px;padding:16px;margin-bottom:16px;position:relative}
+.track-rec{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(0,200,150,.12),rgba(0,200,150,.04));border:1px solid var(--green-b);border-radius:12px;padding:12px 16px;margin-bottom:14px}
+.tr-head{display:flex;align-items:center;gap:11px}
+.tr-ic{font-size:22px}
+.tr-t{font-weight:800;font-size:14px}
+.tr-s{font-size:11px;color:var(--muted)}
+.tr-stats{display:flex;gap:18px}
+.tr-stat{text-align:center}
+.tr-v{font-family:var(--display);font-size:24px;line-height:1}
+.tr-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .selection-h{font-family:var(--display);font-size:20px;letter-spacing:.5px;display:flex;align-items:center;gap:8px;margin-bottom:3px}
 .selection-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.4}
 .sel-pick{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--b2);border-radius:10px;padding:11px 13px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
@@ -422,8 +431,13 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .odds-edge{text-align:right;line-height:1.2}
 .odds-edge-v{font-family:var(--display);font-size:22px}
 .odds-edge-sub{font-size:9px;color:var(--muted)}
-.odds-regions{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:7px;padding-top:7px;border-top:1px dashed var(--b1);font-size:10px;color:var(--muted)}
-.odds-reg b{color:var(--white);font-weight:800}
+.odds-regions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.odds-reg{flex:1;min-width:150px;display:flex;align-items:center;gap:9px;background:var(--card2);border:1px solid var(--b2);border-radius:9px;padding:8px 11px}
+.r-flag{font-size:17px;flex-shrink:0}
+.r-body{flex:1;min-width:0;line-height:1.25}
+.r-lbl{font-size:10px;color:var(--muted);font-weight:600}
+.r-bk{font-size:10px;color:var(--white);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-cote{font-family:var(--display);font-size:21px;line-height:1;flex-shrink:0}
 .crit-info{font-size:10px;color:var(--muted);line-height:1.5;padding:7px 9px;margin-top:5px;background:rgba(75,158,255,.06);border-left:2px solid var(--blue-b);border-radius:0 6px 6px 0;display:none}
 .crit-info.open{display:block}
 .crit-info b{color:var(--white)}
@@ -549,7 +563,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v25 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v28 · 27/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -584,6 +598,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     <div class="kpi"><div class="kpi-l">Matchs analysés</div><div class="kpi-v" style="color:var(--blue)" id="k-games">—</div><div class="kpi-m">aujourd'hui</div></div>
     <div class="kpi"><div class="kpi-l">Données dispo</div><div class="kpi-v" style="color:var(--purple)" id="k-data">—</div><div class="kpi-m">critères moyens</div></div>
   </div>
+  <div id="track-record"></div>
   <div id="best-bet"></div>
   <div id="fun-section"></div>
   <details class="help-box">
@@ -666,8 +681,8 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     <div style="padding:12px" id="hist-by-type"></div>
   </div>
 
-  <div class="card mb12">
-    <div class="card-h"><div class="card-ht">📐 Calibration du modèle</div><div class="card-hs">Quand on annonce X%, gagne-t-on vraiment X% du temps ?</div></div>
+  <div class="card mb12" id="cal-card" style="display:none">
+    <div class="card-h"><div class="card-ht">📐 Calibration du modèle <span style="font-size:9px;color:var(--purple);border:1px solid rgba(155,109,255,.4);border-radius:6px;padding:1px 6px;margin-left:4px">ADMIN</span></div><div class="card-hs">Quand on annonce X%, gagne-t-on vraiment X% du temps ? (outil de pilotage interne)</div></div>
     <div style="padding:12px" id="hist-calibration"></div>
   </div>
 
@@ -797,6 +812,7 @@ function isAdmin(){const s=getSession();return !!(s&&s.email&&s.email.toLowerCas
 function applyAdminUI(){
   const real=isAdmin();
   const rb=document.getElementById('reinit-btn');if(rb)rb.style.display=(real&&!adminViewFree)?'':'none';
+  const cal=document.getElementById('cal-card');if(cal)cal.style.display=(real&&!adminViewFree)?'':'none'; // calibration = outil admin
   const ab=document.getElementById('admin-view-btn');
   if(ab){ab.style.display=real?'':'none';ab.textContent=adminViewFree?'🛠 Vue : Gratuit':'🛠 Vue : Premium';ab.classList.toggle('view-free',adminViewFree);}
 }
@@ -1170,10 +1186,11 @@ function goTo(page){
   document.getElementById('page-'+page).classList.add('active');
   document.querySelector(`[onclick="goTo('${page}')"]`).classList.add('active');
   // Onglets réservés au Premium (gratuit = 1 pick/jour dans ⚡ Pronostics)
-  if(!isPremium()&&(page==='tendances'||page==='bankroll')){
+  if(!isPremium()&&(page==='tendances'||page==='bankroll'||page==='historique')){
     const LK={
       tendances:['Les Tendances & séries','Bilans 10 derniers matchs, séries en cours, Over X/10, couverture du handicap… sur tous les matchs.'],
-      bankroll:['La Bankroll & le suivi','Mise automatique selon ton capital (Kelly), courbe de gains, ROI et calibration de tes paris.']
+      bankroll:['La Bankroll & le suivi','Mise automatique selon ton capital (Kelly), courbe de gains, ROI et suivi de tes paris.'],
+      historique:['L\'historique des pronostics','Le suivi de tous les pronostics du jour, leurs résultats et la fiabilité du modèle — réservé aux membres Premium.']
     };
     document.getElementById('page-'+page).innerHTML=pageLockHTML(LK[page][0],LK[page][1]);
     loaded[page]=true;return;
@@ -1798,6 +1815,7 @@ async function loadPronos(){
     computeFreePick(tousLesPronos);        // détermine le pronostic offert du jour
     ajouterPronos(tousLesPronos);
     renderKPIs(tousLesPronos);
+    renderTrackRecord();
     renderSelection(tousLesPronos);
     renderFunSection();
     afficherPronos(pronosFiltres());
@@ -2179,6 +2197,20 @@ function raisonPick(p){
   return s+'.';
 }
 
+// Track record GLOBAL vérifié (serveur) — preuve publique, visible par tous
+function renderTrackRecord(){
+  const el=document.getElementById('track-record');if(!el)return;
+  const tr=(typeof SNAP!=='undefined'&&SNAP)?SNAP.trackRecord:null;
+  if(!tr||!tr.n||tr.n<10){el.innerHTML='';return;}
+  const rc=tr.roiPct;
+  el.innerHTML=`<div class="track-rec">
+    <div class="tr-head"><span class="tr-ic">📊</span><div><div class="tr-t">Track record vérifié</div><div class="tr-s">Tous les pronostics, résultats réels — sur <strong>${tr.n}</strong> réglés</div></div></div>
+    <div class="tr-stats">
+      <div class="tr-stat"><div class="tr-v" style="color:var(--green)">${tr.winRate}%</div><div class="tr-l">réussite</div></div>
+      <div class="tr-stat"><div class="tr-v" style="color:${rc>=0?'var(--green)':'var(--red)'}">${rc>=0?'+':''}${rc}%</div><div class="tr-l">ROI</div></div>
+    </div>
+  </div>`;
+}
 function renderSelection(pronos){
   const el=document.getElementById('best-bet');
   if(!el)return;
@@ -2349,9 +2381,10 @@ function mkProno(p){
   if(p.coteVegas){
     const edge=(p.proba/100-1/p.coteVegas)*100;
     const ec=edge>=0?'edge-pos':'edge-neg';
+    const regBox=(flag,lbl,cote,bk,col)=>`<div class="odds-reg"><span class="r-flag">${flag}</span><div class="r-body"><div class="r-lbl">${lbl}</div>${bk?`<div class="r-bk">${bk}</div>`:''}</div><span class="r-cote" style="color:${col}">${cote.toFixed(2)}</span></div>`;
     const regions=(p.coteUS||p.coteEU)?`<div class="odds-regions">
-      ${p.coteUS?`<span class="odds-reg">🇺🇸 US <b>${p.coteUS.toFixed(2)}</b>${p.bkUS?` · ${p.bkUS}`:''}</span>`:''}
-      ${p.coteEU?`<span class="odds-reg">🇪🇺 EU <b>${p.coteEU.toFixed(2)}</b>${p.bkEU?` · ${p.bkEU}`:''}</span>`:''}
+      ${p.coteUS?regBox('🇺🇸','Meilleure cote US',p.coteUS,p.bkUS,'var(--blue)'):''}
+      ${p.coteEU?regBox('🇪🇺','Meilleure cote EU',p.coteEU,p.bkEU,'var(--green)'):''}
     </div>`:'';
     oddsBar=`<div class="odds-bar">
       <div class="odds-main"><span class="odds-lbl">Meilleure cote</span><span class="odds-cote">${p.coteVegas.toFixed(2)}</span>${p.bookmaker?`<span class="odds-bk">${p.bookmaker}</span>`:''}</div>
@@ -2835,26 +2868,22 @@ function renderHistStats(hist){
     </div>`;
   }).join('');
 
-  // ── CALIBRATION : proba annoncée vs taux de victoire réel ──
-  const buckets=[[50,60],[60,70],[70,80],[80,90],[90,101]];
+  // ── CALIBRATION : proba annoncée vs taux de victoire réel (GLOBAL serveur si dispo, sinon local) ──
   const calEl=document.getElementById('hist-calibration');
   if(calEl){
-    const totalFinis=finis.length;
-    calEl.innerHTML=totalFinis<5
-      ?`<div class="empty" style="padding:16px;font-size:11px">Calibration disponible après ~5 pronostics terminés (actuellement ${totalFinis}).</div>`
-      :buckets.map(([lo,hi])=>{
-        const items=finis.filter(h=>h.proba>=lo&&h.proba<hi);
-        const w=items.filter(h=>h.resultat==='W').length;
-        const reel=items.length?Math.round(w/items.length*100):null;
-        const annonce=(lo+Math.min(hi,100))/2;
-        const ecartCal=reel!==null?reel-annonce:null;
-        const col=reel===null?'var(--muted)':Math.abs(ecartCal)<=7?'var(--green)':Math.abs(ecartCal)<=15?'var(--amber)':'var(--red)';
-        return`<div class="roi-line">
-          <span class="roi-label">Annoncé ${lo}-${Math.min(hi,100)}% (${items.length})</span>
-          <div class="roi-bar-wrap">${reel!==null?`<div class="roi-bar-fill" style="width:${reel}%;background:${col}"></div><div style="position:absolute;top:0;left:${annonce}%;width:2px;height:100%;background:var(--white);opacity:.5"></div>`:''}</div>
-          <span class="roi-val" style="color:${col}">${reel!==null?`${reel}% réel`:'—'}</span>
-        </div>`;
-      }).join('')+`<div style="font-size:9px;color:var(--muted);margin-top:6px;line-height:1.4">La barre blanche = probabilité annoncée. Si le remplissage coloré l'atteint, le modèle est bien calibré. Vert = écart &lt;7%.</div>`;
+    const tr=(typeof SNAP!=='undefined'&&SNAP)?SNAP.trackRecord:null;
+    const ligne=(lo,hi,nb,reel)=>{const annonce=(lo+hi)/2,ec=reel!=null?reel-annonce:null,col=reel==null?'var(--muted)':Math.abs(ec)<=7?'var(--green)':Math.abs(ec)<=15?'var(--amber)':'var(--red)';
+      return`<div class="roi-line"><span class="roi-label">Annoncé ${lo}-${hi}% (${nb})</span><div class="roi-bar-wrap">${reel!=null?`<div class="roi-bar-fill" style="width:${reel}%;background:${col}"></div><div style="position:absolute;top:0;left:${annonce}%;width:2px;height:100%;background:var(--white);opacity:.5"></div>`:''}</div><span class="roi-val" style="color:${col}">${reel!=null?reel+'% réel':'—'}</span></div>`;};
+    const legende=`<div style="font-size:9px;color:var(--muted);margin-top:6px;line-height:1.4">Barre blanche = proba annoncée. Si le remplissage coloré l'atteint, le modèle est bien calibré. Vert = écart &lt;7%.</div>`;
+    if(tr&&tr.n>=5){
+      calEl.innerHTML=`<div style="font-size:11px;color:var(--muted);margin-bottom:9px">🌐 <strong style="color:var(--white)">Bilan GLOBAL</strong> (serveur, tous les pronos réglés) — <strong>${tr.n}</strong> pronos · ${tr.winRate}% réussite · ROI ${tr.roiPct>=0?'+':''}${tr.roiPct}% · recalibration auto : <strong style="color:${tr.recalActive?'var(--green)':'var(--muted)'}">${tr.recalActive?'ACTIVE':'en veille (pas assez de données)'}</strong></div>`
+        +tr.buckets.map(b=>ligne(b.lo,b.hi,b.n,b.real)).join('')+legende;
+    }else{
+      const totalFinis=finis.length;
+      calEl.innerHTML=totalFinis<5
+        ?`<div class="empty" style="padding:16px;font-size:11px">Calibration globale disponible une fois le job serveur lancé et des matchs réglés (table <code>results</code>). En attendant : calcul local (${totalFinis} terminé(s)).</div>`
+        :[[50,60],[60,70],[70,80],[80,90],[90,101]].map(([lo,hi])=>{const items=finis.filter(h=>h.proba>=lo&&h.proba<hi),w=items.filter(h=>h.resultat==='W').length;return ligne(lo,Math.min(hi,100),items.length,items.length?Math.round(w/items.length*100):null);}).join('')+legende;
+    }
   }
 }
 
