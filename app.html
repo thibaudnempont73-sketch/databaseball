@@ -22,7 +22,7 @@
   --white:#E8EDF5;--muted:#5C6E87;--muted2:#2A3A52;
   --sans:'Inter',sans-serif;--display:'Bebas Neue',sans-serif;--mono:'DM Mono',monospace;
 }
-html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh}
+html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh;overflow-x:hidden;max-width:100%}
 .field-bg{position:fixed;inset:0;z-index:-1;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;pointer-events:none}
 .field-bg svg{width:min(150vw,1200px);color:var(--green);opacity:.05;transform:translateY(10%)}
 .time-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--blue);background:var(--blue-d);border:1px solid var(--blue-b);border-radius:7px;padding:4px 11px;letter-spacing:.3px}
@@ -175,12 +175,13 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .combo-bet{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;background:var(--card2);border:1px solid var(--b2);border-radius:8px;padding:8px 11px;font-size:11px}
 .combo-cancel{background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer;text-decoration:underline}
 .topbar{position:sticky;top:0;z-index:200;background:rgba(6,10,18,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
-.logo{font-family:var(--display);font-size:20px;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.logo{font-family:var(--display);font-size:20px;letter-spacing:2px;display:flex;align-items:center;gap:8px;flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap}
 .logo span{color:var(--red)}
 .logo-ball{width:20px;height:20px;background:var(--red);border-radius:50%;position:relative;flex-shrink:0}
 .logo-ball::before,.logo-ball::after{content:'';position:absolute;border:1.5px solid rgba(255,255,255,.3);border-radius:50%;width:62%;height:100%;top:0;left:50%;transform:translateX(-50%) rotate(35deg)}
 .logo-ball::after{transform:translateX(-50%) rotate(-35deg)}
-.topbar-r{display:flex;align-items:center;gap:8px}
+.topbar-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.uc-lo-ic{display:block}
 .api-pill{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid var(--b1);color:var(--muted);transition:all .3s}
 .api-pill.ok{border-color:var(--green-b);color:var(--green);background:var(--green-d)}
 .api-pill.err{border-color:var(--red-b);color:var(--red);background:var(--red-d)}
@@ -520,10 +521,11 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
   .g2,.g3,.g4,.g5{grid-template-columns:1fr 1fr}
   .stand-row{grid-template-columns:16px 1fr 44px 28px 44px}
   .hist-proba,.hist-conf{display:none}
-  /* Barre du haut : avatar + bouton déconnexion restent prioritaires */
-  .uc-lo-tx{display:none!important}
+  /* Barre du haut compacte : on garde icônes admin (🛠) + premium (⭐) + avatar + déconnexion */
+  .uc-lo-tx,.adm-tx,.pb-tx{display:none!important}
   .topbar{padding:0 10px}
-  .logo{font-size:17px}
+  .topbar-r{gap:6px}
+  .logo{font-size:16px}
 }
 </style>
 </head>
@@ -571,12 +573,12 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v31 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v32 · 27/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
-    <span id="premium-badge" class="premium-badge" style="display:none">⭐ Premium</span>
-    <span id="user-chip" style="display:none"><span class="uc-avatar"></span><span class="uc-email"></span><button class="uc-logout" onclick="logout()" title="Se déconnecter"><span class="uc-lo-ic">⏻</span><span class="uc-lo-tx">Déconnexion</span></button></span>
+    <span id="premium-badge" class="premium-badge" style="display:none">⭐<span class="pb-tx"> Premium</span></span>
+    <span id="user-chip" style="display:none"><span class="uc-avatar"></span><span class="uc-email"></span><button class="uc-logout" onclick="logout()" title="Se déconnecter" aria-label="Se déconnecter"><svg class="uc-lo-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="uc-lo-tx">Déconnexion</span></button></span>
     <span class="api-pill" id="api-pill">⏳</span>
     <div class="live-ind" style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--red)"><div class="pulse"></div>LIVE</div>
   </div>
@@ -822,7 +824,7 @@ function applyAdminUI(){
   const rb=document.getElementById('reinit-btn');if(rb)rb.style.display=(real&&!adminViewFree)?'':'none';
   const cal=document.getElementById('cal-card');if(cal)cal.style.display=(real&&!adminViewFree)?'':'none'; // calibration = outil admin
   const ab=document.getElementById('admin-view-btn');
-  if(ab){ab.style.display=real?'':'none';ab.textContent=adminViewFree?'🛠 Vue : Gratuit':'🛠 Vue : Premium';ab.classList.toggle('view-free',adminViewFree);}
+  if(ab){ab.style.display=real?'':'none';ab.innerHTML='🛠<span class="adm-tx"> Vue : '+(adminViewFree?'Gratuit':'Premium')+'</span>';ab.classList.toggle('view-free',adminViewFree);}
 }
 function toggleAdminView(){
   adminViewFree=!adminViewFree;
