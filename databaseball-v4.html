@@ -30,6 +30,32 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .compo-alert{font-size:11px;border-radius:8px;padding:8px 11px;margin-bottom:8px;line-height:1.4;display:flex;gap:8px;align-items:flex-start}
 .compo-alert.warn{color:var(--amber);background:var(--amber-d);border:1px solid var(--amber-b)}
 .compo-alert.err{color:var(--red);background:var(--red-d);border:1px solid var(--red-b)}
+
+/* ÉCRAN DE CONNEXION (Auth) */
+#auth-screen{position:fixed;inset:0;z-index:5000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+.auth-card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.auth-logo{display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--display);font-size:24px;letter-spacing:2px;margin-bottom:6px}
+.auth-logo span{color:var(--red)}
+.auth-ball{width:22px;height:22px;background:var(--red);border-radius:50%;position:relative;box-shadow:0 0 18px rgba(232,25,44,.5)}
+.auth-title{text-align:center;font-size:15px;font-weight:800;margin:14px 0 4px}
+.auth-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+.auth-field{width:100%;background:var(--bg2);border:1px solid var(--b2);border-radius:9px;padding:12px 14px;font-size:14px;color:var(--white);font-family:var(--sans);outline:none;margin-bottom:10px;transition:border-color .15s}
+.auth-field:focus{border-color:var(--red)}
+.auth-btn{width:100%;background:linear-gradient(135deg,var(--red),#ff3b4e);color:#fff;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;transition:filter .15s,transform .1s;font-family:var(--sans)}
+.auth-btn:hover{filter:brightness(1.08)}
+.auth-btn:active{transform:scale(.99)}
+.auth-btn[disabled]{opacity:.6;cursor:wait}
+.auth-toggle{text-align:center;font-size:12px;color:var(--muted);margin-top:16px}
+.auth-toggle a{color:var(--blue);cursor:pointer;font-weight:600}
+.auth-msg{font-size:12px;border-radius:8px;padding:9px 12px;margin-bottom:12px;line-height:1.4;display:none}
+.auth-msg.err{display:block;color:var(--red);background:var(--red-d);border:1px solid var(--red-b)}
+.auth-msg.ok{display:block;color:var(--green);background:var(--green-d);border:1px solid var(--green-b)}
+.auth-foot{text-align:center;font-size:10px;color:var(--muted2);margin-top:18px;line-height:1.4}
+/* Chip utilisateur dans la barre du haut */
+#user-chip{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted)}
+.uc-email{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uc-logout{background:none;border:1px solid var(--b2);color:var(--muted);border-radius:6px;padding:3px 8px;font-size:10px;cursor:pointer}
+.uc-logout:hover{border-color:var(--red-b);color:var(--red)}
 /* Onglet Tendances */
 .tend-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--b1);border-radius:10px;padding:11px 14px;margin-bottom:8px;flex-wrap:wrap}
 .tend-team{min-width:150px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
@@ -367,9 +393,28 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <!-- Fond terrain de baseball (SVG, subtil) -->
 <div class="field-bg" aria-hidden="true"><svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="0.4" stroke-linejoin="round"><path d="M50 76 L12 40 A54 54 0 0 1 88 40 Z"/><path d="M50 76 L61 65 L50 54 L39 65 Z"/><circle cx="50" cy="65" r="2"/></g></svg></div>
 
+<!-- ÉCRAN DE CONNEXION (affiché tant que l'utilisateur n'est pas connecté) -->
+<div id="auth-screen" style="display:none">
+  <div class="auth-card">
+    <div class="auth-logo"><div class="auth-ball"></div>DATA<span>BASEBALL</span></div>
+    <div class="auth-title" id="auth-title">Connexion</div>
+    <div class="auth-sub" id="auth-sub">Connecte-toi pour accéder aux pronostics du jour.</div>
+    <div class="auth-msg" id="auth-msg"></div>
+    <form id="auth-form" onsubmit="return submitAuth(event)">
+      <input class="auth-field" id="auth-email" type="email" placeholder="Adresse email" autocomplete="email" required>
+      <input class="auth-field" id="auth-pass" type="password" placeholder="Mot de passe (min. 6 caractères)" autocomplete="current-password" minlength="6" required>
+      <button class="auth-btn" id="auth-submit" type="submit">Se connecter</button>
+    </form>
+    <div class="auth-toggle" id="auth-forgot" style="margin-top:12px"><a onclick="forgotPassword()">Mot de passe oublié ?</a></div>
+    <div class="auth-toggle" id="auth-toggle-line">Pas encore de compte ? <a onclick="toggleAuthMode()" id="auth-toggle-link">Créer un compte</a></div>
+    <div class="auth-foot">🔒 Connexion sécurisée. Outil d'analyse à but informatif — 18+. Aucun pari n'est sans risque.</div>
+  </div>
+</div>
+
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v11 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v14 · 27/06</span></div>
   <div class="topbar-r">
+    <span id="user-chip" style="display:none"><span class="uc-email"></span><button class="uc-logout" onclick="logout()">Déconnexion</button></span>
     <span class="api-pill" id="api-pill">⏳</span>
     <div style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--red)"><div class="pulse"></div>LIVE</div>
   </div>
@@ -587,6 +632,7 @@ const _cache={};
 // (clé anon publique = lecture seule, protégée par RLS ; aucun secret ici)
 // ═══════════════════════════════════════════════════
 const SUPA_URL='https://qjuwtaxlidvxxhbjdsyl.supabase.co';
+const REDIRECT_URL=location.origin+location.pathname; // où Supabase renvoie après clic sur le lien email
 const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqdXd0YXhsaWR2eHhoYmpkc3lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTk2NTUsImV4cCI6MjA5ODEzNTY1NX0.EZmxxQ3FRJm_zeHF4Nzu7mMBht9wM9h4bpBDuAztwXQ';
 let SNAP=null;
 async function loadSnapshot(){
@@ -597,6 +643,132 @@ async function loadSnapshot(){
   SNAP=rows?.[0]?.data||null;
   setOk();
   return SNAP;
+}
+
+// ═══════════════════════════════════════════════════
+// AUTHENTIFICATION (Supabase) — compte obligatoire pour accéder à l'app
+// ═══════════════════════════════════════════════════
+let authMode='login'; // 'login' | 'signup'
+function getSession(){try{return JSON.parse(lsGet('db_session')||'null');}catch(e){return null;}}
+function setSession(s){if(s)lsSet('db_session',JSON.stringify(s));else lsRemove('db_session');}
+function authMsg(txt,type){const m=document.getElementById('auth-msg');if(!m)return;m.className='auth-msg '+(type||'');m.innerHTML=txt||'';}
+async function authSignup(email,password){
+  const r=await fetch(`${SUPA_URL}/auth/v1/signup?redirect_to=${encodeURIComponent(REDIRECT_URL)}`,{method:'POST',headers:{apikey:SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+  const d=await r.json();
+  if(!r.ok)throw new Error(d.msg||d.error_description||d.error||'Inscription impossible');
+  return d;
+}
+async function fetchUserEmail(token){try{const r=await fetch(`${SUPA_URL}/auth/v1/user`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+token}});const d=await r.json();return d?.email||null;}catch(e){return null;}}
+async function recover(email){
+  const r=await fetch(`${SUPA_URL}/auth/v1/recover?redirect_to=${encodeURIComponent(REDIRECT_URL)}`,{method:'POST',headers:{apikey:SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({email})});
+  if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.msg||d.error_description||'Envoi impossible');}
+}
+async function updatePassword(token,password){
+  const r=await fetch(`${SUPA_URL}/auth/v1/user`,{method:'PUT',headers:{apikey:SUPA_ANON,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({password})});
+  const d=await r.json();
+  if(!r.ok)throw new Error(d.msg||d.error_description||'Modification impossible');
+  return d;
+}
+// Lit les jetons dans l'URL après clic sur un lien email (confirmation ou réinitialisation)
+function parseAuthHash(){
+  const h=location.hash||'';
+  if(h.indexOf('access_token=')<0&&h.indexOf('error')<0)return null;
+  const p=new URLSearchParams(h.replace(/^#/,''));
+  const out={access_token:p.get('access_token'),refresh_token:p.get('refresh_token'),expires_at:p.get('expires_at'),type:p.get('type'),error:p.get('error_description')||p.get('error')};
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){} // nettoie l'URL
+  return out;
+}
+async function authLogin(email,password){
+  const r=await fetch(`${SUPA_URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:{apikey:SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+  const d=await r.json();
+  if(!r.ok)throw new Error(d.msg||d.error_description||d.error||'Email ou mot de passe incorrect');
+  return d;
+}
+async function refreshSession(){
+  const s=getSession();if(!s?.refresh_token)return null;
+  try{
+    const r=await fetch(`${SUPA_URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{apikey:SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token})});
+    if(!r.ok){setSession(null);return null;}
+    const d=await r.json();
+    const ns={access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:d.user?.email||s.email};
+    setSession(ns);return ns;
+  }catch(e){return null;}
+}
+async function ensureAuth(){
+  let s=getSession();
+  if(!s||!s.access_token)return null;
+  if(s.expires_at&&s.expires_at*1000<Date.now()+60000)s=await refreshSession(); // rafraîchit si expiré/bientôt
+  return s&&s.access_token?s:null;
+}
+function sessionFrom(d){return{access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:d.user?.email};}
+function logout(){setSession(null);location.reload();}
+function setAuthMode(m){
+  authMode=m;
+  const title=document.getElementById('auth-title'),sub=document.getElementById('auth-sub'),submit=document.getElementById('auth-submit'),toggle=document.getElementById('auth-toggle-line'),forgot=document.getElementById('auth-forgot'),pass=document.getElementById('auth-pass'),emailF=document.getElementById('auth-email');
+  authMsg('');
+  if(m==='reset'){
+    title.textContent='Nouveau mot de passe';
+    sub.textContent='Choisis un nouveau mot de passe pour ton compte.';
+    submit.textContent='Enregistrer';
+    emailF.style.display='none';pass.style.display='';pass.value='';pass.placeholder='Nouveau mot de passe (min. 6)';pass.autocomplete='new-password';
+    toggle.style.display='none';if(forgot)forgot.style.display='none';
+  }else{
+    const login=m==='login';
+    emailF.style.display='';pass.style.display='';
+    title.textContent=login?'Connexion':'Créer un compte';
+    sub.textContent=login?'Connecte-toi pour accéder aux pronostics du jour.':'Crée ton compte gratuit pour accéder aux pronostics.';
+    submit.textContent=login?'Se connecter':'Créer mon compte';
+    pass.placeholder='Mot de passe (min. 6 caractères)';pass.autocomplete=login?'current-password':'new-password';
+    toggle.style.display='';
+    toggle.innerHTML=login?'Pas encore de compte ? <a onclick="toggleAuthMode()">Créer un compte</a>':'Déjà un compte ? <a onclick="toggleAuthMode()">Se connecter</a>';
+    if(forgot)forgot.style.display=login?'':'none';
+  }
+}
+function toggleAuthMode(){setAuthMode(authMode==='login'?'signup':'login');}
+async function forgotPassword(){
+  const email=document.getElementById('auth-email').value.trim();
+  if(!email){authMsg('Entre d\'abord ton adresse email, puis clique « Mot de passe oublié ».','err');return;}
+  authMsg('Envoi…','ok');
+  try{await recover(email);authMsg('📧 Email envoyé à '+email+'. Clique le lien reçu pour choisir un nouveau mot de passe.','ok');}
+  catch(e){authMsg('⚠️ '+e.message,'err');}
+}
+async function submitAuth(e){
+  e.preventDefault();
+  const email=document.getElementById('auth-email').value.trim();
+  const password=document.getElementById('auth-pass').value;
+  const btn=document.getElementById('auth-submit');
+  authMsg('');btn.disabled=true;const lbl=btn.textContent;btn.textContent='…';
+  try{
+    if(authMode==='reset'){
+      const s=getSession();
+      if(!s?.access_token)throw new Error('Lien expiré. Refais une demande de réinitialisation.');
+      await updatePassword(s.access_token,password);
+      const em=await fetchUserEmail(s.access_token);
+      setSession({...s,email:em});
+      demarrerApp(getSession());
+    }else if(authMode==='signup'){
+      const d=await authSignup(email,password);
+      if(d.access_token){ setSession(sessionFrom(d)); demarrerApp(getSession()); }
+      else { setAuthMode('login'); authMsg('✅ Compte créé ! Un email de confirmation a été envoyé à '+email+'. Clique le lien reçu, puis connecte-toi.','ok'); }
+    }else{
+      const d=await authLogin(email,password);
+      setSession(sessionFrom(d)); demarrerApp(getSession());
+    }
+  }catch(err){ authMsg('⚠️ '+err.message,'err'); }
+  finally{ btn.disabled=false; btn.textContent=lbl; }
+  return false;
+}
+function showAuthScreen(){
+  document.getElementById('auth-screen').style.display='flex';
+}
+function demarrerApp(s){
+  document.getElementById('auth-screen').style.display='none';
+  const uc=document.getElementById('user-chip');
+  if(uc&&s){
+    uc.style.display='';uc.querySelector('.uc-email').textContent=s.email||'Mon compte';
+    if(!s.email&&s.access_token)fetchUserEmail(s.access_token).then(em=>{if(em){s.email=em;setSession(s);uc.querySelector('.uc-email').textContent=em;}});
+  }
+  if(!loaded['pronos']){loaded['pronos']=true;loadPronos();}
 }
 
 // Stats de ligue (utilisées par l'ancien moteur client, désormais inerte)
@@ -1791,9 +1963,11 @@ function renderSelection(pronos){
   const top=elig.map(p=>({p,note:noteJouabilite(p)})).filter(x=>x.note!=null).sort((a,b)=>b.note-a.note).slice(0,5);
   if(!top.length){el.innerHTML='';return;}
   const col=n=>n>=72?'var(--green)':n>=58?'var(--amber)':'var(--muted)';
+  let figeTxt='';
+  try{if(SNAP&&SNAP.generatedAt){const d=new Date(SNAP.generatedAt);figeTxt=` · 🔒 établie le ${d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',timeZone:'Europe/Paris'})} à ${d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'})}, figée pour la journée`;}}catch(e){}
   el.innerHTML=`<div class="selection">
     <div class="selection-h">⭐ SÉLECTION DU JOUR</div>
-    <div class="selection-sub">Les ${top.length} meilleurs coups parmi les ${new Set(pronos.map(p=>p.gamePk)).size} matchs, notés sur 100 (équilibre entre chance de gagner, cote et fiabilité). Cliquez pour parier.</div>
+    <div class="selection-sub">Les ${top.length} meilleurs coups parmi les ${new Set(pronos.map(p=>p.gamePk)).size} matchs, notés sur 100 (chance de gagner × cote × fiabilité). Cliquez pour parier.${figeTxt}</div>
     ${top.map((x,i)=>{
       const p=x.p,edge=p.fairProba!=null?((p.proba/100-p.fairProba)*100):null;
       return `<div class="sel-pick" onclick="ouvrirMatchDepuis(${p.gamePk})">
@@ -2555,8 +2729,23 @@ if(!STORAGE_OK){
   document.body.insertBefore(b,document.body.firstChild);
 }
 
-loaded['pronos']=true;
-loadPronos();
+// Démarrage : compte obligatoire.
+// 1) retour d'un lien email (confirmation/réinitialisation) ? 2) sinon session existante ? 3) sinon écran de connexion.
+(async()=>{
+  const hash=parseAuthHash();
+  if(hash){
+    if(hash.error){ showAuthScreen(); setAuthMode('login'); authMsg('⚠️ '+hash.error+' Le lien a peut-être expiré.','err'); return; }
+    if(hash.access_token){
+      const sess={access_token:hash.access_token,refresh_token:hash.refresh_token,expires_at:hash.expires_at?+hash.expires_at:undefined,email:null};
+      setSession(sess);
+      if(hash.type==='recovery'){ showAuthScreen(); setAuthMode('reset'); return; }
+      demarrerApp(getSession()); return; // email confirmé / connexion → on entre
+    }
+  }
+  const s=await ensureAuth();
+  if(s)demarrerApp(s);
+  else showAuthScreen();
+})();
 </script>
 </body>
 </html>
