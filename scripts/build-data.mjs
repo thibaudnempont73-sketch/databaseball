@@ -38,28 +38,59 @@ async function api(path){
 }
 async function getWeather(lat,lon){try{return await fetchJSON(`${WEATHER}?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh`,8000);}catch(e){return null;}}
 
-// ── Cotes (h2h + spreads + totals, meilleure cote tous bookmakers) ──
+// ── Cotes (h2h + spreads + totals) : meilleure cote globale + meilleure US + meilleure EU, par marché ──
+// Bookmakers européens/UK connus (région 'eu'/'uk' de The Odds API) ; tout le reste = US.
+const EU_BOOKS=new Set(['pinnacle','onexbet','betclic','sport888','williamhill','betfair_ex_uk','betfair_ex_eu','matchbook','unibet_eu','unibet_uk','betsson','nordicbet','coolbet','marathonbet','betvictor','ladbrokes_uk','coral','skybet','paddypower','betway','gtbets','suprabets','everygame','tipico_de','winamax_fr','winamax_de','parionssport_fr','betano','mrgreen','casumo','leovegas','10bet','betclic_fr','livescorebet']);
+const isEU=k=>EU_BOOKS.has(k);
+// Parse un événement → meilleures cotes (overall + _us + _eu) par marché. PURE (testable sans API).
+export function parseEventOdds(ev){
+  const home=ev.home_team,away=ev.away_team,books=ev.bookmakers||[];if(!books.length)return null;
+  const e={home,away,commence:ev.commence_time};
+  const up=(o,cote,bk)=>(!o||cote>o.cote)?{cote,bk}:o;
+  // H2H
+  let bH,bA,bHu,bAu,bHe,bAe;
+  books.forEach(bk=>{const h=bk.markets?.find(m=>m.key==='h2h');if(!h)return;const eu=isEU(bk.key);
+    const oH=h.outcomes.find(o=>o.name===home)?.price,oA=h.outcomes.find(o=>o.name===away)?.price;
+    if(oH){bH=up(bH,oH,bk.title);if(eu)bHe=up(bHe,oH,bk.title);else bHu=up(bHu,oH,bk.title);}
+    if(oA){bA=up(bA,oA,bk.title);if(eu)bAe=up(bAe,oA,bk.title);else bAu=up(bAu,oA,bk.title);}
+  });
+  if(bH&&bA){e.coteH=bH.cote;e.coteA=bA.cote;e.bkH=bH.bk;e.bkA=bA.bk;const iH=1/bH.cote,iA=1/bA.cote,tt=iH+iA;e.probaH=iH/tt*100;e.probaA=iA/tt*100;
+    e.coteH_us=bHu?.cote;e.bkH_us=bHu?.bk;e.coteA_us=bAu?.cote;e.bkA_us=bAu?.bk;
+    e.coteH_eu=bHe?.cote;e.bkH_eu=bHe?.bk;e.coteA_eu=bAe?.cote;e.bkA_eu=bAe?.bk;}
+  // TOTALS : ligne la plus fréquente, puis meilleures cotes (overall/us/eu) À CETTE ligne
+  const cnt={};
+  books.forEach(bk=>{const tot=bk.markets?.find(m=>m.key==='totals');if(!tot)return;const ov=tot.outcomes.find(o=>o.name==='Over');if(ov&&ov.point!=null)cnt[ov.point]=(cnt[ov.point]||0)+1;});
+  const ml=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
+  if(ml){const L=+ml;let ov,un,ovu,unu,ove,une;
+    books.forEach(bk=>{const tot=bk.markets?.find(m=>m.key==='totals');if(!tot)return;const eu=isEU(bk.key);
+      const o=tot.outcomes.find(x=>x.name==='Over'&&x.point===L),u=tot.outcomes.find(x=>x.name==='Under'&&x.point===L);
+      if(o){ov=up(ov,o.price,bk.title);if(eu)ove=up(ove,o.price,bk.title);else ovu=up(ovu,o.price,bk.title);}
+      if(u){un=up(un,u.price,bk.title);if(eu)une=up(une,u.price,bk.title);else unu=up(unu,u.price,bk.title);}
+    });
+    if(ov&&un){e.totalLine=L;e.overOdds=ov.cote;e.bkOver=ov.bk;e.underOdds=un.cote;e.bkUnder=un.bk;
+      e.overOdds_us=ovu?.cote;e.bkOver_us=ovu?.bk;e.underOdds_us=unu?.cote;e.bkUnder_us=unu?.bk;
+      e.overOdds_eu=ove?.cote;e.bkOver_eu=ove?.bk;e.underOdds_eu=une?.cote;e.bkUnder_eu=une?.bk;}
+  }
+  // SPREADS ±1.5
+  let sH,sA,sHu,sAu,sHe,sAe;
+  books.forEach(bk=>{const sp=bk.markets?.find(m=>m.key==='spreads');if(!sp)return;const eu=isEU(bk.key);
+    const sh=sp.outcomes.find(o=>o.name===home),sa=sp.outcomes.find(o=>o.name===away);
+    if(sh&&Math.abs(sh.point)===1.5){if(!sH||sh.price>sH.cote)sH={point:sh.point,cote:sh.price,bk:bk.title};if(eu){if(!sHe||sh.price>sHe.cote)sHe={cote:sh.price,bk:bk.title};}else{if(!sHu||sh.price>sHu.cote)sHu={cote:sh.price,bk:bk.title};}}
+    if(sa&&Math.abs(sa.point)===1.5){if(!sA||sa.price>sA.cote)sA={point:sa.point,cote:sa.price,bk:bk.title};if(eu){if(!sAe||sa.price>sAe.cote)sAe={cote:sa.price,bk:bk.title};}else{if(!sAu||sa.price>sAu.cote)sAu={cote:sa.price,bk:bk.title};}}
+  });
+  if(sH&&sA){e.spHomePoint=sH.point;e.spHomeOdds=sH.cote;e.bkSpHome=sH.bk;e.spAwayPoint=sA.point;e.spAwayOdds=sA.cote;e.bkSpAway=sA.bk;
+    e.spHomeOdds_us=sHu?.cote;e.bkSpHome_us=sHu?.bk;e.spAwayOdds_us=sAu?.cote;e.bkSpAway_us=sAu?.bk;
+    e.spHomeOdds_eu=sHe?.cote;e.bkSpHome_eu=sHe?.bk;e.spAwayOdds_eu=sAe?.cote;e.bkSpAway_eu=sAe?.bk;}
+  return e;
+}
 async function getVegasOdds(){
   if(!VEGAS_KEY)return null;
   try{
-    const url=`https://api.the-odds-api.com/v4/sports/baseball_mlb/odds/?regions=us&markets=h2h,spreads,totals&oddsFormat=decimal&apiKey=${VEGAS_KEY}`;
+    // regions=us,eu → meilleure cote américaine ET européenne (coût ~markets×2 régions)
+    const url=`https://api.the-odds-api.com/v4/sports/baseball_mlb/odds/?regions=us,eu&markets=h2h,spreads,totals&oddsFormat=decimal&apiKey=${VEGAS_KEY}`;
     const d=await fetchJSON(url,12000);
     const map={};
-    d.forEach(ev=>{
-      const home=ev.home_team,away=ev.away_team,books=ev.bookmakers||[];if(!books.length)return;
-      const e={home,away,commence:ev.commence_time};
-      let bH=null,bA=null;
-      books.forEach(bk=>{const h=bk.markets?.find(m=>m.key==='h2h');if(!h)return;const oH=h.outcomes.find(o=>o.name===home)?.price,oA=h.outcomes.find(o=>o.name===away)?.price;if(oH&&(!bH||oH>bH.cote))bH={cote:oH,bk:bk.title};if(oA&&(!bA||oA>bA.cote))bA={cote:oA,bk:bk.title};});
-      if(bH&&bA){e.coteH=bH.cote;e.coteA=bA.cote;e.bkH=bH.bk;e.bkA=bA.bk;const iH=1/bH.cote,iA=1/bA.cote,tt=iH+iA;e.probaH=iH/tt*100;e.probaA=iA/tt*100;}
-      const lines={};
-      books.forEach(bk=>{const tot=bk.markets?.find(m=>m.key==='totals');if(!tot)return;const ov=tot.outcomes.find(o=>o.name==='Over'),un=tot.outcomes.find(o=>o.name==='Under');if(ov&&un&&ov.point!=null){const p=ov.point;lines[p]=lines[p]||{c:0,over:null,under:null};lines[p].c++;if(!lines[p].over||ov.price>lines[p].over.cote)lines[p].over={cote:ov.price,bk:bk.title};if(!lines[p].under||un.price>lines[p].under.cote)lines[p].under={cote:un.price,bk:bk.title};}});
-      const ml=Object.keys(lines).sort((a,b)=>lines[b].c-lines[a].c)[0];
-      if(ml){e.totalLine=+ml;e.overOdds=lines[ml].over.cote;e.bkOver=lines[ml].over.bk;e.underOdds=lines[ml].under.cote;e.bkUnder=lines[ml].under.bk;}
-      let sH=null,sA=null;
-      books.forEach(bk=>{const sp=bk.markets?.find(m=>m.key==='spreads');if(!sp)return;const sh=sp.outcomes.find(o=>o.name===home),sa=sp.outcomes.find(o=>o.name===away);if(sh&&Math.abs(sh.point)===1.5&&(!sH||sh.price>sH.cote))sH={point:sh.point,cote:sh.price,bk:bk.title};if(sa&&Math.abs(sa.point)===1.5&&(!sA||sa.price>sA.cote))sA={point:sa.point,cote:sa.price,bk:bk.title};});
-      if(sH&&sA){e.spHomePoint=sH.point;e.spHomeOdds=sH.cote;e.bkSpHome=sH.bk;e.spAwayPoint=sA.point;e.spAwayOdds=sA.cote;e.bkSpAway=sA.bk;}
-      const k=`${away}@${home}`;(map[k]=map[k]||[]).push(e);
-    });
+    d.forEach(ev=>{const e=parseEventOdds(ev);if(!e)return;const k=`${e.away}@${e.home}`;(map[k]=map[k]||[]).push(e);});
     return map;
   }catch(e){return null;}
 }
@@ -232,6 +263,7 @@ async function build(){
     const hData={estDomicile:true,winPct:hStand.winPct??null,pythWinPct:hStand.pythWinPct??null,eraPartant:hPitStat?.era?parseFloat(hPitStat.era):null,fipPartant:calcFIP(hPitStat),nomPartant:home.probablePitcher?.fullName??null,ops:hOpsSplit??(hHit.ops?parseFloat(hHit.ops):null),opsSplit:hOpsSplit!=null,eraEquipe:hEraSplit??(hPit.era?parseFloat(hPit.era):null),whipPartant:hPitStat?.whip?parseFloat(hPitStat.whip):null,k9Partant:hPitStat?.strikeoutsPer9Inn?parseFloat(hPitStat.strikeoutsPer9Inn):null,streak:hStand.streak??null,forme:hForme};
     const rA=calcEquipe(aData),rH=calcEquipe(hData);
     const vegas=pickOdds(vegasMap,away.team.name,home.team.name,game.gameDate);
+    const vg=vegas||{}; // raccourci sûr pour lire les cotes US/EU même si vegas est null
     const parkPct=PARK[hId]||100;
     const sim=estimerMatch(aData,hData,parkPct,vegas,rA.score,rH.score);
     const wMkt=0.55,capMkt=0.06;
@@ -256,12 +288,12 @@ async function build(){
     matchDataMap[game.gamePk]={away:slim(away.team),home:slim(home.team),heure:time,dateCourt,gameDate:game.gameDate,state:game.status.abstractGameState,probaAway:pA,probaHome:pH,scoreA:rA.score,scoreH:rH.score,confScore:cScore,marge:margeCI,aData,hData,aStand,hStand,aPitStat,hPitStat,aForme,hForme,aSplit,hSplit,meteo,meteoIdx:wind,vegas,sim,parkPct,nomPartantA:away.probablePitcher?.fullName,nomPartantH:home.probablePitcher?.fullName};
     const base={gamePk:game.gamePk,heure:time,dateCourt,gameDate:game.gameDate,matchLabel:matchLbl,awayTeam:slim(away.team),homeTeam:slim(home.team),probaAway:pA,probaHome:pH,state:game.status.abstractGameState,meteoHTML,compoHTML};
     // 1. VICTOIRE
-    pronos.push({...base,id:`${game.gamePk}-V`,type:'victoire',typeLabel:'Victoire du match',pick:`${favTeam.name} remporte le match`,explication:`Modèle sur données réelles (stats MLB + cotes du marché) : ${favTeam.name} a ${favProba.toFixed(1)}% de chances de gagner (intervalle ${Math.max(0,favProba-margeCI).toFixed(0)}–${Math.min(100,favProba+margeCI).toFixed(0)}%). Runs estimés : ${sim.expRunsA.toFixed(1)} − ${sim.expRunsH.toFixed(1)}.`,proba:favProba,confiance:conf,confScore:cScore,marge:margeCI,coteVegas:coteVegasFav,bookmaker:bkFav,fairProba:fairFav,facteurs:favRes.facteurs,dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),regAlertHTML,valueAlertHTML,formeDots,fatigueBadge,tendance:tendV,scoreA:rA.score,scoreH:rH.score});
+    pronos.push({...base,id:`${game.gamePk}-V`,type:'victoire',typeLabel:'Victoire du match',pick:`${favTeam.name} remporte le match`,explication:`Modèle sur données réelles (stats MLB + cotes du marché) : ${favTeam.name} a ${favProba.toFixed(1)}% de chances de gagner (intervalle ${Math.max(0,favProba-margeCI).toFixed(0)}–${Math.min(100,favProba+margeCI).toFixed(0)}%). Runs estimés : ${sim.expRunsA.toFixed(1)} − ${sim.expRunsH.toFixed(1)}.`,proba:favProba,confiance:conf,confScore:cScore,marge:margeCI,coteVegas:coteVegasFav,bookmaker:bkFav,fairProba:fairFav,coteUS:(favH?vg.coteH_us:vg.coteA_us)??null,bkUS:(favH?vg.bkH_us:vg.bkA_us)??null,coteEU:(favH?vg.coteH_eu:vg.coteA_eu)??null,bkEU:(favH?vg.bkH_eu:vg.bkA_eu)??null,facteurs:favRes.facteurs,dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),regAlertHTML,valueAlertHTML,formeDots,fatigueBadge,tendance:tendV,scoreA:rA.score,scoreH:rH.score});
     // 2. TOTAL
     if(vegas&&vegas.totalLine!=null&&sim.overProb!=null){
       const line=vegas.totalLine;const fairOver=vegas.overOdds&&vegas.underOdds?(1/vegas.overOdds)/((1/vegas.overOdds)+(1/vegas.underOdds)):null;
       const simOver=versMarche(sim.overProb,fairOver,wMkt,capMkt);const isOver=simOver>=0.5;const ourProba=(isOver?simOver:1-simOver)*100;const coteOU=isOver?vegas.overOdds:vegas.underOdds;
-      pronos.push({...base,id:`${game.gamePk}-OU`,type:'ou',typeLabel:'Total points (O/U)',pick:`${isOver?'OVER':'UNDER'} ${line} points au total`,ouLine:line,ouSide:isOver?'over':'under',explication:`Estimation sur données réelles : total attendu ${(sim.expRunsA+sim.expRunsH).toFixed(1)} points (${sim.expRunsA.toFixed(1)} − ${sim.expRunsH.toFixed(1)}) vs ligne ${line}. Probabilité ${isOver?'OVER':'UNDER'} : ${ourProba.toFixed(1)}%.`,proba:pt(ourProba),confiance:Math.max(1,conf-1),coteVegas:coteOU,bookmaker:isOver?vegas.bkOver:vegas.bkUnder,fairProba:fairOver!=null?(isOver?fairOver:1-fairOver):null,facteurs:[{nom:'Total de runs estimé',valeur:`${(sim.expRunsA+sim.expRunsH).toFixed(1)} pts au total vs ligne ${line}`,detail:'Calculé sur les données réelles : offense (OPS), FIP des lanceurs, bullpen, park factor, ancrage sur la ligne du marché',score:isOver?70:30,poids:40,sense:isOver?'pos':'neg'},aData.fipPartant!=null?{nom:'FIP lanceur visiteur',valeur:`${aData.nomPartant||'TBD'} : ${aData.fipPartant.toFixed(2)}`,detail:'FIP = qualité réelle du lanceur.',score:sERA(aData.fipPartant),poids:20,sense:isOver?(sERA(aData.fipPartant)<=45?'pos':'neg'):(sERA(aData.fipPartant)>=55?'pos':'neg')}:null,hData.fipPartant!=null?{nom:'FIP lanceur domicile',valeur:`${hData.nomPartant||'TBD'} : ${hData.fipPartant.toFixed(2)}`,detail:'',score:sERA(hData.fipPartant),poids:20,sense:isOver?(sERA(hData.fipPartant)<=45?'pos':'neg'):(sERA(hData.fipPartant)>=55?'pos':'neg')}:null,{nom:`Park factor (${meteo?.stade||'stade'})`,valeur:`${parkPct} / 100`,detail:parkPct>=104?'Stade qui gonfle les points':parkPct<=97?'Stade qui réduit les points':'Stade neutre',score:parkPct,poids:10,sense:(parkPct>=104&&isOver)||(parkPct<=97&&!isOver)?'pos':'neu'},meteo&&wind.score!==0?{nom:'Impact météo (net)',valeur:wind.label,detail:wind.breakdown,score:50+wind.score*2,poids:10,sense:wind.impact}:null].filter(Boolean),regAlertHTML:'',tendance:(aForme?.tendances||hForme?.tendances)?`📈 Over 8.5 récemment : ${aForme?.tendances?`${away.team.abbreviation} ${aForme.tendances.over85}/${aForme.tendances.over85n}`:''}${aForme?.tendances&&hForme?.tendances?' · ':''}${hForme?.tendances?`${home.team.abbreviation} ${hForme.tendances.over85}/${hForme.tendances.over85n}`:''}`:''});
+      pronos.push({...base,id:`${game.gamePk}-OU`,type:'ou',typeLabel:'Total points (O/U)',pick:`${isOver?'OVER':'UNDER'} ${line} points au total`,ouLine:line,ouSide:isOver?'over':'under',explication:`Estimation sur données réelles : total attendu ${(sim.expRunsA+sim.expRunsH).toFixed(1)} points (${sim.expRunsA.toFixed(1)} − ${sim.expRunsH.toFixed(1)}) vs ligne ${line}. Probabilité ${isOver?'OVER':'UNDER'} : ${ourProba.toFixed(1)}%.`,proba:pt(ourProba),confiance:Math.max(1,conf-1),coteVegas:coteOU,bookmaker:isOver?vegas.bkOver:vegas.bkUnder,coteUS:(isOver?vg.overOdds_us:vg.underOdds_us)??null,bkUS:(isOver?vg.bkOver_us:vg.bkUnder_us)??null,coteEU:(isOver?vg.overOdds_eu:vg.underOdds_eu)??null,bkEU:(isOver?vg.bkOver_eu:vg.bkUnder_eu)??null,fairProba:fairOver!=null?(isOver?fairOver:1-fairOver):null,facteurs:[{nom:'Total de runs estimé',valeur:`${(sim.expRunsA+sim.expRunsH).toFixed(1)} pts au total vs ligne ${line}`,detail:'Calculé sur les données réelles : offense (OPS), FIP des lanceurs, bullpen, park factor, ancrage sur la ligne du marché',score:isOver?70:30,poids:40,sense:isOver?'pos':'neg'},aData.fipPartant!=null?{nom:'FIP lanceur visiteur',valeur:`${aData.nomPartant||'TBD'} : ${aData.fipPartant.toFixed(2)}`,detail:'FIP = qualité réelle du lanceur.',score:sERA(aData.fipPartant),poids:20,sense:isOver?(sERA(aData.fipPartant)<=45?'pos':'neg'):(sERA(aData.fipPartant)>=55?'pos':'neg')}:null,hData.fipPartant!=null?{nom:'FIP lanceur domicile',valeur:`${hData.nomPartant||'TBD'} : ${hData.fipPartant.toFixed(2)}`,detail:'',score:sERA(hData.fipPartant),poids:20,sense:isOver?(sERA(hData.fipPartant)<=45?'pos':'neg'):(sERA(hData.fipPartant)>=55?'pos':'neg')}:null,{nom:`Park factor (${meteo?.stade||'stade'})`,valeur:`${parkPct} / 100`,detail:parkPct>=104?'Stade qui gonfle les points':parkPct<=97?'Stade qui réduit les points':'Stade neutre',score:parkPct,poids:10,sense:(parkPct>=104&&isOver)||(parkPct<=97&&!isOver)?'pos':'neu'},meteo&&wind.score!==0?{nom:'Impact météo (net)',valeur:wind.label,detail:wind.breakdown,score:50+wind.score*2,poids:10,sense:wind.impact}:null].filter(Boolean),regAlertHTML:'',tendance:(aForme?.tendances||hForme?.tendances)?`📈 Over 8.5 récemment : ${aForme?.tendances?`${away.team.abbreviation} ${aForme.tendances.over85}/${aForme.tendances.over85n}`:''}${aForme?.tendances&&hForme?.tendances?' · ':''}${hForme?.tendances?`${home.team.abbreviation} ${hForme.tendances.over85}/${hForme.tendances.over85n}`:''}`:''});
     }
     // 3. RUN LINE
     if(vegas&&vegas.spHomePoint!=null&&vegas.spAwayPoint!=null){
@@ -271,7 +303,7 @@ async function build(){
       homeCover=versMarche(homeCover,fH,wMkt,capMkt);awayCover=versMarche(awayCover,fH!=null?1-fH:null,wMkt,capMkt);
       const edgeHome=homeCover-1/vegas.spHomeOdds,edgeAway=awayCover-1/vegas.spAwayOdds,betHome=edgeHome>=edgeAway;
       const side=betHome?{team:home.team,isHome:true,point:vegas.spHomePoint,odds:vegas.spHomeOdds,proba:homeCover*100,win:pH,bk:vegas.bkSpHome,fair:fH}:{team:away.team,isHome:false,point:vegas.spAwayPoint,odds:vegas.spAwayOdds,proba:awayCover*100,win:pA,bk:vegas.bkSpAway,fair:fH!=null?1-fH:null};
-      pronos.push({...base,id:`${game.gamePk}-RL`,type:'runline',typeLabel:'Run line (handicap)',pick:`${side.team.name} ${side.point>0?'+':''}${side.point}`,rlIsHome:side.isHome,rlPoint:side.point,explication:`Run line : ${side.point<0?`${side.team.name} doit gagner par 2 points ou plus`:`${side.team.name} peut perdre par 1 point max (ou gagner)`}. Couverture estimée : ${side.proba.toFixed(1)}%.`,proba:pt(side.proba),confiance:Math.max(1,conf-1),coteVegas:side.odds,bookmaker:side.bk,fairProba:side.fair,facteurs:[{nom:`Probabilité de victoire de ${side.team.name}`,valeur:`${side.win.toFixed(1)}%`,detail:'Issue du modèle sur données réelles',score:side.win,poids:50,sense:side.win>=55?'pos':'neg'},{nom:'Couverture du handicap estimée',valeur:`${side.proba.toFixed(1)}%`,detail:side.point<0?'Probabilité que l\'équipe gagne par 2 points ou plus':'Probabilité que l\'équipe ne perde pas par 2+',score:side.proba,poids:50,sense:side.proba>=55?'pos':'neg'}],regAlertHTML:'',tendance:(()=>{const sf=(side.isHome?hForme:aForme)?.tendances;if(!sf)return '';return `📈 ${side.team.name} récemment : ${side.point<0?`gagne par 2+ dans ${sf.cover15}/${sf.over85n}`:`couvre le +1.5 dans ${sf.plus15}/${sf.over85n}`}`;})()});
+      pronos.push({...base,id:`${game.gamePk}-RL`,type:'runline',typeLabel:'Run line (handicap)',pick:`${side.team.name} ${side.point>0?'+':''}${side.point}`,rlIsHome:side.isHome,rlPoint:side.point,explication:`Run line : ${side.point<0?`${side.team.name} doit gagner par 2 points ou plus`:`${side.team.name} peut perdre par 1 point max (ou gagner)`}. Couverture estimée : ${side.proba.toFixed(1)}%.`,proba:pt(side.proba),confiance:Math.max(1,conf-1),coteVegas:side.odds,bookmaker:side.bk,coteUS:(side.isHome?vg.spHomeOdds_us:vg.spAwayOdds_us)??null,bkUS:(side.isHome?vg.bkSpHome_us:vg.bkSpAway_us)??null,coteEU:(side.isHome?vg.spHomeOdds_eu:vg.spAwayOdds_eu)??null,bkEU:(side.isHome?vg.bkSpHome_eu:vg.bkSpAway_eu)??null,fairProba:side.fair,facteurs:[{nom:`Probabilité de victoire de ${side.team.name}`,valeur:`${side.win.toFixed(1)}%`,detail:'Issue du modèle sur données réelles',score:side.win,poids:50,sense:side.win>=55?'pos':'neg'},{nom:'Couverture du handicap estimée',valeur:`${side.proba.toFixed(1)}%`,detail:side.point<0?'Probabilité que l\'équipe gagne par 2 points ou plus':'Probabilité que l\'équipe ne perde pas par 2+',score:side.proba,poids:50,sense:side.proba>=55?'pos':'neg'}],regAlertHTML:'',tendance:(()=>{const sf=(side.isHome?hForme:aForme)?.tendances;if(!sf)return '';return `📈 ${side.team.name} récemment : ${side.point<0?`gagne par 2+ dans ${sf.cover15}/${sf.over85n}`:`couvre le +1.5 dans ${sf.plus15}/${sf.over85n}`}`;})()});
     }
   }
   // confScore + marge génériques
@@ -303,7 +335,9 @@ async function upsertSupabase(snapshot){
   console.log('✅ Snapshot écrit dans Supabase.');
 }
 
-(async()=>{
+// N'exécute le job que si lancé directement (permet d'importer parseEventOdds dans un test)
+const isMain=process.argv[1]&&process.argv[1].replace(/\\/g,'/').endsWith('build-data.mjs');
+if(isMain)(async()=>{
   try{
     console.log('⏳ Calcul du snapshot pour',today(),'...');
     const snap=await build();

@@ -157,6 +157,21 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .outsider-val{font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
 .outsider-val.pos{color:var(--green);background:var(--green-d);border:1px solid var(--green-b)}
 .outsider-val.neg{color:var(--muted);background:var(--card2);border:1px solid var(--b2)}
+/* Fun intégré (façon Sélection) */
+.fun-wrap{background:linear-gradient(135deg,rgba(155,109,255,.10),rgba(245,166,35,.06));border:1px solid rgba(155,109,255,.3);border-radius:14px;padding:16px;margin-bottom:16px}
+.fun-wrap.locked .lock-ic{font-size:30px}
+.fun-h{font-family:var(--display);font-size:18px;letter-spacing:1px}
+.combo-leg{cursor:pointer}
+.combo-leg:hover{background:rgba(255,255,255,.02)}
+.combo-leg-type{font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;background:var(--card2);border:1px solid var(--b2);color:var(--muted);white-space:nowrap;margin-right:4px}
+.combo-leg-math{font-size:10px;color:var(--muted);margin-top:2px}
+.combo-math{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:11px;border-top:1px solid var(--b1);padding-top:10px;font-size:11px;color:var(--muted)}
+.combo-math .cm-pos{color:var(--green);font-weight:800}
+.combo-math .cm-neg{color:var(--red);font-weight:800}
+.combo-bet-btn{width:100%;margin-top:10px;background:linear-gradient(135deg,var(--green),#00e0a8);color:#04140d;border:none;padding:11px;border-radius:9px;font-weight:800;font-size:13px;cursor:pointer;transition:filter .15s}
+.combo-bet-btn:hover{filter:brightness(1.08)}
+.combo-bet{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;background:var(--card2);border:1px solid var(--b2);border-radius:8px;padding:8px 11px;font-size:11px}
+.combo-cancel{background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer;text-decoration:underline}
 .topbar{position:sticky;top:0;z-index:200;background:rgba(6,10,18,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
 .logo{font-family:var(--display);font-size:20px;letter-spacing:2px;display:flex;align-items:center;gap:8px}
 .logo span{color:var(--red)}
@@ -407,6 +422,8 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .odds-edge{text-align:right;line-height:1.2}
 .odds-edge-v{font-family:var(--display);font-size:22px}
 .odds-edge-sub{font-size:9px;color:var(--muted)}
+.odds-regions{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:7px;padding-top:7px;border-top:1px dashed var(--b1);font-size:10px;color:var(--muted)}
+.odds-reg b{color:var(--white);font-weight:800}
 .crit-info{font-size:10px;color:var(--muted);line-height:1.5;padding:7px 9px;margin-top:5px;background:rgba(75,158,255,.06);border-left:2px solid var(--blue-b);border-radius:0 6px 6px 0;display:none}
 .crit-info.open{display:block}
 .crit-info b{color:var(--white)}
@@ -532,7 +549,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v21 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v25 · 27/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -545,7 +562,6 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 
 <nav class="nav-tabs">
   <button class="nav-tab active" onclick="goTo('pronos')">⚡ Pronostics</button>
-  <button class="nav-tab" onclick="goTo('fun')">🎲 Fun</button>
   <button class="nav-tab" onclick="goTo('matchs')">⚾ Matchs</button>
   <button class="nav-tab" onclick="goTo('tendances')">📈 Tendances</button>
   <button class="nav-tab" onclick="goTo('historique')">📊 Historique</button>
@@ -569,6 +585,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     <div class="kpi"><div class="kpi-l">Données dispo</div><div class="kpi-v" style="color:var(--purple)" id="k-data">—</div><div class="kpi-m">critères moyens</div></div>
   </div>
   <div id="best-bet"></div>
+  <div id="fun-section"></div>
   <details class="help-box">
     <summary>🔰 Comment lire un pronostic ? (cliquez)</summary>
     <div class="help-content">
@@ -620,11 +637,6 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
   <div id="tendances-list"><div class="empty">Chargez d'abord les pronostics (onglet ⚡) pour calculer les tendances.</div></div>
 </div>
 
-<!-- ═══ FUN (combinés + outsiders) ═══ -->
-<div class="page" id="page-fun">
-  <div class="ph"><div class="ph-eye">Gros coups · cotes 100% réelles</div><div class="ph-title">🎲 FUN — COMBINÉS & OUTSIDERS</div><div class="ph-sub">Pour le plaisir et les grosses cotes. Tout est calculé sur les vraies cotes et les probabilités du modèle — aucune promesse, juste des maths (et du fun).</div></div>
-  <div id="fun-list"><div class="empty">Chargez d'abord les pronostics (onglet ⚡).</div></div>
-</div>
 
 <!-- ═══ HISTORIQUE ═══ -->
 <div class="page" id="page-historique">
@@ -1158,11 +1170,10 @@ function goTo(page){
   document.getElementById('page-'+page).classList.add('active');
   document.querySelector(`[onclick="goTo('${page}')"]`).classList.add('active');
   // Onglets réservés au Premium (gratuit = 1 pick/jour dans ⚡ Pronostics)
-  if(!isPremium()&&(page==='tendances'||page==='bankroll'||page==='fun')){
+  if(!isPremium()&&(page==='tendances'||page==='bankroll')){
     const LK={
       tendances:['Les Tendances & séries','Bilans 10 derniers matchs, séries en cours, Over X/10, couverture du handicap… sur tous les matchs.'],
-      bankroll:['La Bankroll & le suivi','Mise automatique selon ton capital (Kelly), courbe de gains, ROI et calibration de tes paris.'],
-      fun:['Les Combinés & Outsiders','Combinés (du prudent au gros coup) avec cotes multipliées, et les victoires surprises à grosse cote — tout calculé sur les vraies cotes.']
+      bankroll:['La Bankroll & le suivi','Mise automatique selon ton capital (Kelly), courbe de gains, ROI et calibration de tes paris.']
     };
     document.getElementById('page-'+page).innerHTML=pageLockHTML(LK[page][0],LK[page][1]);
     loaded[page]=true;return;
@@ -1295,7 +1306,17 @@ function ajouterPronos(pronos){
   sauverHistorique(hist);
 }
 
-// MAJ automatique des résultats d'hier
+// Règle UNE jambe (ou un pari simple) : 'W' / 'L' / null si le match n'est pas encore terminé
+function settleLeg(leg,games){
+  const game=games.find(g=>g.gamePk===leg.gamePk);
+  if(!game||game.status.abstractGameState!=='Final')return null;
+  const aScore=game.teams.away.score??0,hScore=game.teams.home.score??0,homeName=game.teams.home.team.name;
+  if(leg.type==='victoire'){const favHome=leg.pick.includes(homeName);return (favHome?hScore>aScore:aScore>hScore)?'W':'L';}
+  if(leg.type==='ou'){const total=aScore+hScore,line=leg.ouLine??8.5;return (leg.ouSide==='over'?total>line:total<line)?'W':'L';}
+  if(leg.type==='runline'){const my=leg.rlIsHome?hScore:aScore,opp=leg.rlIsHome?aScore:hScore;return (my+(leg.rlPoint??0))>opp?'W':'L';}
+  return 'L';
+}
+// MAJ automatique des résultats d'hier (paris simples ET combinés)
 async function majResultatsHier(){
   const hist=getHistorique();
   const enAttente=hist.filter(h=>h.resultat==='P'&&h.date===yesterday());
@@ -1303,29 +1324,18 @@ async function majResultatsHier(){
   try{
     const d=await api(`/schedule?sportId=1&date=${yesterday()}&hydrate=team,linescore`);
     const games=d.dates?.[0]?.games??[];
-    enAttente.forEach(prono=>{
-      const game=games.find(g=>g.gamePk===prono.gamePk);
-      if(!game||game.status.abstractGameState!=='Final')return;
-      const away=game.teams.away, home=game.teams.home;
-      const aScore=away.score??0, hScore=home.score??0;
-      const score=`${aScore}-${hScore}`;
-      prono.scoreReel=score;
-      // Déterminer résultat selon type (3 types : victoire, ou, runline)
-      if(prono.type==='victoire'){
-        const favoriHome=prono.pick.includes(home.team.name);
-        const favoriGagne=favoriHome?hScore>aScore:aScore>hScore;
-        prono.resultat=favoriGagne?'W':'L';
-      }else if(prono.type==='ou'){
-        const total=aScore+hScore;
-        const line=prono.ouLine??8.5;
-        prono.resultat=(prono.ouSide==='over'?total>line:total<line)?'W':'L';
-      }else if(prono.type==='runline'){
-        const myScore=prono.rlIsHome?hScore:aScore;
-        const oppScore=prono.rlIsHome?aScore:hScore;
-        // handicap appliqué : couvre si (mon score + point) > score adverse
-        prono.resultat=(myScore+(prono.rlPoint??0))>oppScore?'W':'L';
+    enAttente.forEach(entry=>{
+      if(entry.type==='combo'){
+        const rs=(entry.legs||[]).map(l=>settleLeg(l,games));
+        if(rs.some(r=>r===null))return;                 // une jambe pas encore terminée → on attend
+        entry.resultat=rs.every(r=>r==='W')?'W':'L';     // gagne SEULEMENT si toutes passent
+        entry.scoreReel=rs.join('');
       }else{
-        prono.resultat='L'; // fallback (types obsolètes)
+        const r=settleLeg(entry,games);
+        if(r===null)return;
+        const game=games.find(g=>g.gamePk===entry.gamePk);
+        if(game)entry.scoreReel=`${game.teams.away.score??0}-${game.teams.home.score??0}`;
+        entry.resultat=r;
       }
     });
     sauverHistorique(hist);
@@ -1789,6 +1799,7 @@ async function loadPronos(){
     ajouterPronos(tousLesPronos);
     renderKPIs(tousLesPronos);
     renderSelection(tousLesPronos);
+    renderFunSection();
     afficherPronos(pronosFiltres());
     if(loaded['bankroll'])renderBankroll();
     return;
@@ -2338,10 +2349,14 @@ function mkProno(p){
   if(p.coteVegas){
     const edge=(p.proba/100-1/p.coteVegas)*100;
     const ec=edge>=0?'edge-pos':'edge-neg';
+    const regions=(p.coteUS||p.coteEU)?`<div class="odds-regions">
+      ${p.coteUS?`<span class="odds-reg">🇺🇸 US <b>${p.coteUS.toFixed(2)}</b>${p.bkUS?` · ${p.bkUS}`:''}</span>`:''}
+      ${p.coteEU?`<span class="odds-reg">🇪🇺 EU <b>${p.coteEU.toFixed(2)}</b>${p.bkEU?` · ${p.bkEU}`:''}</span>`:''}
+    </div>`:'';
     oddsBar=`<div class="odds-bar">
       <div class="odds-main"><span class="odds-lbl">Meilleure cote</span><span class="odds-cote">${p.coteVegas.toFixed(2)}</span>${p.bookmaker?`<span class="odds-bk">${p.bookmaker}</span>`:''}</div>
       <div class="odds-edge"><div class="odds-edge-v ${ec}">Edge ${edge>=0?'+':''}${edge.toFixed(1)}%</div><div class="odds-edge-sub">notre proba ${p.proba.toFixed(1)}% · marché ${(100/p.coteVegas).toFixed(1)}%</div></div>
-    </div>`;
+    </div>${regions}`;
   }
 
   return `<div class="prono ${isFort?'forte':isMoyen?'moyenne':''}">
@@ -2637,63 +2652,136 @@ function renderTendances(){
 }
 
 // ═══════════════════════════════════════════════════
-// PAGE FUN (combinés + outsiders à grosse cote)
+// COMBINÉS & OUTSIDERS « FUN » (intégrés dans l'onglet Pronostics, façon Sélection)
 // ═══════════════════════════════════════════════════
-function loadFun(){renderFun();}
-// Meilleur prono éligible par match (1 jambe/match, indépendance)
-function comboLegs(){
+const TYP={victoire:['🏆 Victoire','tag-v'],ou:['📊 Total','tag-ou'],runline:['📐 Run line','tag-marge']};
+function legEdge(p){return p.proba-100/p.coteVegas;} // edge d'une jambe, en points de %
+function eligibleLegs(){return tousLesPronos.filter(p=>p.coteVegas&&p.proba>=53&&(p.dataDispos==null||p.dataDispos>=60));}
+// 1 jambe par match (matchs distincts), choisie par les MATHS selon un critère (proba ou edge).
+// Le type de pari (Victoire / O/U / Run line) n'est JAMAIS imposé : c'est la valeur/probabilité qui décide.
+function bestPerGame(scoreFn){
   const byGame={};
-  tousLesPronos.forEach(p=>{
-    if(!(p.coteVegas&&p.proba>=54&&p.dataDispos>=60))return;
-    if(!byGame[p.gamePk]||(p.confScore??0)>(byGame[p.gamePk].confScore??0))byGame[p.gamePk]=p;
-  });
-  return Object.values(byGame).sort((a,b)=>(b.confScore??0)-(a.confScore??0));
+  eligibleLegs().forEach(p=>{const c=byGame[p.gamePk];if(!c||scoreFn(p)>scoreFn(c))byGame[p.gamePk]=p;});
+  return Object.values(byGame);
 }
-function mkCombo(legs,cls,nom,emoji){
-  if(legs.length<2)return '';
+// id stable d'un combiné (pour l'historique) : tri des id de jambes
+function comboId(legs){return 'C|'+legs.map(p=>p.id).sort().join('+');}
+let COMBOS={}; // combinés du jour, par id (pour le pari)
+function buildCombo(legs,cls,nom,emoji,crit){
+  if(legs.length<2)return null;
   const odds=legs.reduce((a,p)=>a*p.coteVegas,1);
   const proba=legs.reduce((a,p)=>a*(p.proba/100),1)*100;
-  const legsHTML=legs.map(p=>`<div class="combo-leg"><span class="combo-leg-pick">${p.pick}</span><span style="color:var(--muted);font-size:10px">${p.matchLabel}</span><span class="combo-leg-cote">${p.coteVegas.toFixed(2)}</span></div>`).join('');
-  return `<div class="combo ${cls}">
+  const fairAll=legs.every(p=>p.fairProba!=null);
+  const marketP=fairAll?legs.reduce((a,p)=>a*p.fairProba,1)*100:100/odds;
+  const id=comboId(legs);
+  const c={id,cls,nom,emoji,crit,odds,proba,marketP,edge:proba-marketP,
+    legs:legs.map(p=>({id:p.id,pick:p.pick,matchLabel:p.matchLabel,gamePk:p.gamePk,type:p.type,coteVegas:p.coteVegas,proba:p.proba,fairProba:p.fairProba??null,ouLine:p.ouLine??null,ouSide:p.ouSide??null,rlIsHome:p.rlIsHome??null,rlPoint:p.rlPoint??null}))};
+  COMBOS[id]=c;return c;
+}
+function comboBetBtn(c){
+  const bet=getHistorique().find(h=>h.id===c.id&&h.parie);
+  if(bet){
+    const res=bet.resultat;
+    const st=res==='W'?`<span style="color:var(--green);font-weight:700">✅ Gagné +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`:res==='L'?`<span style="color:var(--red);font-weight:700">❌ Perdu −${bet.mise.toFixed(2)}€</span>`:`<span style="color:var(--amber);font-weight:700">⏳ En attente</span>`;
+    return `<div class="combo-bet"><span>🎟️ Parié <strong>${bet.mise.toFixed(2)}€</strong> · cote ${bet.cote.toFixed(2)} · ${st}</span>${res==='P'?`<button class="combo-cancel" onclick="annulerPari('${c.id}')">annuler</button>`:''}</div>`;
+  }
+  return `<button class="combo-bet-btn" onclick="placerCombo('${c.id}')">🎟️ Parier ce combiné (mise auto)</button>`;
+}
+function mkComboHTML(c){
+  if(!c)return '';
+  const legsHTML=c.legs.map(p=>{const ty=TYP[p.type]||TYP.victoire,le=p.proba-100/p.coteVegas;return `<div class="combo-leg" onclick="ouvrirMatchDepuis(${p.gamePk})">
+    <div style="flex:1;min-width:0"><div><span class="combo-leg-type ${ty[1]}">${ty[0]}</span> <strong>${p.pick}</strong></div>
+    <div class="combo-leg-math">${p.matchLabel} · proba ${p.proba.toFixed(0)}% · edge ${le>=0?'+':''}${le.toFixed(1)}%</div></div>
+    <span class="combo-leg-cote">${p.coteVegas.toFixed(2)}</span></div>`;}).join('');
+  return `<div class="combo ${c.cls}">
     <div class="combo-head">
-      <div><div class="combo-name">${emoji} ${nom}</div><div style="font-size:10px;color:var(--muted)">${legs.length} sélections combinées</div></div>
-      <div><div class="combo-cote">${odds.toFixed(2)}</div><div class="combo-cote-l">cote totale</div></div>
+      <div><div class="combo-name">${c.emoji} ${c.nom}</div><div style="font-size:10px;color:var(--muted)">${c.legs.length} sélections · ${c.crit||'choisies par le modèle'} · clique une ligne pour l'analyse</div></div>
+      <div><div class="combo-cote">${c.odds.toFixed(2)}</div><div class="combo-cote-l">cote totale</div></div>
     </div>
     ${legsHTML}
-    <div class="combo-foot"><span class="combo-proba">Probabilité réelle : <strong style="color:var(--white)">${proba.toFixed(1)}%</strong></span><span class="combo-gain">10€ → ${(10*odds).toFixed(2)}€</span></div>
-    <div class="combo-warn">⚠️ Un combiné ne gagne que si <strong>TOUTES</strong> les sélections passent. Plus la cote est grosse, plus la probabilité est faible : à jouer pour le fun, petites mises.</div>
+    <div class="combo-math">
+      <span>Proba réelle <b style="color:var(--white)">${c.proba.toFixed(1)}%</b></span>
+      <span>Marché <b style="color:var(--white)">${c.marketP.toFixed(1)}%</b></span>
+      <span class="${c.edge>=0?'cm-pos':'cm-neg'}">Edge ${c.edge>=0?'+':''}${c.edge.toFixed(1)}%</span>
+      <span class="combo-gain">10€ → ${(10*c.odds).toFixed(2)}€</span>
+    </div>
+    ${comboBetBtn(c)}
+    <div class="combo-warn">⚠️ Un combiné ne gagne que si <strong>TOUTES</strong> les sélections passent. Plus la cote est grosse, plus la probabilité réelle est faible : pour le fun, petites mises.</div>
   </div>`;
 }
-function renderFun(){
-  const el=document.getElementById('fun-list');if(!el)return;
-  if(!tousLesPronos.length){el.innerHTML='<div class="empty">Chargez d\'abord les pronostics (onglet ⚡).</div>';return;}
-  const legs=comboLegs();
-  let html=`<div class="fun-sec-h">🎯 Combinés du jour</div><div class="fun-sub">Plusieurs pronos regroupés : les cotes se multiplient. Du plus prudent au plus gros coup.</div>`;
-  if(legs.length<2)html+='<div class="empty">Pas assez de pronostics fiables aujourd\'hui pour un combiné.</div>';
-  else{
-    html+=mkCombo(legs.slice(0,2),'prudent','Combiné Prudent','🛡️');
-    if(legs.length>=3)html+=mkCombo(legs.slice(0,3),'equilibre','Combiné Équilibré','⚖️');
-    if(legs.length>=4)html+=mkCombo(legs.slice(0,4),'gros','Combiné Gros coup','🚀');
+// Parier un combiné (mise quart de Kelly sur la cote combinée, suivi dans l'historique/bankroll)
+function placerCombo(cid){
+  const c=COMBOS[cid];if(!c)return;
+  if(getHistorique().find(h=>h.id===cid&&h.parie)){toast('Ce combiné est déjà suivi.','info');return;}
+  const cap=getBankrollActuel();
+  if(!cap||cap<=0){toast('💰 Définissez d\'abord votre capital dans l\'onglet Bankroll','info');goTo('bankroll');return;}
+  const {mise,edge}=miseKelly(c.proba/100,c.odds,cap);
+  if(mise<0.5){toast('Mise nulle : pas de valeur sur ce combiné à cette cote.','err');return;}
+  const gain=(mise*(c.odds-1)).toFixed(2);
+  askConfirm('🎯 Parier ce combiné ?',
+    `<strong>${c.emoji} ${c.nom}</strong> · ${c.legs.length} sélections<br><span style="font-size:12px">${c.legs.map(l=>'• '+l.pick).join('<br>')}</span><br><br>
+     Mise : <strong>${mise.toFixed(2)}€</strong> · Cote totale : <strong>${c.odds.toFixed(2)}</strong><br>
+     Gain potentiel : <strong style="color:var(--green)">+${gain}€</strong><br>
+     Probabilité réelle : <strong>${c.proba.toFixed(1)}%</strong> · edge <strong>${edge>=0?'+':''}${(edge*100).toFixed(1)}%</strong><br>
+     <span style="font-size:11px">⚠️ Gagne uniquement si les ${c.legs.length} sélections passent. Mise = quart de Kelly, plafond 5%.</span>`,
+    ()=>{
+      const hist=getHistorique();
+      hist.push({id:c.id,date:today(),type:'combo',typeLabel:'Combiné',matchLabel:`${c.legs.length} sélections`,pick:`${c.nom} : ${c.legs.map(l=>l.pick).join(' + ')}`,proba:Math.round(c.proba),confScore:Math.round(c.proba),marge:null,resultat:'P',scoreReel:null,parie:true,mise,cote:c.odds,datePari:today(),legs:c.legs});
+      sauverHistorique(hist);
+      renderFunSection();
+      if(document.getElementById('bk-curve'))renderBankroll();
+      toast(`✅ Combiné placé : <strong>${mise.toFixed(2)}€</strong> · cote ${c.odds.toFixed(2)}`);
+    },'Parier');
+}
+function renderFunSection(){
+  const el=document.getElementById('fun-section');if(!el)return;
+  if(!tousLesPronos.length){el.innerHTML='';return;}
+  // Verrou Premium (comme la Sélection : un aperçu donne envie)
+  if(!isPremium()){
+    el.innerHTML=`<div class="fun-wrap locked" onclick="ouvrirPremium()" style="cursor:pointer">
+      <div class="fun-h">🎲 COMBINÉS & GROS COUPS</div>
+      <div class="fun-sub">Combinés (du prudent au gros coup) à cotes multipliées + outsiders à grosse cote, avec toutes les maths réelles.</div>
+      <div style="text-align:center;padding:14px 0"><div class="lock-ic">🔒</div><div class="lock-t">Réservé aux membres Premium</div>
+      <button class="lock-btn" onclick="ouvrirPremium()">⭐ Débloquer les gros coups</button></div>
+    </div>`;
+    return;
   }
-  // Outsiders (victoires surprises à grosse cote)
+  // Combinés diversifiés : Prudent (plus sûr) · Équilibré (meilleure valeur) · Gros coup (plus grosses cotes)
+  // Les maths choisissent les jambes : « probable » = plus haute probabilité, « valeur » = meilleur edge.
+  // Plus de jambes = cote plus grosse + probabilité plus faible (le risque vient du nombre, pas d'un choix de type).
+  const parProba=bestPerGame(p=>p.proba).sort((a,b)=>b.proba-a.proba);
+  const parEdge=bestPerGame(p=>legEdge(p)).sort((a,b)=>legEdge(b)-legEdge(a));
+  COMBOS={};
+  let combos='';
+  combos+=mkComboHTML(buildCombo(parProba.slice(0,2),'prudent','Combiné Prudent','🛡️','les 2 paris les plus probables'));
+  if(parEdge.length>=3)combos+=mkComboHTML(buildCombo(parEdge.slice(0,3),'equilibre','Combiné Équilibré','⚖️','les 3 meilleures valeurs (edge)'));
+  if(parEdge.length>=4)combos+=mkComboHTML(buildCombo(parEdge.slice(0,4),'gros','Combiné Gros coup','🚀','les 4 meilleures valeurs empilées'));
+  if(!combos.trim())combos='<div class="empty">Pas assez de pronostics fiables aujourd\'hui pour un combiné.</div>';
+  // Outsiders (victoires surprises à grosse cote) avec maths : modèle vs marché
   const outs=[];
-  Object.keys(matchDataMap).forEach(gp=>{
+  Object.keys(matchDataMap||{}).forEach(gp=>{
     const m=matchDataMap[gp];if(!m||!m.vegas)return;
     const homeDog=(m.probaHome??50)<(m.probaAway??50);
     const odds=homeDog?m.vegas.coteH:m.vegas.coteA;if(!odds||odds<2)return;
     const team=homeDog?m.home:m.away,mp=homeDog?m.probaHome:m.probaAway,bk=homeDog?m.vegas.bkH:m.vegas.bkA;
+    const marketP=homeDog?m.vegas.probaH:m.vegas.probaA; // proba de marché dé-viggée
     if(!team)return;
-    outs.push({gp:+gp,team,odds,mp,bk,val:(mp/100)-(1/odds),label:`${m.away?.abbreviation||''} @ ${m.home?.abbreviation||''}`});
+    outs.push({gp:+gp,team,odds,mp,marketP,bk,edge:mp-(marketP??100/odds),label:`${m.away?.abbreviation||''} @ ${m.home?.abbreviation||''}`});
   });
-  outs.sort((a,b)=>b.val-a.val);
-  html+=`<div class="fun-sec-h">🐶 Outsiders à grosse cote</div><div class="fun-sub">Les victoires surprises (cote ≥ 2). <strong>💎</strong> = le modèle y voit de la valeur (sa probabilité dépasse celle du marché).</div>`;
-  if(!outs.length)html+='<div class="empty">Aucun outsider à grosse cote aujourd\'hui.</div>';
-  else html+=outs.slice(0,6).map(o=>`<div class="outsider" onclick="ouvrirMatchDepuis(${o.gp})">
+  outs.sort((a,b)=>b.edge-a.edge);
+  const outsHTML=!outs.length?'<div class="empty">Aucun outsider à grosse cote aujourd\'hui.</div>':outs.slice(0,6).map(o=>`<div class="outsider" onclick="ouvrirMatchDepuis(${o.gp})">
     <div class="outsider-cote">${o.odds.toFixed(2)}</div>
-    <div class="outsider-body"><div class="outsider-pick">${o.team.name} gagne</div><div class="outsider-meta">${o.label} · modèle : ${o.mp.toFixed(0)}%${o.bk?' · '+o.bk:''}</div></div>
-    <span class="outsider-val ${o.val>=0?'pos':'neg'}">${o.val>=0?'💎 +'+(o.val*100).toFixed(1)+'%':(o.val*100).toFixed(1)+'%'}</span>
+    <div class="outsider-body"><div class="outsider-pick">${o.team.name} gagne</div><div class="outsider-meta">${o.label} · modèle ${o.mp.toFixed(0)}% vs marché ${o.marketP!=null?o.marketP.toFixed(0)+'%':'—'} · ${o.bk||''}</div></div>
+    <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span>
   </div>`).join('');
-  el.innerHTML=html;
+  el.innerHTML=`<div class="fun-wrap">
+    <div class="fun-h">🎲 COMBINÉS & GROS COUPS</div>
+    <div class="fun-sub"><strong>C'est le modèle qui choisit les sélections</strong> (probabilité ou edge), pas nous — tous types de paris confondus. Plus de jambes = plus grosse cote, plus faible probabilité. Cotes et probabilités 100% réelles, edge affiché.</div>
+    ${combos}
+    <div class="fun-h" style="font-size:15px;margin-top:16px">🐶 Outsiders à grosse cote</div>
+    <div class="fun-sub">Victoires surprises (cote ≥ 2). <strong>💎</strong> = le modèle bat le marché. Clique pour l'analyse complète.</div>
+    ${outsHTML}
+  </div>`;
 }
 
 // ═══════════════════════════════════════════════════
@@ -2875,8 +2963,13 @@ function annulerPari(id){
   askConfirm('Annuler ce pari ?','Le pari sera retiré de votre suivi.',()=>{
     const hist=getHistorique();
     const entry=hist.find(h=>h.id===id);
-    if(entry&&entry.resultat==='P'){delete entry.parie;delete entry.mise;delete entry.cote;delete entry.datePari;sauverHistorique(hist);}
+    if(entry&&entry.resultat==='P'){
+      if(entry.type==='combo'){const i=hist.indexOf(entry);if(i>=0)hist.splice(i,1);} // un combiné annulé est retiré
+      else{delete entry.parie;delete entry.mise;delete entry.cote;delete entry.datePari;}
+      sauverHistorique(hist);
+    }
     afficherPronos(pronosFiltres());
+    if(document.getElementById('fun-section'))renderFunSection();
     if(document.getElementById('bk-curve'))renderBankroll();
     toast('Pari annulé','info');
   },'Oui, annuler');
@@ -3026,7 +3119,7 @@ async function loadJoueurs(){
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
-const pages={pronos:loadPronos,fun:loadFun,matchs:loadMatchs,tendances:loadTendances,historique:loadHistorique,bankroll:loadBankroll,classements:loadClassements,joueurs:loadJoueurs};
+const pages={pronos:loadPronos,matchs:loadMatchs,tendances:loadTendances,historique:loadHistorique,bankroll:loadBankroll,classements:loadClassements,joueurs:loadJoueurs};
 
 // Avertissement si le stockage du navigateur est bloqué (fichier local content://)
 if(!STORAGE_OK){
