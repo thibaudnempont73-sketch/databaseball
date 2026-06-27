@@ -23,6 +23,20 @@
   --sans:'Inter',sans-serif;--display:'Bebas Neue',sans-serif;--mono:'DM Mono',monospace;
 }
 html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh}
+.field-bg{position:fixed;inset:0;z-index:-1;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;pointer-events:none}
+.field-bg svg{width:min(150vw,1200px);color:var(--green);opacity:.05;transform:translateY(10%)}
+.time-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--blue);background:var(--blue-d);border:1px solid var(--blue-b);border-radius:7px;padding:4px 11px;letter-spacing:.3px}
+.tendance-chip{font-size:11px;color:var(--amber);background:var(--amber-d);border:1px solid var(--amber-b);border-radius:7px;padding:6px 10px;margin-bottom:8px;line-height:1.4}
+.compo-alert{font-size:11px;border-radius:8px;padding:8px 11px;margin-bottom:8px;line-height:1.4;display:flex;gap:8px;align-items:flex-start}
+.compo-alert.warn{color:var(--amber);background:var(--amber-d);border:1px solid var(--amber-b)}
+.compo-alert.err{color:var(--red);background:var(--red-d);border:1px solid var(--red-b)}
+/* Onglet Tendances */
+.tend-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--b1);border-radius:10px;padding:11px 14px;margin-bottom:8px;flex-wrap:wrap}
+.tend-team{min-width:150px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
+.tend-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;align-items:center}
+.tend-chip{font-size:10px;padding:3px 8px;border-radius:6px;background:var(--card2);border:1px solid var(--b2);color:var(--muted);white-space:nowrap}
+.tend-chip.hot{color:var(--green);border-color:var(--green-b);background:var(--green-d)}
+.tend-chip.cold{color:var(--red);border-color:var(--red-b);background:var(--red-d)}
 .topbar{position:sticky;top:0;z-index:200;background:rgba(6,10,18,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
 .logo{font-family:var(--display);font-size:20px;letter-spacing:2px;display:flex;align-items:center;gap:8px}
 .logo span{color:var(--red)}
@@ -350,9 +364,11 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </style>
 </head>
 <body>
+<!-- Fond terrain de baseball (SVG, subtil) -->
+<div class="field-bg" aria-hidden="true"><svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="0.4" stroke-linejoin="round"><path d="M50 76 L12 40 A54 54 0 0 1 88 40 Z"/><path d="M50 76 L61 65 L50 54 L39 65 Z"/><circle cx="50" cy="65" r="2"/></g></svg></div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v8 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v11 · 27/06</span></div>
   <div class="topbar-r">
     <span class="api-pill" id="api-pill">⏳</span>
     <div style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--red)"><div class="pulse"></div>LIVE</div>
@@ -362,7 +378,8 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <nav class="nav-tabs">
   <button class="nav-tab active" onclick="goTo('pronos')">⚡ Pronostics</button>
   <button class="nav-tab" onclick="goTo('matchs')">⚾ Matchs</button>
-  <button class="nav-tab" onclick="goTo('historique')">📈 Historique</button>
+  <button class="nav-tab" onclick="goTo('tendances')">📈 Tendances</button>
+  <button class="nav-tab" onclick="goTo('historique')">📊 Historique</button>
   <button class="nav-tab" onclick="goTo('bankroll')">💰 Bankroll</button>
   <button class="nav-tab" onclick="goTo('classements')">📊 Classements</button>
   <button class="nav-tab" onclick="goTo('joueurs')">🏆 Joueurs</button>
@@ -420,6 +437,18 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
   <div class="ph"><div class="ph-eye">En direct</div><div class="ph-title">MATCHS DU JOUR</div><div class="ph-sub">Cliquez pour voir l'analyse complète avec toutes les données croisées</div></div>
   <div id="matchs-list"><div class="loading"><div class="spinner"></div></div></div>
   <div id="match-detail" style="display:none"></div>
+</div>
+
+<!-- ═══ TENDANCES ═══ -->
+<div class="page" id="page-tendances">
+  <div class="ph"><div class="ph-eye">Séries & forme · 100% données réelles</div><div class="ph-title">TENDANCES DU JOUR</div><div class="ph-sub">Les séries des équipes qui jouent aujourd'hui, calculées sur leurs 10 derniers vrais matchs. Triez pour repérer les équipes chaudes.</div></div>
+  <div class="tabs" id="tend-tris">
+    <button class="tab-btn active" onclick="trierTendances('forme',this)">🔥 Forme</button>
+    <button class="tab-btn" onclick="trierTendances('over',this)">📊 Over 8.5</button>
+    <button class="tab-btn" onclick="trierTendances('serie',this)">⚡ Série en cours</button>
+    <button class="tab-btn" onclick="trierTendances('cover',this)">📐 Couvre −1.5</button>
+  </div>
+  <div id="tendances-list"><div class="empty">Chargez d'abord les pronostics (onglet ⚡) pour calculer les tendances.</div></div>
 </div>
 
 <!-- ═══ HISTORIQUE ═══ -->
@@ -552,7 +581,25 @@ const MLB='https://statsapi.mlb.com/api/v1';
 const WEATHER='https://api.open-meteo.com/v1/forecast';
 const SEASON=2026;
 const _cache={};
-// Stats de ligue (moyennes + écarts-types) calculées dynamiquement pour la normalisation Z-score
+
+// ═══════════════════════════════════════════════════
+// SUPABASE — l'app LIT le snapshot pré-calculé (aucun appel MLB/cotes côté navigateur)
+// (clé anon publique = lecture seule, protégée par RLS ; aucun secret ici)
+// ═══════════════════════════════════════════════════
+const SUPA_URL='https://qjuwtaxlidvxxhbjdsyl.supabase.co';
+const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqdXd0YXhsaWR2eHhoYmpkc3lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTk2NTUsImV4cCI6MjA5ODEzNTY1NX0.EZmxxQ3FRJm_zeHF4Nzu7mMBht9wM9h4bpBDuAztwXQ';
+let SNAP=null;
+async function loadSnapshot(){
+  if(SNAP)return SNAP;
+  const r=await fetch(`${SUPA_URL}/rest/v1/snapshots?select=data&order=date.desc&limit=1`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON}});
+  if(!r.ok)throw new Error('Base indisponible (HTTP '+r.status+')');
+  const rows=await r.json();
+  SNAP=rows?.[0]?.data||null;
+  setOk();
+  return SNAP;
+}
+
+// Stats de ligue (utilisées par l'ancien moteur client, désormais inerte)
 let LG={ops:null,teamEra:null,starterEra:null,starterFip:null,whip:null,k9:null};
 
 async function api(path){
@@ -586,7 +633,7 @@ async function getWeather(lat,lon){
 // ── Cotes Vegas (best-effort, fallback gracieux) ──
 // The Odds API publie un flux gratuit limité ; sans clé on tente un proxy public.
 // Si CORS/format échouent, on retourne null et l'UI affiche "indisponible".
-const VEGAS_KEY='d880e9080dfd150b895a5ed42838fc09'; // clé the-odds-api.com (gratuite, 500 req/mois) — vraies cotes Vegas activées
+const VEGAS_KEY=''; // les cotes sont récupérées CÔTÉ SERVEUR (clé jamais exposée ici). L'app lit le snapshot.
 async function getVegasOdds(){
   if(!VEGAS_KEY)return null;
   // CACHE : on ne consomme qu'1 crédit MAX par jour. Si on a déjà les cotes du jour, on les réutilise.
@@ -661,24 +708,41 @@ async function getFormeFatigue(teamId){
     const d=await api(`/schedule?sportId=1&teamId=${teamId}&startDate=${dateMinus(21)}&endDate=${yesterday()}&hydrate=team,linescore`);
     const games=(d.dates??[]).flatMap(x=>x.games??[]).filter(g=>g.status?.abstractGameState==='Final')
       .sort((a,b)=>new Date(b.gameDate)-new Date(a.gameDate));
-    const last10=games.slice(0,10).map(g=>{
+    // Données détaillées par match (15 derniers) — pour la forme ET les tendances
+    const logs=games.slice(0,15).map(g=>{
       const isHome=g.teams.home.team.id===teamId;
-      const my=isHome?g.teams.home.score:g.teams.away.score;
-      const opp=isHome?g.teams.away.score:g.teams.home.score;
-      return{w:my>opp,date:g.gameDate};
+      const my=isHome?(g.teams.home.score??0):(g.teams.away.score??0);
+      const opp=isHome?(g.teams.away.score??0):(g.teams.home.score??0);
+      return{w:my>opp,my,opp,isHome,total:my+opp,margin:my-opp,date:g.gameDate};
     });
+    const last10=logs.slice(0,10);
     const wins=last10.filter(x=>x.w).length;
-    // Fatigue : nombre de matchs et de jours de REPOS sur les 7 derniers jours
-    // (plus parlant que les "back-to-back" — en MLB jouer chaque jour est la norme)
+    // Fatigue : matchs et jours de REPOS sur 7 jours
     const last7=games.filter(g=>new Date(g.gameDate)>=new Date(dateMinus(7)));
     const joursJoues7=new Set(last7.map(g=>g.gameDate.split('T')[0])).size;
-    const reposSemaine=Math.max(0,7-joursJoues7);   // jours sans match sur 7
-    const doubleHeaders=last7.length-joursJoues7;    // 2 matchs le même jour
+    const reposSemaine=Math.max(0,7-joursJoues7);
+    const doubleHeaders=last7.length-joursJoues7;
+    // ── TENDANCES (style datafoot, 100% sur scores réels) ──
+    const bilan=(arr)=>({w:arr.filter(x=>x.w).length,l:arr.filter(x=>!x.w).length,n:arr.length});
+    const dom=last10.filter(x=>x.isHome), ext=last10.filter(x=>!x.isHome);
+    const over85=last10.filter(x=>x.total>8.5).length;       // Over 8.5 (total MLB de référence)
+    const cover15=last10.filter(x=>x.margin>=2).length;      // a gagné par 2+ (couvre le −1.5)
+    const plus15=last10.filter(x=>x.margin>=-1).length;      // a perdu par 1 max ou gagné (couvre le +1.5)
+    // série en cours (sur logs, plus récent en premier)
+    const serie=(test)=>{let c=0;for(const x of logs){if(test(x))c++;else break;}return c;};
+    const serieW=logs[0]?(logs[0].w?serie(x=>x.w):-serie(x=>!x.w)):0; // +n victoires / −n défaites
+    const serieOver=logs[0]?(logs[0].total>8.5?serie(x=>x.total>8.5):-serie(x=>x.total<=8.5)):0;
+    const tendances={
+      bilan10:bilan(last10), domicile:bilan(dom), exterieur:bilan(ext),
+      over85, over85n:last10.length, cover15, plus15,
+      serieW, serieOver
+    };
     return{
-      last10, // plus récent en premier (affiché de gauche à droite : récent → ancien)
+      last10, // plus récent en premier
       wins,total:last10.length,
       formePct:last10.length?wins/last10.length:null,
-      matchs7j:last7.length,reposSemaine,doubleHeaders
+      matchs7j:last7.length,reposSemaine,doubleHeaders,
+      tendances
     };
   }catch(e){return null;}
 }
@@ -722,6 +786,7 @@ function goTo(page){
   // Bankroll & Historique sont locaux (pas d'API) → on les rafraîchit à CHAQUE visite
   if(page==='bankroll'){renderBankroll();loaded[page]=true;return;}
   if(page==='historique'){loadHistorique();loaded[page]=true;return;}
+  if(page==='tendances'){loadTendances();loaded[page]=true;return;}
   if(!loaded[page]){loaded[page]=true;pages[page]?.();}
 }
 function switchTab(g,id,btn){
@@ -1277,6 +1342,8 @@ function confiance(dA,dB,ecart){
 function etoiles(n){
   return Array.from({length:5},(_,i)=>`<span style="color:${i<n?'var(--amber)':'var(--muted2)'};font-size:11px">${i<n?'★':'☆'}</span>`).join('');
 }
+// Série en cours → texte ("4 victoires de suite", "3 défaites de suite", null si 0)
+function fmtSerie(n){if(!n)return null;return n>0?`${n} victoire${n>1?'s':''} de suite`:`${-n} défaite${-n<-1?'s':''} de suite`;}
 
 // Score de confiance composite /100 = données×0.4 + écart entre équipes×0.4 + qualité données×0.2
 function confScore100(dataDispos,ecart,qualite){
@@ -1320,19 +1387,38 @@ function ring(proba,color){
 // ═══════════════════════════════════════════════════
 let tousLesPronos=[];
 let matchDataMap={}; // données brutes complètes par gamePk (pour l'onglet détail)
+let tendancesJour=[]; // [{team, forme}] des équipes du jour (pour l'onglet Tendances)
 let sortMode='conf';
 let filtreMode='tous';
 
 async function loadPronos(){
   document.getElementById('date-txt').textContent=fdate();
-  document.getElementById('pronos-list').innerHTML='<div class="loading"><div class="spinner"></div>Connexion à MLB API...</div>';
-
+  document.getElementById('pronos-list').innerHTML='<div class="loading"><div class="spinner"></div>Chargement…</div>';
+  try{
+    majResultatsHier().catch(()=>{});                 // règle les paris d'hier en tâche de fond (best-effort)
+    const snap=await loadSnapshot();
+    if(!snap){document.getElementById('pronos-list').innerHTML='<div class="empty">⚠️ Données indisponibles pour le moment. Réessayez dans un instant.</div>';return;}
+    SNAP=snap; matchDataMap=snap.matchDataMap||{}; tendancesJour=snap.tendancesJour||[]; pythMap=snap.pythMap||{};
+    if(snap.vide||!(snap.pronos||[]).length){document.getElementById('pronos-list').innerHTML=`<div class="empty">⚾ Aucun match MLB aujourd'hui.<br>Revenez demain !</div>`; tousLesPronos=[]; return;}
+    tousLesPronos=snap.pronos;
+    ajouterPronos(tousLesPronos);
+    renderKPIs(tousLesPronos);
+    renderSelection(tousLesPronos);
+    afficherPronos(pronosFiltres());
+    if(loaded['bankroll'])renderBankroll();
+    return;
+  }catch(e){
+    console.error(e);
+    document.getElementById('pronos-list').innerHTML=`<div class="empty">⚠️ Impossible de charger les données.<br><small>${e.message}</small><br><br>Réessayez plus tard.</div>`;
+    return;
+  }
+  // ═══ Ancien pipeline (appels API directs) — désormais INUTILISÉ (calcul fait côté serveur). Conservé inerte. ═══
   try{
     await majResultatsHier();
 
     // ── Données parallèles ──
     const [schedData,standData,teamHitData,teamPitData]=await Promise.all([
-      api(`/schedule?sportId=1&date=${today()}&hydrate=team,probablePitcher,linescore,venue`),
+      api(`/schedule?sportId=1&date=${today()}&hydrate=team,probablePitcher,linescore,venue,lineups`),
       api(`/standings?leagueId=103,104&season=${SEASON}&standingsTypes=regularSeason&hydrate=team`),
       api(`/teams/stats?season=${SEASON}&sportId=1&group=hitting&stats=season`),
       api(`/teams/stats?season=${SEASON}&sportId=1&group=pitching&stats=season`),
@@ -1396,6 +1482,9 @@ async function loadPronos(){
     // Forme récente réelle + fatigue (1 appel /équipe)
     const formeMap={};
     await Promise.all(teamIds.map(async id=>{formeMap[id]=await getFormeFatigue(id);}));
+    // Tendances du jour (style datafoot) : une entrée par équipe jouant aujourd'hui
+    const teamInfo={};games.forEach(g=>{teamInfo[g.teams.away.team.id]=g.teams.away.team;teamInfo[g.teams.home.team.id]=g.teams.home.team;});
+    tendancesJour=teamIds.map(id=>({team:teamInfo[id],forme:formeMap[id]})).filter(x=>x.team&&x.forme&&x.forme.tendances);
 
     // Splits domicile/extérieur (hitting + pitching /équipe)
     const splitMap={};
@@ -1441,9 +1530,20 @@ async function loadPronos(){
       const aForme=formeMap[aId]??null,hForme=formeMap[hId]??null;
       const aSplit=splitMap[aId]??{},hSplit=splitMap[hId]??{};
       const time=game.gameDate?new Date(game.gameDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
+      const dateCourt=game.gameDate?new Date(game.gameDate).toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'}):'';
       // Doubleheader : distinguer les 2 matchs du jour entre les mêmes équipes (sinon historique ambigu)
       const dhSuffix=(game.doubleHeader&&game.doubleHeader!=='N')?` (Match ${game.gameNumber||''})`:'';
       const matchLbl=`${away.team.name} @ ${home.team.name}${dhSuffix}`;
+
+      // ── État de la composition (alerte lanceur non confirmé / partant changé) ──
+      const partantManquant=!away.probablePitcher?.id||!home.probablePitcher?.id;
+      const compoConfirmee=!!(game.lineups?.homePlayers?.length&&game.lineups?.awayPlayers?.length);
+      const heuresAvant=game.gameDate?(new Date(game.gameDate)-new Date())/3600000:null;
+      let compoHTML='';
+      if(partantManquant)
+        compoHTML=`<div class="compo-alert err">⚠️ Lanceur partant non encore annoncé — pari à éviter tant que ce n'est pas officiel.</div>`;
+      else if(!compoConfirmee)
+        compoHTML=`<div class="compo-alert warn">⏳ Composition non confirmée${heuresAvant!=null&&heuresAvant>0?` (match dans ${heuresAvant<1?'moins d\'1h':Math.round(heuresAvant)+'h'})`:''} — le partant probable peut changer au dernier moment. Vérifiez avant de miser.</div>`;
 
       // OPS split contextuel : équipe visiteuse → split extérieur, équipe domicile → split domicile
       const aOpsSplit=aSplit.hitA?.ops?parseFloat(aSplit.hitA.ops):null;
@@ -1530,6 +1630,10 @@ async function loadPronos(){
       const formeDots=favForme&&favForme.last10?.length
         ?`<span class="forme-dots">${favForme.last10.map(x=>`<span class="forme-dot ${x.w?'forme-w':'forme-l'}">${x.w?'V':'D'}</span>`).join('')}</span>`:'';
       const fatigueBadge=favForme&&(favForme.reposSemaine===0||favForme.doubleHeaders>0)?`<span class="fatigue-badge">😴 ${favForme.matchs7j} matchs/7j${favForme.doubleHeaders>0?` · ${favForme.doubleHeaders} doubleheader`:' · 0 repos'}</span>`:'';
+      // Tendance (style datafoot) pour le prono Victoire
+      const tf=favForme&&favForme.tendances;
+      const splitT=favH?(tf&&tf.domicile.n?`${tf.domicile.w}-${tf.domicile.l} à domicile`:''):(tf&&tf.exterieur.n?`${tf.exterieur.w}-${tf.exterieur.l} à l'extérieur`:'');
+      const tendV=tf?`📈 ${favTeam.name} : ${tf.bilan10.w}-${tf.bilan10.l} sur ses 10 derniers${splitT?` · ${splitT}`:''}${fmtSerie(tf.serieW)?` · ${fmtSerie(tf.serieW)}`:''}`:'';
 
       const meteoHTML=meteo?(meteo.toit==='fixe'
         ?`<div class="meteo-badge" title="${wind.breakdown}">🏟️ ${meteo.stade} — dôme fermé<span class="meteo-impact neu">météo sans effet</span></div>`
@@ -1541,7 +1645,7 @@ async function loadPronos(){
 
       // Stocke toutes les données brutes du match pour l'onglet détail
       matchDataMap[game.gamePk]={
-        away:away.team, home:home.team, heure:time, state:game.status.abstractGameState,
+        away:away.team, home:home.team, heure:time, dateCourt, state:game.status.abstractGameState,
         probaAway:pA, probaHome:pH, scoreA:rA.score, scoreH:rH.score,
         confScore:cScore, marge:margeCI,
         aData, hData, aStand, hStand, aPitStat, hPitStat,
@@ -1552,7 +1656,7 @@ async function loadPronos(){
 
       pronos.push({
         id:`${game.gamePk}-V`, gamePk:game.gamePk, type:'victoire', typeLabel:'Victoire du match',
-        heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+        heure:time, dateCourt, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
         pick:`${favTeam.name} remporte le match`,
         explication:`Modèle sur données réelles (stats MLB + cotes du marché) : ${favTeam.name} a ${favProba.toFixed(1)}% de chances de gagner (intervalle ${Math.max(0,favProba-margeCI).toFixed(0)}–${Math.min(100,favProba+margeCI).toFixed(0)}%). Runs estimés : ${sim.expRunsA.toFixed(1)} − ${sim.expRunsH.toFixed(1)}.`,
         proba:favProba, confiance:conf, confScore:cScore, marge:margeCI,
@@ -1560,7 +1664,7 @@ async function loadPronos(){
         facteurs:favRes.facteurs,
         probaAway:pA, probaHome:pH,
         dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),
-        regAlertHTML, meteoHTML, valueAlertHTML, formeDots, fatigueBadge,
+        regAlertHTML, meteoHTML, valueAlertHTML, compoHTML, formeDots, fatigueBadge, tendance:tendV,
         state:game.status.abstractGameState,
         scoreA:rA.score, scoreH:rH.score
       });
@@ -1576,7 +1680,7 @@ async function loadPronos(){
         const coteOU=isOver?vegas.overOdds:vegas.underOdds;
         pronos.push({
           id:`${game.gamePk}-OU`, gamePk:game.gamePk, type:'ou', typeLabel:'Total points (O/U)',
-          heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+          heure:time, dateCourt, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
           pick:`${isOver?'OVER':'UNDER'} ${line} points au total`,
           ouLine:line, ouSide:isOver?'over':'under',
           explication:`Estimation sur données réelles : total attendu ${(sim.expRunsA+sim.expRunsH).toFixed(1)} points (${sim.expRunsA.toFixed(1)} − ${sim.expRunsH.toFixed(1)}) vs ligne ${line}. Probabilité ${isOver?'OVER':'UNDER'} : ${ourProba.toFixed(1)}%.`,
@@ -1589,7 +1693,8 @@ async function loadPronos(){
             meteo&&wind.score!==0?{nom:`Impact météo (net)`,valeur:wind.label,detail:wind.breakdown,score:50+wind.score*2,poids:10,sense:wind.impact}:null,
           ].filter(Boolean),
           probaAway:pA, probaHome:pH, dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),
-          meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+          meteoHTML, compoHTML, state:game.status.abstractGameState, regAlertHTML:'',
+          tendance:(aForme?.tendances||hForme?.tendances)?`📈 Over 8.5 récemment : ${aForme?.tendances?`${away.team.abbreviation} ${aForme.tendances.over85}/${aForme.tendances.over85n}`:''}${aForme?.tendances&&hForme?.tendances?' · ':''}${hForme?.tendances?`${home.team.abbreviation} ${hForme.tendances.over85}/${hForme.tendances.over85n}`:''}`:''
         });
       }
 
@@ -1608,7 +1713,7 @@ async function loadPronos(){
           :{team:away.team,isHome:false,point:vegas.spAwayPoint,odds:vegas.spAwayOdds,proba:awayCover*100,win:pA,bk:vegas.bkSpAway,fair:fH!=null?1-fH:null};
         pronos.push({
           id:`${game.gamePk}-RL`, gamePk:game.gamePk, type:'runline', typeLabel:'Run line (handicap)',
-          heure:time, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
+          heure:time, dateCourt, matchLabel:matchLbl, awayTeam:away.team, homeTeam:home.team,
           pick:`${side.team.name} ${side.point>0?'+':''}${side.point}`,
           rlIsHome:side.isHome, rlPoint:side.point,
           explication:`Run line : ${side.point<0?`${side.team.name} doit gagner par 2 points ou plus`:`${side.team.name} peut perdre par 1 point max (ou gagner)`}. Couverture estimée : ${side.proba.toFixed(1)}%.`,
@@ -1618,7 +1723,8 @@ async function loadPronos(){
             {nom:'Couverture du handicap estimée',valeur:`${side.proba.toFixed(1)}%`,detail:side.point<0?'Probabilité que l\'équipe gagne par 2 points ou plus':'Probabilité que l\'équipe ne perde pas par 2+ (perd par 1 ou gagne)',score:side.proba,poids:50,sense:side.proba>=55?'pos':'neg'},
           ],
           probaAway:pA, probaHome:pH, dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),
-          meteoHTML, state:game.status.abstractGameState, regAlertHTML:''
+          meteoHTML, compoHTML, state:game.status.abstractGameState, regAlertHTML:'',
+          tendance:(()=>{const sf=(side.isHome?hForme:aForme)?.tendances;if(!sf)return '';return `📈 ${side.team.name} récemment : ${side.point<0?`gagne par 2+ dans ${sf.cover15}/${sf.over85n}`:`couvre le +1.5 dans ${sf.plus15}/${sf.over85n}`}`;})()
         });
       }
     }
@@ -1693,7 +1799,7 @@ function renderSelection(pronos){
       return `<div class="sel-pick" onclick="ouvrirMatchDepuis(${p.gamePk})">
         <div class="sel-note" style="background:${col(x.note)}22;border:1px solid ${col(x.note)}55"><span class="sel-note-v" style="color:${col(x.note)}">${x.note}</span><span class="sel-note-l" style="color:${col(x.note)}">/100</span></div>
         <div class="sel-body">
-          <div class="sel-rank">#${i+1} · ${p.typeLabel} · ${p.matchLabel}</div>
+          <div class="sel-rank">#${i+1} · ${p.typeLabel} · ${p.matchLabel} · <span style="color:var(--blue)">📅 ${p.dateCourt||''} ⏱ ${p.heure}</span></div>
           <div class="sel-pickname">${p.pick}</div>
           <div class="sel-meta">${p.proba.toFixed(0)}% de réussite${edge!=null&&edge>=1?` · <span style="color:var(--green)">valeur +${edge.toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
           <div class="sel-why">💡 ${raisonPick(p)}</div>
@@ -1834,14 +1940,16 @@ function mkProno(p){
   return `<div class="prono ${isFort?'forte':isMoyen?'moyenne':''}">
     <div class="prono-top">
       <div class="prono-meta">
-        <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">⏱ ${p.heure}</span>
+        <span class="time-badge">📅 ${p.dateCourt||''} · ⏱ ${p.heure}</span>
         <span style="font-size:10px;color:var(--muted)">${p.matchLabel}</span>
         <span class="tag ${tagClass}">${p.typeLabel}</span>
         ${isFort?'<span class="pill pg">🔥 FORTE CONFIANCE</span>':isMoyen?'<span class="pill py">✅ BONNE CONFIANCE</span>':''}
         ${p.fatigueBadge||''}
       </div>
+      ${p.compoHTML||''}
       ${p.regAlertHTML||''}
       ${p.valueAlertHTML||''}
+      ${p.tendance?`<div class="tendance-chip">${p.tendance}</div>`:''}
       ${p.meteoHTML?`<div style="margin-bottom:8px">${p.meteoHTML}</div>`:''}
       <div class="prono-body">
         <div class="ring-wrap">
@@ -1949,26 +2057,24 @@ const TCOLORS={NYY:'#003087',BOS:'#BD3039',TOR:'#134A8E',BAL:'#DF4601',TBR:'#092
 
 async function loadMatchs(){
   try{
-    const d=await api(`/schedule?sportId=1&date=${today()}&hydrate=team,probablePitcher,linescore,venue`);
-    const games=d.dates?.[0]?.games??[];
+    const snap=await loadSnapshot();
+    const games=snap?.matchs??[];
     if(!games.length){document.getElementById('matchs-list').innerHTML='<div class="empty">Aucun match aujourd\'hui</div>';return;}
     document.getElementById('matchs-list').innerHTML=games.map(g=>{
-      const aw=g.teams.away,hm=g.teams.home;
-      const st=g.status.abstractGameState;
-      const as=aw.score??'—',hs=hm.score??'—';
-      const t=g.gameDate?new Date(g.gameDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
-      const awP=aw.probablePitcher?.fullName??'Partant non annoncé';
-      const hmP=hm.probablePitcher?.fullName??'Partant non annoncé';
+      const st=g.state;
+      const as=g.awayScore??'—',hs=g.homeScore??'—';
+      const t=g.gameDate?new Date(g.gameDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'}):'—';
+      const awP=g.awayP??'Partant non annoncé',hmP=g.homeP??'Partant non annoncé';
       const stBadge=st==='Live'?'<span class="pill pr">EN COURS</span>':st==='Final'?'<span class="pill pm">TERMINÉ</span>':'<span class="pill py">À VENIR</span>';
       return `<div class="card mb12" style="cursor:pointer" onclick="ouvrirMatch(${g.gamePk})">
         <div style="padding:14px 16px">
           <div style="font-size:10px;color:var(--muted);margin-bottom:7px">${t} · ${stBadge}</div>
           <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px">
-            <div><div style="font-size:13px;font-weight:700">${aw.team.name}</div><div style="font-size:10px;color:var(--muted)">${aw.leagueRecord?.wins??'—'}V - ${aw.leagueRecord?.losses??'—'}D</div></div>
+            <div><div style="font-size:13px;font-weight:700">${g.away.name}</div><div style="font-size:10px;color:var(--muted)">${g.awayRec?.wins??'—'}V - ${g.awayRec?.losses??'—'}D</div></div>
             <div style="text-align:center">
               ${st!=='Preview'?`<div style="font-family:var(--display);font-size:24px">${as} - ${hs}</div>`:'<div style="color:var(--muted);font-weight:700;font-size:13px">@</div>'}
             </div>
-            <div style="text-align:right"><div style="font-size:13px;font-weight:700">${hm.team.name}</div><div style="font-size:10px;color:var(--muted)">${hm.leagueRecord?.wins??'—'}V - ${hm.leagueRecord?.losses??'—'}D</div></div>
+            <div style="text-align:right"><div style="font-size:13px;font-weight:700">${g.home.name}</div><div style="font-size:10px;color:var(--muted)">${g.homeRec?.wins??'—'}V - ${g.homeRec?.losses??'—'}D</div></div>
           </div>
           <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);border-top:1px solid var(--b1);padding-top:8px">
             <span>⚾ ${awP}</span><span>${hmP} ⚾</span>
@@ -2070,6 +2176,44 @@ function renderMatchData(gamePk){
 function fermerMatch(){
   document.getElementById('match-detail').style.display='none';
   document.getElementById('matchs-list').style.display='block';
+}
+
+// ═══════════════════════════════════════════════════
+// PAGE TENDANCES (style datafoot — séries sur données réelles)
+// ═══════════════════════════════════════════════════
+let tendTri='forme';
+function loadTendances(){renderTendances();}
+function trierTendances(mode,btn){
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');tendTri=mode;renderTendances();
+}
+function renderTendances(){
+  const el=document.getElementById('tendances-list');if(!el)return;
+  if(!tendancesJour.length){el.innerHTML='<div class="empty">Chargez d\'abord les pronostics (onglet ⚡) pour calculer les tendances.</div>';return;}
+  const T=x=>x.forme.tendances;
+  const arr=[...tendancesJour].sort((a,b)=>{
+    if(tendTri==='over')return T(b).over85-T(a).over85;
+    if(tendTri==='serie')return Math.abs(T(b).serieW)-Math.abs(T(a).serieW);
+    if(tendTri==='cover')return T(b).cover15-T(a).cover15;
+    return (b.forme.formePct||0)-(a.forme.formePct||0);
+  });
+  el.innerHTML=arr.map(x=>{
+    const t=T(x),f=x.forme;
+    const dots=f.last10.map(g=>`<span class="forme-dot ${g.w?'forme-w':'forme-l'}">${g.w?'V':'D'}</span>`).join('');
+    const serieTxt=fmtSerie(t.serieW);
+    return `<div class="tend-card">
+      <div class="tend-team"><span class="sdot" style="background:${TCOLORS[x.team.abbreviation]||'#888'}"></span>${x.team.name}</div>
+      <div class="tend-chips">
+        <span class="tend-chip ${f.formePct>=0.6?'hot':f.formePct<=0.4?'cold':''}">Bilan ${t.bilan10.w}-${t.bilan10.l}</span>
+        <span class="forme-dots">${dots}</span>
+        ${t.domicile.n?`<span class="tend-chip">🏠 ${t.domicile.w}-${t.domicile.l}</span>`:''}
+        ${t.exterieur.n?`<span class="tend-chip">✈️ ${t.exterieur.w}-${t.exterieur.l}</span>`:''}
+        <span class="tend-chip ${t.over85>=6?'hot':t.over85<=4?'cold':''}">Over 8.5 : ${t.over85}/${t.over85n}</span>
+        <span class="tend-chip">Gagne +2 : ${t.cover15}/${t.over85n}</span>
+        ${serieTxt?`<span class="tend-chip ${t.serieW>0?'hot':'cold'}">${t.serieW>0?'🔥':'❄️'} ${serieTxt}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════════
@@ -2335,17 +2479,10 @@ function loadBankroll(){renderBankroll();}
 let pythMap={}; // teamId -> {rs,ra,pyth} pour la page Classements
 async function loadClassements(){
   try{
-    const [d,hit,pit]=await Promise.all([
-      api(`/standings?leagueId=103,104&season=${SEASON}&standingsTypes=regularSeason&hydrate=team`),
-      api(`/teams/stats?season=${SEASON}&sportId=1&group=hitting&stats=season`),
-      api(`/teams/stats?season=${SEASON}&sportId=1&group=pitching&stats=season`),
-    ]);
-    pythMap={};
-    const rsMap={},raMap={};
-    hit.stats?.[0]?.splits?.forEach(s=>{if(s.team?.id)rsMap[s.team.id]=parseFloat(s.stat.runs);});
-    pit.stats?.[0]?.splits?.forEach(s=>{if(s.team?.id)raMap[s.team.id]=parseFloat(s.stat.runs);});
-    Object.keys(rsMap).forEach(id=>{const rs=rsMap[id],ra=raMap[id];if(rs&&ra)pythMap[id]={rs,ra,pyth:pythagorean(rs,ra)};});
-    const recs=d.records??[];
+    const snap=await loadSnapshot();
+    pythMap=snap?.pythMap||{};
+    const recs=snap?.standings??[];
+    if(!recs.length){document.getElementById('stand-al').innerHTML='<div class="empty">Classements indisponibles</div>';return;}
     const al=recs.filter(r=>[200,201,202].includes(r.division?.id));
     const nl=recs.filter(r=>[203,204,205].includes(r.division?.id));
     renderStands('stand-al',al.length?al:recs.slice(0,3));
@@ -2389,27 +2526,26 @@ const LEAD_DEFS=[
   ['whip','whip','amber'],['saves','saves','blue'],['k9','strikeoutsPer9Inn','red']
 ];
 async function loadJoueurs(){
+  let snap=null;try{snap=await loadSnapshot();}catch(e){}
+  const all=snap?.leaders||{};
   for(const[key,cat,col]of LEAD_DEFS){
     const el=document.getElementById(`l-${key}`);
     if(!el)continue;
-    try{
-      const d=await api(`/stats/leaders?leaderCategories=${cat}&season=${SEASON}&sportId=1&limit=8`);
-      const leaders=d.leagueLeaders?.[0]?.leaders??[];
-      el.innerHTML=leaders.length?leaders.map((l,i)=>`
-        <div class="lead-item">
-          <span class="lr-rank ${i<3?'top':''}">${i+1}</span>
-          <div class="lr-info"><div class="lr-name">${l.person?.fullName??'—'}</div><div class="lr-team">${l.team?.name??''}</div></div>
-          <span class="lr-val" style="color:var(--${col})">${l.value??'—'}</span>
-        </div>`).join('')
-      :'<div class="empty" style="padding:16px">Données indisponibles</div>';
-    }catch(e){el.innerHTML='<div class="empty" style="padding:12px;font-size:11px">Indisponible</div>';}
+    const leaders=all[key]??[];
+    el.innerHTML=leaders.length?leaders.map((l,i)=>`
+      <div class="lead-item">
+        <span class="lr-rank ${i<3?'top':''}">${i+1}</span>
+        <div class="lr-info"><div class="lr-name">${l.name??'—'}</div><div class="lr-team">${l.team??''}</div></div>
+        <span class="lr-val" style="color:var(--${col})">${l.value??'—'}</span>
+      </div>`).join('')
+    :'<div class="empty" style="padding:16px">Données indisponibles</div>';
   }
 }
 
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
-const pages={pronos:loadPronos,matchs:loadMatchs,historique:loadHistorique,bankroll:loadBankroll,classements:loadClassements,joueurs:loadJoueurs};
+const pages={pronos:loadPronos,matchs:loadMatchs,tendances:loadTendances,historique:loadHistorique,bankroll:loadBankroll,classements:loadClassements,joueurs:loadJoueurs};
 
 // Avertissement si le stockage du navigateur est bloqué (fichier local content://)
 if(!STORAGE_OK){
