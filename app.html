@@ -392,19 +392,24 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .tr-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .selection-h{font-family:var(--display);font-size:20px;letter-spacing:.5px;display:flex;align-items:center;gap:8px;margin-bottom:3px}
 .selection-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.4}
-.sel-pick{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--b2);border-radius:10px;padding:11px 13px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.sel-pick{display:flex;flex-direction:column;gap:9px;background:var(--card2);border:1px solid var(--b2);border-radius:11px;padding:12px 13px;margin-bottom:9px;cursor:pointer;transition:border-color .15s}
 .sel-pick:last-child{margin-bottom:0}
 .sel-pick:hover{border-color:var(--green-b)}
-.sel-note{flex-shrink:0;width:48px;height:48px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--display)}
+.sel-hd{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.sel-rk{font-family:var(--display);font-size:14px;color:var(--white);background:var(--bg2);border:1px solid var(--b2);border-radius:6px;padding:0 7px;line-height:1.45}
+.sel-tag{font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-d);border:1px solid var(--blue-b);border-radius:20px;padding:2px 9px}
+.sel-time{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-d);border:1px solid var(--blue-b);border-radius:7px;padding:2px 8px;white-space:nowrap;letter-spacing:.3px}
+.sel-row{display:flex;align-items:center;gap:12px}
+.sel-note{flex-shrink:0;width:46px;height:46px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--display)}
 .sel-note-v{font-size:19px;line-height:1}
-.sel-note-l{font-size:6px;letter-spacing:.3px}
+.sel-note-l{font-size:7px;letter-spacing:.3px}
 .sel-body{flex:1;min-width:0}
-.sel-rank{font-family:var(--mono);font-size:10px;color:var(--muted)}
-.sel-pickname{font-size:13px;font-weight:800;line-height:1.25}
-.sel-meta{font-size:10px;color:var(--muted);margin-top:1px}
-.sel-why{font-size:10px;color:var(--white);margin-top:3px;line-height:1.35;opacity:.85}
+.sel-match{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sel-pickname{font-size:14px;font-weight:800;line-height:1.25;margin:1px 0}
+.sel-meta{font-size:11px;color:var(--muted)}
+.sel-why{font-size:11px;color:var(--white);line-height:1.4;opacity:.9;border-top:1px solid var(--b1);padding-top:8px}
 .sel-right{flex-shrink:0;text-align:right}
-.sel-cote{font-family:var(--display);font-size:22px;color:var(--green);line-height:1}
+.sel-cote{font-family:var(--display);font-size:23px;color:var(--green);line-height:1}
 .sel-cote-l{font-size:8px;color:var(--muted)}
 
 /* ALERTE VALEUR INVERSÉE */
@@ -573,7 +578,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v32 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v34 · 27/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -856,7 +861,7 @@ function mkPronoLocked(p){
   const cs=p.confScore??50;
   return `<div class="prono lock-card">
     <div class="prono-meta" style="justify-content:center;margin-bottom:6px">
-      <span class="time-badge">📅 ${p.dateCourt||''} · ⏱ ${p.heure}</span>
+      <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>
       <span class="tag">${p.typeLabel}</span>
     </div>
     <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${p.matchLabel}</div>
@@ -2287,26 +2292,28 @@ function renderSelection(pronos){
       const p=x.p,edge=p.fairProba!=null?((p.proba/100-p.fairProba)*100):null;
       const locked=!isPremium()&&p.id!==FREE_PICK_ID;
       const free=!isPremium()&&p.id===FREE_PICK_ID;
+      const noteBox=`<div class="sel-note" style="background:${col(x.note)}22;border:1px solid ${col(x.note)}55"><span class="sel-note-v" style="color:${col(x.note)}">${x.note}</span><span class="sel-note-l" style="color:${col(x.note)}">/100</span></div>`;
+      const coteBox=`<div class="sel-right"><div class="sel-cote">${p.coteVegas.toFixed(2)}</div><div class="sel-cote-l">cote</div></div>`;
       if(locked){
         return `<div class="sel-pick locked" onclick="ouvrirPremium()">
-          <div class="sel-note" style="background:${col(x.note)}22;border:1px solid ${col(x.note)}55"><span class="sel-note-v" style="color:${col(x.note)}">${x.note}</span><span class="sel-note-l" style="color:${col(x.note)}">/100</span></div>
-          <div class="sel-body">
-            <div class="sel-rank">#${i+1} · ${p.typeLabel} · ${p.matchLabel}</div>
-            <div class="sel-pickname">${p.pick}</div>
-            <div class="sel-meta"><span class="sel-lock-tag">🔒 PREMIUM</span>Débloque ce pick et toute la sélection</div>
+          <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span><span class="sel-lock-tag">🔒 PREMIUM</span></div>
+          <div class="sel-row">${noteBox}
+            <div class="sel-body"><div class="sel-match">${p.matchLabel}</div><div class="sel-pickname">${p.pick}</div><div class="sel-meta">Débloque ce pick et toute la sélection</div></div>
+            ${coteBox}
           </div>
-          <div class="sel-right"><div class="sel-cote">${p.coteVegas.toFixed(2)}</div><div class="sel-cote-l">cote</div></div>
         </div>`;
       }
       return `<div class="sel-pick" onclick="ouvrirMatchDepuis(${p.gamePk})">
-        <div class="sel-note" style="background:${col(x.note)}22;border:1px solid ${col(x.note)}55"><span class="sel-note-v" style="color:${col(x.note)}">${x.note}</span><span class="sel-note-l" style="color:${col(x.note)}">/100</span></div>
-        <div class="sel-body">
-          <div class="sel-rank">#${i+1} · ${p.typeLabel} · ${p.matchLabel} · <span style="color:var(--blue)">📅 ${dateProno(p)} ⏱ ${heureProno(p)}</span>${free?'<span class="free-badge">🎁 GRATUIT</span>':''}</div>
-          <div class="sel-pickname">${p.pick}</div>
-          <div class="sel-meta">${p.proba.toFixed(0)}% de réussite${edge!=null&&edge>=1?` · <span style="color:var(--green)">valeur +${edge.toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
-          <div class="sel-why">💡 ${raisonPick(p)}</div>
+        <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span>${free?'<span class="free-badge">🎁 GRATUIT</span>':''}<span class="sel-time">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span></div>
+        <div class="sel-row">${noteBox}
+          <div class="sel-body">
+            <div class="sel-match">${p.matchLabel}</div>
+            <div class="sel-pickname">${p.pick}</div>
+            <div class="sel-meta">${p.proba.toFixed(0)}% de réussite${edge!=null&&edge>=1?` · <span style="color:var(--green)">valeur +${edge.toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
+          </div>
+          ${coteBox}
         </div>
-        <div class="sel-right"><div class="sel-cote">${p.coteVegas.toFixed(2)}</div><div class="sel-cote-l">cote</div></div>
+        <div class="sel-why">💡 ${raisonPick(p)}</div>
       </div>`;
     }).join('')}
   </div>`;
