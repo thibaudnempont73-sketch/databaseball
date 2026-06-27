@@ -563,7 +563,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v28 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v29 · 27/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -867,10 +867,17 @@ function pageLockHTML(titre,desc){
 function ouvrirPremium(){document.getElementById('premium-modal').style.display='flex';}
 function fermerPremium(){document.getElementById('premium-modal').style.display='none';}
 function choisirPlan(p){planChoisi=p;document.getElementById('plan-mois').classList.toggle('sel',p==='mois');document.getElementById('plan-an').classList.toggle('sel',p==='an');}
-function lancerAbonnement(){
-  // Étape 3b : ouvrira le paiement Stripe. Pour l'instant, message.
-  toast('💳 Le paiement sécurisé arrive très bientôt — merci de ta patience !','info');
-  fermerPremium();
+const STRIPE_READY=false; // ⚙️ passer à true une fois l'Edge Function "create-checkout" déployée sur Supabase
+async function lancerAbonnement(){
+  if(!STRIPE_READY){toast('💳 Le paiement sécurisé arrive très bientôt — merci de ta patience !','info');fermerPremium();return;}
+  const s=getSession();if(!s?.access_token){toast('Connecte-toi d\'abord.','err');return;}
+  const btn=document.querySelector('.pm-cta');if(btn){btn.disabled=true;btn.textContent='Redirection…';}
+  try{
+    const r=await fetch(`${SUPA_URL}/functions/v1/create-checkout`,{method:'POST',headers:{apikey:SUPA_ANON,Authorization:'Bearer '+s.access_token,'Content-Type':'application/json'},body:JSON.stringify({plan:planChoisi})});
+    const d=await r.json();
+    if(d&&d.url){location.href=d.url;return;} // → page de paiement Stripe
+    throw new Error(d&&d.error||'Paiement indisponible');
+  }catch(e){toast('⚠️ '+e.message,'err');if(btn){btn.disabled=false;btn.textContent='⭐ Devenir Premium';}}
 }
 function getSession(){try{return JSON.parse(lsGet('db_session')||'null');}catch(e){return null;}}
 function setSession(s){if(s)lsSet('db_session',JSON.stringify(s));else lsRemove('db_session');}
@@ -881,7 +888,8 @@ async function authSignup(email,password){
   if(!r.ok)throw new Error(d.msg||d.error_description||d.error||'Inscription impossible');
   return d;
 }
-async function fetchUserEmail(token){try{const r=await fetch(`${SUPA_URL}/auth/v1/user`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+token}});const d=await r.json();return d?.email||null;}catch(e){return null;}}
+async function fetchUser(token){try{const r=await fetch(`${SUPA_URL}/auth/v1/user`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+token}});const d=await r.json();return r.ok?{id:d.id,email:d.email}:null;}catch(e){return null;}}
+async function fetchUserEmail(token){const u=await fetchUser(token);return u?u.email:null;}
 async function recover(email){
   const r=await fetch(`${SUPA_URL}/auth/v1/recover?redirect_to=${encodeURIComponent(REDIRECT_URL)}`,{method:'POST',headers:{apikey:SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({email})});
   if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.msg||d.error_description||'Envoi impossible');}
@@ -923,7 +931,40 @@ async function ensureAuth(){
   if(s.expires_at&&s.expires_at*1000<Date.now()+60000)s=await refreshSession(); // rafraîchit si expiré/bientôt
   return s&&s.access_token?s:null;
 }
-function sessionFrom(d){return{access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:d.user?.email};}
+function sessionFrom(d){return{access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:d.user?.email,id:d.user?.id};}
+// ─── Profil / abonnement (source de vérité = Stripe via webhook, lu ici à la connexion) ───
+let userProfile=null;
+async function fetchProfile(s){
+  if(!s||!s.access_token)return;
+  try{
+    const r=await fetch(`${SUPA_URL}/rest/v1/profiles?select=abonnement,fin_periode`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+s.access_token}});
+    if(!r.ok)return;
+    const rows=await r.json();userProfile=(rows&&rows[0])||null;
+    if(userProfile){const actif=userProfile.abonnement==='actif'&&(!userProfile.fin_periode||new Date(userProfile.fin_periode)>new Date());userPremium=!!actif;}
+  }catch(e){}
+}
+// ─── Synchro des données utilisateur (bankroll/paris/historique) ↔ Supabase (multi-appareils) ───
+const SYNC_KEYS=['db_pronos','db_bankroll','db_bankroll_actuel'];
+async function syncPull(s){
+  if(!s||!s.access_token)return;
+  try{
+    const r=await fetch(`${SUPA_URL}/rest/v1/user_state?select=data`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+s.access_token}});
+    if(!r.ok)return;
+    const rows=await r.json();const data=rows&&rows[0]&&rows[0].data;
+    if(data&&typeof data==='object')SYNC_KEYS.forEach(k=>{if(data[k]!=null)lsSet(k,String(data[k]));});
+  }catch(e){}
+}
+let _syncTimer=null;
+function syncPush(){
+  const s=getSession();if(!s||!s.access_token||!s.id)return;
+  clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(async()=>{
+    try{
+      const data={};SYNC_KEYS.forEach(k=>{const v=lsGet(k);if(v!=null)data[k]=v;});
+      await fetch(`${SUPA_URL}/rest/v1/user_state`,{method:'POST',headers:{apikey:SUPA_ANON,Authorization:'Bearer '+s.access_token,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({user_id:s.id,data,updated_at:new Date().toISOString()})});
+    }catch(e){}
+  },1500);
+}
 function logout(){setSession(null);location.reload();}
 function setAuthMode(m){
   authMode=m;
@@ -966,16 +1007,16 @@ async function submitAuth(e){
       const s=getSession();
       if(!s?.access_token)throw new Error('Lien expiré. Refais une demande de réinitialisation.');
       await updatePassword(s.access_token,password);
-      const em=await fetchUserEmail(s.access_token);
-      setSession({...s,email:em});
-      demarrerApp(getSession());
+      const u=await fetchUser(s.access_token);
+      setSession({...s,email:u?.email,id:u?.id});
+      await demarrerApp(getSession());
     }else if(authMode==='signup'){
       const d=await authSignup(email,password);
-      if(d.access_token){ setSession(sessionFrom(d)); demarrerApp(getSession()); }
+      if(d.access_token){ setSession(sessionFrom(d)); await demarrerApp(getSession()); }
       else { setAuthMode('login'); authMsg('✅ Compte créé ! Un email de confirmation a été envoyé à '+email+'. Clique le lien reçu, puis connecte-toi.','ok'); }
     }else{
       const d=await authLogin(email,password);
-      setSession(sessionFrom(d)); demarrerApp(getSession());
+      setSession(sessionFrom(d)); await demarrerApp(getSession());
     }
   }catch(err){ authMsg('⚠️ '+err.message,'err'); }
   finally{ btn.disabled=false; btn.textContent=lbl; }
@@ -984,15 +1025,18 @@ async function submitAuth(e){
 function showAuthScreen(){
   document.getElementById('auth-screen').style.display='flex';
 }
-function demarrerApp(s){
+async function demarrerApp(s){
   adminViewFree=lsGet('db_admin_viewfree')==='1'; // sûr ici : le stockage est prêt
   document.getElementById('auth-screen').style.display='none';
   const uc=document.getElementById('user-chip');
-  if(uc&&s){
-    uc.style.display='';uc.querySelector('.uc-email').textContent=s.email||'Mon compte';
-    if(!s.email&&s.access_token)fetchUserEmail(s.access_token).then(em=>{if(em){s.email=em;setSession(s);uc.querySelector('.uc-email').textContent=em;applyAdminUI();applyPremiumUI();}});
-  }
+  if(uc&&s){uc.style.display='';uc.querySelector('.uc-email').textContent=s.email||'Mon compte';}
   applyAdminUI();applyPremiumUI();
+  // Complète l'id/email manquants (ex. retour de lien email) — nécessaire pour la synchro
+  if(s&&s.access_token&&(!s.id||!s.email)){const u=await fetchUser(s.access_token);if(u){s.id=s.id||u.id;s.email=s.email||u.email;setSession(s);if(uc)uc.querySelector('.uc-email').textContent=s.email||'Mon compte';}}
+  // Abonnement (premium réel) + données utilisateur (synchro), tolérants aux pannes
+  try{await fetchProfile(s);}catch(e){}
+  applyAdminUI();applyPremiumUI();
+  try{await syncPull(s);}catch(e){}
   if(!loaded['pronos']){loaded['pronos']=true;loadPronos();}
 }
 
@@ -1250,9 +1294,9 @@ function lsSet(k,v){_mem[k]=String(v);if(STORAGE_OK){try{localStorage.setItem(k,
 function lsRemove(k){delete _mem[k];if(STORAGE_OK){try{localStorage.removeItem(k);}catch(e){}}}
 
 function getHistorique(){try{return JSON.parse(lsGet('db_pronos')||'[]');}catch(e){return[];}}
-function sauverHistorique(hist){try{lsSet('db_pronos',JSON.stringify(hist));}catch(e){}}
+function sauverHistorique(hist){try{lsSet('db_pronos',JSON.stringify(hist));}catch(e){}if(typeof syncPush==='function')syncPush();}
 function getBankroll(){try{return parseFloat(lsGet('db_bankroll')||'0');}catch(e){return 0;}}
-function setBankrollLS(v){lsSet('db_bankroll',v);}
+function setBankrollLS(v){lsSet('db_bankroll',v);if(typeof syncPush==='function')syncPush();}
 // Capital actuel = capital initial + gains/pertes des paris RÉELLEMENT placés et terminés
 function getBankrollActuel(){
   const init=getBankroll();
@@ -3168,11 +3212,11 @@ if(!STORAGE_OK){
       const sess={access_token:hash.access_token,refresh_token:hash.refresh_token,expires_at:hash.expires_at?+hash.expires_at:undefined,email:null};
       setSession(sess);
       if(hash.type==='recovery'){ showAuthScreen(); setAuthMode('reset'); return; }
-      demarrerApp(getSession()); return; // email confirmé / connexion → on entre
+      await demarrerApp(getSession()); return; // email confirmé / connexion → on entre
     }
   }
   const s=await ensureAuth();
-  if(s){demarrerApp(s);return;}
+  if(s){await demarrerApp(s);return;}
   showAuthScreen();
   if(new URLSearchParams(location.search).get('auth')==='signup')setAuthMode('signup'); // arrivée depuis « Créer un compte »
 })();
