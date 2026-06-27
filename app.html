@@ -176,6 +176,14 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .combo-bet-btn:hover{filter:brightness(1.08)}
 .combo-bet{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;background:var(--card2);border:1px solid var(--b2);border-radius:8px;padding:8px 11px;font-size:11px}
 .combo-cancel{background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer;text-decoration:underline}
+/* Suivi des paris Fun (combinés) dans l'historique */
+.hf-item{background:var(--card2);border:1px solid var(--b2);border-radius:10px;padding:12px 13px;margin:9px 12px}
+.hf-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hf-name{font-weight:800;font-size:14px}
+.hf-cote{font-family:var(--display);font-size:20px;color:var(--amber);line-height:1}
+.hf-legs{margin:8px 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:7px 0}
+.hf-leg{font-size:12px;padding:2px 0;line-height:1.4}
+.hf-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)}
 .topbar{position:sticky;top:0;z-index:200;background:rgba(6,10,18,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
 .logo{font-family:var(--display);font-size:20px;letter-spacing:2px;display:flex;align-items:center;gap:8px;flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap}
 .logo span{color:var(--red)}
@@ -580,7 +588,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v37 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v38 · 28/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -681,6 +689,12 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     <span style="font-size:10px;color:var(--muted);line-height:1.4;flex:1;min-width:200px">⚠️ Sur fichier local (Android <code>content://</code>), le stockage du navigateur peut s'effacer entre sessions. Exportez régulièrement, ou hébergez l'app sur GitHub Pages pour une persistance fiable.</span>
   </div>
 
+  <div class="tabs" id="hist-tabs" style="margin-bottom:14px">
+    <button class="tab-btn active" onclick="switchHistView('global',this)">📊 Suivi global</button>
+    <button class="tab-btn" onclick="switchHistView('fun',this)">🎲 Paris Fun</button>
+  </div>
+
+  <div id="hist-view-global">
   <div class="g4 mb16">
     <div class="kpi"><div class="kpi-l">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="h-taux">—</div><div class="kpi-m">pronos terminés</div></div>
     <div class="kpi"><div class="kpi-l">Pronos analysés</div><div class="kpi-v" style="color:var(--blue)" id="h-total">—</div><div class="kpi-m">depuis le début</div></div>
@@ -715,6 +729,20 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
       </div>
     </div>
     <div id="hist-list"></div>
+  </div>
+  </div><!-- /hist-view-global -->
+
+  <div id="hist-view-fun" style="display:none">
+    <div class="g4 mb16">
+      <div class="kpi"><div class="kpi-l">Combinés joués</div><div class="kpi-v" style="color:var(--purple)" id="hf-nb">—</div><div class="kpi-m">au total</div></div>
+      <div class="kpi"><div class="kpi-l">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="hf-taux">—</div><div class="kpi-m">combinés terminés</div></div>
+      <div class="kpi"><div class="kpi-l">Gain / Perte</div><div class="kpi-v" id="hf-roi">—</div><div class="kpi-m">sur combinés réglés</div></div>
+      <div class="kpi"><div class="kpi-l">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="hf-jeu">—</div><div class="kpi-m">combinés en attente</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="card-ht">🎲 Mes combinés</div><div class="card-hs">Suivi de tes paris combinés — un combiné gagne seulement si TOUTES ses sélections passent.</div></div>
+      <div id="hist-fun-list"></div>
+    </div>
   </div>
 </div>
 
@@ -2828,7 +2856,7 @@ function placerCombo(cid){
       const hist=getHistorique();
       hist.push({id:c.id,date:today(),type:'combo',typeLabel:'Combiné',matchLabel:`${c.legs.length} sélections`,pick:`${c.nom} : ${c.legs.map(l=>l.pick).join(' + ')}`,proba:Math.round(c.proba),confScore:Math.round(c.proba),marge:null,resultat:'P',scoreReel:null,parie:true,mise,cote:c.odds,datePari:today(),legs:c.legs});
       sauverHistorique(hist);
-      renderFunSection();
+      renderFunSection();renderHistFun();
       if(document.getElementById('bk-curve'))renderBankroll();
       toast(`✅ Combiné placé : <strong>${mise.toFixed(2)}€</strong> · cote ${c.odds.toFixed(2)}`);
     },'Parier');
@@ -2910,6 +2938,44 @@ function loadHistorique(){
   const hist=getHistorique();
   renderHistStats(hist);
   renderHistList(hist,'tous');
+  renderHistFun();
+}
+// Bascule Suivi global / Paris Fun
+function switchHistView(v,btn){
+  document.querySelectorAll('#hist-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const g=document.getElementById('hist-view-global'),f=document.getElementById('hist-view-fun');
+  if(g)g.style.display=v==='fun'?'none':'';
+  if(f)f.style.display=v==='fun'?'':'none';
+  if(v==='fun')renderHistFun();
+}
+// Suivi dédié des paris combinés (Fun)
+function renderHistFun(){
+  const el=document.getElementById('hist-fun-list');if(!el)return;
+  const combos=getHistorique().filter(h=>h.type==='combo'&&h.parie);
+  const settled=combos.filter(h=>h.resultat==='W'||h.resultat==='L');
+  const wins=settled.filter(h=>h.resultat==='W').length;
+  const pending=combos.filter(h=>h.resultat==='P');
+  const taux=settled.length?Math.round(wins/settled.length*100):null;
+  let pl=0;settled.forEach(h=>{pl+=h.resultat==='W'?((h.mise||0)*((h.cote||1)-1)):-(h.mise||0);});
+  const enJeu=pending.reduce((a,h)=>a+(h.mise||0),0);
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('hf-nb',combos.length);
+  set('hf-taux',taux!=null?taux+'%':'—');
+  const roiEl=document.getElementById('hf-roi');if(roiEl){roiEl.textContent=(pl>=0?'+':'')+pl.toFixed(2)+'€';roiEl.style.color=pl>=0?'var(--green)':'var(--red)';}
+  set('hf-jeu',enJeu.toFixed(2)+'€');
+  if(!combos.length){el.innerHTML='<div class="empty" style="padding:22px;font-size:12px">Aucun pari combiné pour l\'instant.<br>Va dans ⚡ Pronostics → section <strong>🎲 Combinés & gros coups</strong> pour en placer un.</div>';return;}
+  const sorted=[...combos].sort((a,b)=>(b.datePari||b.date||'').localeCompare(a.datePari||a.date||''));
+  el.innerHTML=sorted.map(h=>{
+    const res=h.resultat;
+    const st=res==='W'?`<span style="color:var(--green);font-weight:800">✅ Gagné +${((h.mise||0)*((h.cote||1)-1)).toFixed(2)}€</span>`:res==='L'?`<span style="color:var(--red);font-weight:800">❌ Perdu −${(h.mise||0).toFixed(2)}€</span>`:`<span style="color:var(--amber);font-weight:800">⏳ En attente</span>`;
+    const legs=(h.legs||[]).map(l=>`<div class="hf-leg">${(TYP[l.type]||TYP.victoire)[0]} <strong>${l.pick}</strong> <span style="color:var(--muted)">· ${l.matchLabel} · @${(+l.coteVegas||0).toFixed(2)}</span></div>`).join('');
+    return `<div class="hf-item">
+      <div class="hf-top"><span class="hf-name">${(h.pick||'Combiné').split(' : ')[0]}</span><span class="hf-cote">${(+h.cote||0).toFixed(2)}</span></div>
+      <div class="hf-legs">${legs}</div>
+      <div class="hf-foot"><span>📅 ${(h.date||'').slice(5)} · mise <strong style="color:var(--white)">${(+h.mise||0).toFixed(2)}€</strong></span>${st}</div>
+    </div>`;
+  }).join('');
 }
 
 function renderHistStats(hist){
@@ -3085,6 +3151,7 @@ function annulerPari(id){
     }
     afficherPronos(pronosFiltres());
     if(document.getElementById('fun-section'))renderFunSection();
+    renderHistFun();
     if(document.getElementById('bk-curve'))renderBankroll();
     toast('Pari annulé','info');
   },'Oui, annuler');
