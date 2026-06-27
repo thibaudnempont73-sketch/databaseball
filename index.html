@@ -1,1 +1,159 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=databaseball-v4.html"></head><body><script>location.replace('databaseball-v4.html');</script></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>DataBaseball — Pronostics MLB sur données réelles</title>
+<meta name="description" content="Des pronostics MLB basés à 100% sur des données réelles : FIP, splits, park factors, vraies cotes des bookmakers. Zéro simulation.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060A12;--bg2:#0E1520;--card:#0F1825;--card2:#141E2E;--b1:#1C2A3E;--b2:#243448;
+  --red:#E8192C;--green:#00C896;--amber:#F5A623;--blue:#4B9EFF;--purple:#9B6DFF;
+  --white:#E8EDF5;--muted:#5C6E87;
+  --sans:'Inter',sans-serif;--display:'Bebas Neue',sans-serif;--mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* fond dégradé + lueurs */
+.bg-glow{position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(700px circle at 15% 0%,rgba(232,25,44,.12),transparent 55%),
+  radial-gradient(800px circle at 90% 15%,rgba(0,200,150,.10),transparent 55%),
+  radial-gradient(700px circle at 50% 100%,rgba(75,158,255,.08),transparent 55%)}
+
+/* HERO */
+.hero{text-align:center;padding:70px 0 50px}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:26px}
+.ball{width:34px;height:34px;background:var(--red);border-radius:50%;position:relative;flex-shrink:0;box-shadow:0 0 30px rgba(232,25,44,.5);animation:float 3s ease-in-out infinite}
+.ball::before,.ball::after{content:'';position:absolute;border:2px solid rgba(255,255,255,.35);border-radius:50%;width:62%;height:100%;top:0;left:50%;transform:translateX(-50%) rotate(35deg)}
+.ball::after{transform:translateX(-50%) rotate(-35deg)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.logo-txt{font-family:var(--display);font-size:34px;letter-spacing:3px}
+.logo-txt span{color:var(--red)}
+.badge-live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--green);border:1px solid rgba(0,200,150,.3);background:rgba(0,200,150,.08);padding:5px 12px;border-radius:20px;margin-bottom:24px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+h1{font-family:var(--display);font-size:clamp(42px,8vw,84px);line-height:.95;letter-spacing:1px;margin-bottom:18px}
+h1 .grad{background:linear-gradient(120deg,var(--green),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:clamp(15px,2.4vw,19px);color:var(--muted);max-width:620px;margin:0 auto 34px;font-weight:400}
+.sub strong{color:var(--white);font-weight:600}
+.cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--red),#ff3b4e);color:#fff;font-weight:800;font-size:17px;padding:16px 34px;border-radius:14px;box-shadow:0 10px 40px rgba(232,25,44,.35);transition:transform .15s,box-shadow .15s;font-family:var(--sans)}
+.cta:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 50px rgba(232,25,44,.5)}
+.cta-note{font-size:12px;color:var(--muted);margin-top:14px}
+
+/* TRUST STRIP */
+.trust{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 26px;padding:26px 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);margin:50px 0}
+.trust div{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.trust b{color:var(--white);font-family:var(--display);font-size:20px;letter-spacing:.5px;font-weight:400}
+
+/* SECTIONS */
+.sec-eye{text-align:center;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:8px}
+.sec-title{text-align:center;font-family:var(--display);font-size:clamp(28px,5vw,40px);letter-spacing:.5px;margin-bottom:38px}
+.section{padding:46px 0}
+
+/* FEATURES */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.feat{background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:24px;transition:border-color .2s,transform .2s}
+.feat:hover{border-color:var(--b2);transform:translateY(-4px)}
+.feat-ic{font-size:28px;margin-bottom:12px;display:block}
+.feat h3{font-size:17px;font-weight:800;margin-bottom:7px}
+.feat p{font-size:13.5px;color:var(--muted);line-height:1.6}
+.feat .hl{color:var(--green);font-weight:600}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.step{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--b1);border-radius:16px;padding:24px;position:relative}
+.step-n{font-family:var(--display);font-size:46px;color:var(--b2);line-height:1;margin-bottom:6px}
+.step h3{font-size:16px;font-weight:800;margin-bottom:6px}
+.step p{font-size:13px;color:var(--muted)}
+
+/* FINAL CTA */
+.final{text-align:center;background:linear-gradient(135deg,rgba(0,200,150,.10),rgba(75,158,255,.06));border:1px solid rgba(0,200,150,.25);border-radius:22px;padding:50px 24px;margin:30px 0}
+.final h2{font-family:var(--display);font-size:clamp(30px,6vw,52px);letter-spacing:.5px;margin-bottom:12px}
+.final p{color:var(--muted);max-width:520px;margin:0 auto 26px}
+
+/* FOOTER */
+footer{text-align:center;padding:40px 20px 60px;border-top:1px solid var(--b1);color:var(--muted);font-size:12px;line-height:1.7}
+.warn{display:inline-block;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:var(--amber);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:12px;max-width:560px}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<!-- HERO -->
+<header class="hero wrap">
+  <div class="logo-row">
+    <div class="ball"></div>
+    <div class="logo-txt">DATA<span>BASEBALL</span></div>
+  </div>
+  <div class="badge-live"><span class="dot"></span>DONNÉES MLB EN DIRECT</div>
+  <h1>Pariez avec<br><span class="grad">la data, pas le hasard.</span></h1>
+  <p class="sub">Des pronostics MLB calculés sur des <strong>statistiques réelles</strong> (FIP des lanceurs, splits, park factors) et les <strong>vraies cotes</strong> des bookmakers. <strong>Zéro simulation, zéro promesse magique</strong> — juste de la donnée et des maths.</p>
+  <a class="cta" href="databaseball-v4.html">⚡ Lancer l'app</a>
+  <div class="cta-note">Gratuit · Aucune inscription · Fonctionne dans le navigateur</div>
+</header>
+
+<!-- TRUST -->
+<div class="wrap">
+  <div class="trust reveal">
+    <div><b>100%</b> données réelles</div>
+    <div><b>0</b> simulation</div>
+    <div><b>3</b> types de paris cotés</div>
+    <div><b>30</b> équipes MLB suivies</div>
+    <div><b>∞</b> cotes comparées</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section wrap">
+  <div class="sec-eye">Ce que fait l'app</div>
+  <div class="sec-title">Trouver les bons paris, sans se noyer</div>
+  <div class="grid">
+    <div class="feat reveal"><span class="feat-ic">⭐</span><h3>Sélection du jour</h3><p>Parmi tous les matchs, l'app fait remonter les <span class="hl">meilleurs coups notés sur 100</span> — équilibre entre chance de gagner, cote et fiabilité. Et elle t'explique <em>pourquoi</em>.</p></div>
+    <div class="feat reveal"><span class="feat-ic">📊</span><h3>100% données réelles</h3><p>FIP des lanceurs, OPS, splits domicile/extérieur, forme réelle, <span class="hl">park factors</span> de chaque stade, météo. Aucune valeur inventée.</p></div>
+    <div class="feat reveal"><span class="feat-ic">💎</span><h3>Value vs marché</h3><p>On compare <span class="hl">tous les bookmakers</span> pour afficher la meilleure cote, et on repère les paris où le modèle voit de la valeur que le marché a ratée.</p></div>
+    <div class="feat reveal"><span class="feat-ic">💰</span><h3>Bankroll & suivi</h3><p>Mise calculée automatiquement selon ton capital, <span class="hl">courbe d'évolution</span> et suivi de chaque pari placé.</p></div>
+    <div class="feat reveal"><span class="feat-ic">📈</span><h3>Calibration honnête</h3><p>L'app vérifie : <span class="hl">« quand on annonce 60%, gagne-t-on vraiment 60% ? »</span>. La preuve que le modèle tient ses promesses.</p></div>
+    <div class="feat reveal"><span class="feat-ic">🔰</span><h3>Pensé pour débutants</h3><p>Chaque critère est <span class="hl">cliquable</span> avec une explication simple. Tu comprends chaque pari, pas juste un chiffre.</p></div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="section wrap">
+  <div class="sec-eye">Comment ça marche</div>
+  <div class="sec-title">3 étapes, c'est tout</div>
+  <div class="steps">
+    <div class="step reveal"><div class="step-n">1</div><h3>Ouvre la Sélection du jour</h3><p>Les meilleurs paris du jour, déjà triés et notés sur 100.</p></div>
+    <div class="step reveal"><div class="step-n">2</div><h3>Comprends le pari</h3><p>Probabilité, meilleure cote, valeur vs marché et la raison en clair.</p></div>
+    <div class="step reveal"><div class="step-n">3</div><h3>Place & suis</h3><p>Mise auto selon ta bankroll, puis suis tes gains et ta calibration.</p></div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="wrap">
+  <div class="final reveal">
+    <h2>Prêt à parier malin ?</h2>
+    <p>Les matchs MLB du jour sont déjà analysés. Ouvre l'app et regarde la Sélection.</p>
+    <a class="cta" href="databaseball-v4.html">⚡ Lancer l'app</a>
+  </div>
+</section>
+
+<footer>
+  <div class="warn">⚠️ Outil d'analyse statistique à but informatif. Aucun pari n'est sans risque, et aucun modèle ne bat le marché à coup sûr. Ne misez que ce que vous pouvez perdre. Réservé aux 18+.</div>
+  <div>DataBaseball · Données : MLB Stats API, Open-Meteo, The Odds API · Fait avec ⚾ et des maths</div>
+</footer>
+
+<script>
+// Apparition au scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
