@@ -21,6 +21,8 @@ a{color:inherit;text-decoration:none}
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 
 /* fond dégradé + lueurs */
+.field-bg{position:fixed;inset:0;z-index:-1;display:flex;align-items:flex-start;justify-content:center;overflow:hidden;pointer-events:none}
+.field-bg svg{width:min(160vw,1300px);color:var(--green);opacity:.07;transform:translateY(-6%)}
 .bg-glow{position:fixed;inset:0;z-index:-1;background:
   radial-gradient(700px circle at 15% 0%,rgba(232,25,44,.12),transparent 55%),
   radial-gradient(800px circle at 90% 15%,rgba(0,200,150,.10),transparent 55%),
@@ -82,10 +84,34 @@ footer{text-align:center;padding:40px 20px 60px;border-top:1px solid var(--b1);c
 .warn{display:inline-block;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:var(--amber);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:12px;max-width:560px}
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
+
+/* NAV (barre du haut) */
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:13px 20px;background:rgba(6,10,18,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--b1)}
+.nav-logo{display:flex;align-items:center;gap:9px;font-family:var(--display);font-size:21px;letter-spacing:2px}
+.nav-logo .miniball{width:18px;height:18px;background:var(--red);border-radius:50%;box-shadow:0 0 14px rgba(232,25,44,.5);flex-shrink:0}
+.nav-logo span{color:var(--red)}
+.nav-btns{display:flex;align-items:center;gap:10px}
+.btn-ghost{font-size:13px;font-weight:700;color:var(--white);padding:9px 16px;border:1px solid var(--b2);border-radius:10px;transition:border-color .15s,background .15s}
+.btn-ghost:hover{border-color:var(--muted);background:var(--card)}
+.btn-solid{font-size:13px;font-weight:800;color:#fff;padding:9px 18px;border-radius:10px;background:linear-gradient(135deg,var(--red),#ff3b4e);box-shadow:0 6px 20px rgba(232,25,44,.3);transition:transform .15s}
+.btn-solid:hover{transform:translateY(-2px)}
+.cta-sec{display:inline-block;margin-top:16px;font-size:13px;color:var(--muted)}
+.cta-sec a{color:var(--blue);font-weight:600}
+@media(max-width:480px){.nav{padding:11px 14px}.nav-logo{font-size:17px}.btn-ghost,.btn-solid{padding:8px 12px;font-size:12px}.btn-ghost{padding-left:10px;padding-right:10px}}
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
+<div class="field-bg" aria-hidden="true"><svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="0.35" stroke-linejoin="round"><path d="M50 76 L12 40 A54 54 0 0 1 88 40 Z"/><path d="M50 76 L61 65 L50 54 L39 65 Z"/><circle cx="50" cy="65" r="2"/></g></svg></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><div class="miniball"></div>DATA<span>BASEBALL</span></a>
+  <div class="nav-btns">
+    <a class="btn-ghost" href="databaseball-v4.html?auth=login">Se connecter</a>
+    <a class="btn-solid" href="databaseball-v4.html?auth=signup">Créer un compte</a>
+  </div>
+</nav>
 
 <!-- HERO -->
 <header class="hero wrap">
@@ -96,8 +122,9 @@ footer{text-align:center;padding:40px 20px 60px;border-top:1px solid var(--b1);c
   <div class="badge-live"><span class="dot"></span>DONNÉES MLB EN DIRECT</div>
   <h1>Pariez avec<br><span class="grad">la data, pas le hasard.</span></h1>
   <p class="sub">Des pronostics MLB calculés sur des <strong>statistiques réelles</strong> (FIP des lanceurs, splits, park factors) et les <strong>vraies cotes</strong> des bookmakers. <strong>Zéro simulation, zéro promesse magique</strong> — juste de la donnée et des maths.</p>
-  <a class="cta" href="databaseball-v4.html">⚡ Lancer l'app</a>
-  <div class="cta-note">Gratuit · Aucune inscription · Fonctionne dans le navigateur</div>
+  <a class="cta" href="databaseball-v4.html?auth=signup">⚡ Créer mon compte gratuit</a>
+  <div class="cta-note">Compte gratuit · Données réelles MLB · Dans le navigateur</div>
+  <div class="cta-sec">Déjà inscrit ? <a href="databaseball-v4.html?auth=login">Se connecter</a></div>
 </header>
 
 <!-- TRUST -->
@@ -140,8 +167,9 @@ footer{text-align:center;padding:40px 20px 60px;border-top:1px solid var(--b1);c
 <section class="wrap">
   <div class="final reveal">
     <h2>Prêt à parier malin ?</h2>
-    <p>Les matchs MLB du jour sont déjà analysés. Ouvre l'app et regarde la Sélection.</p>
-    <a class="cta" href="databaseball-v4.html">⚡ Lancer l'app</a>
+    <p>Les matchs MLB du jour sont déjà analysés. Crée ton compte gratuit et regarde la Sélection.</p>
+    <a class="cta" href="databaseball-v4.html?auth=signup">⚡ Créer mon compte gratuit</a>
+    <div class="cta-sec">Déjà inscrit ? <a href="databaseball-v4.html?auth=login">Se connecter</a></div>
   </div>
 </section>
 

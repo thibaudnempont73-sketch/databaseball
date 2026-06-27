@@ -56,6 +56,50 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .uc-email{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .uc-logout{background:none;border:1px solid var(--b2);color:var(--muted);border-radius:6px;padding:3px 8px;font-size:10px;cursor:pointer}
 .uc-logout:hover{border-color:var(--red-b);color:var(--red)}
+
+/* PREMIUM / FOMO */
+.premium-btn{background:linear-gradient(135deg,var(--amber),#ffce63);color:#1a1305;border:none;font-weight:800;font-size:11px;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;box-shadow:0 0 16px rgba(245,166,35,.35);animation:pglow 2.4s ease-in-out infinite}
+@keyframes pglow{0%,100%{box-shadow:0 0 12px rgba(245,166,35,.3)}50%{box-shadow:0 0 22px rgba(245,166,35,.55)}}
+.premium-badge{font-size:10px;color:var(--amber);font-weight:800;border:1px solid var(--amber-b);border-radius:8px;padding:4px 9px;white-space:nowrap}
+.admin-btn{font-size:10px;font-weight:700;color:var(--purple);background:rgba(155,109,255,.1);border:1px solid rgba(155,109,255,.4);border-radius:8px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+.admin-btn:hover{background:rgba(155,109,255,.2)}
+.admin-btn.view-free{color:var(--amber);background:var(--amber-d);border-color:var(--amber-b)}
+.free-badge{display:inline-block;background:var(--green-d);color:var(--green);border:1px solid var(--green-b);font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 7px;border-radius:20px;margin-left:6px}
+/* carte prono verrouillée */
+.prono.lock-card{text-align:center;border:1px dashed var(--b2);background:linear-gradient(160deg,var(--card2),var(--card));padding:18px 16px}
+.lk-blur{filter:blur(6px);user-select:none;pointer-events:none}
+.lock-ic{font-size:26px;line-height:1}
+.lock-t{font-weight:800;font-size:14px;margin:8px 0 3px}
+.lock-s{font-size:12px;color:var(--muted);margin-bottom:13px;line-height:1.5}
+.lock-btn{background:linear-gradient(135deg,var(--amber),#ffce63);color:#1a1305;border:none;font-weight:800;font-size:13px;padding:11px 22px;border-radius:10px;cursor:pointer;box-shadow:0 6px 20px rgba(245,166,35,.3);transition:transform .12s}
+.lock-btn:hover{transform:translateY(-2px)}
+/* sélection verrouillée */
+.sel-pick.locked .sel-pickname,.sel-pick.locked .sel-cote{filter:blur(5px);user-select:none}
+.sel-lock-tag{font-size:9px;font-weight:800;color:var(--amber);border:1px solid var(--amber-b);background:var(--amber-d);border-radius:20px;padding:2px 7px;margin-right:5px}
+/* page verrouillée (onglets premium) */
+.page-lock{text-align:center;padding:48px 20px;max-width:440px;margin:30px auto;background:linear-gradient(160deg,var(--card2),var(--card));border:1px dashed var(--b2);border-radius:18px}
+.pl-t{font-weight:800;font-size:17px;margin:12px 0 6px}
+.pl-d{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+.pl-note{font-size:11px;color:var(--muted2);margin-top:14px}
+/* modale Premium */
+#premium-modal{position:fixed;inset:0;z-index:6000;background:rgba(4,7,12,.86);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.pm-card{width:100%;max-width:430px;background:var(--card);border:1px solid var(--amber-b);border-radius:18px;padding:26px 22px;position:relative;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.pm-close{position:absolute;top:10px;right:14px;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
+.pm-eye{text-align:center;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--amber);text-transform:uppercase}
+.pm-h{font-family:var(--display);font-size:27px;letter-spacing:1px;text-align:center;margin-top:4px}
+.pm-sub{text-align:center;color:var(--muted);font-size:13px;margin:6px 0 18px;line-height:1.5}
+.pm-feat{display:flex;align-items:flex-start;gap:9px;font-size:13px;margin-bottom:10px;line-height:1.4}
+.pm-feat b{color:var(--green);font-weight:800;flex-shrink:0}
+.pm-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0 8px}
+.pm-plan{border:1px solid var(--b2);border-radius:13px;padding:15px 10px;text-align:center;cursor:pointer;position:relative;transition:border-color .15s,background .15s}
+.pm-plan.sel{border-color:var(--amber);background:var(--amber-d)}
+.pm-plan-tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--amber);color:#1a1305;font-size:8px;font-weight:800;padding:2px 9px;border-radius:20px;letter-spacing:.5px;white-space:nowrap}
+.pm-plan-price{font-family:var(--display);font-size:32px;line-height:1}
+.pm-plan-per{font-size:11px;color:var(--muted)}
+.pm-plan-eco{font-size:10px;color:var(--green);font-weight:700;margin-top:3px}
+.pm-cta{width:100%;background:linear-gradient(135deg,var(--amber),#ffce63);color:#1a1305;border:none;font-weight:800;font-size:15px;padding:14px;border-radius:11px;cursor:pointer;margin-top:12px;transition:filter .15s}
+.pm-cta:hover{filter:brightness(1.06)}
+.pm-foot{text-align:center;font-size:10px;color:var(--muted2);margin-top:12px;line-height:1.5}
 /* Onglet Tendances */
 .tend-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--b1);border-radius:10px;padding:11px 14px;margin-bottom:8px;flex-wrap:wrap}
 .tend-team{min-width:150px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
@@ -386,6 +430,11 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
   .g2,.g3,.g4,.g5{grid-template-columns:1fr 1fr}
   .stand-row{grid-template-columns:16px 1fr 44px 28px 44px}
   .hist-proba,.hist-conf{display:none}
+  /* Désencombre la barre du haut : la déconnexion reste prioritaire */
+  .ver-badge,.live-ind,.api-pill{display:none!important}
+  .uc-email{max-width:130px}
+  .topbar{padding:0 10px}
+  .logo{font-size:17px}
 }
 </style>
 </head>
@@ -407,16 +456,40 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     </form>
     <div class="auth-toggle" id="auth-forgot" style="margin-top:12px"><a onclick="forgotPassword()">Mot de passe oublié ?</a></div>
     <div class="auth-toggle" id="auth-toggle-line">Pas encore de compte ? <a onclick="toggleAuthMode()" id="auth-toggle-link">Créer un compte</a></div>
+    <div class="auth-toggle" style="margin-top:14px"><a href="index.html">← Retour à l'accueil</a></div>
     <div class="auth-foot">🔒 Connexion sécurisée. Outil d'analyse à but informatif — 18+. Aucun pari n'est sans risque.</div>
   </div>
 </div>
 
+<!-- MODALE PREMIUM (offre d'abonnement) -->
+<div id="premium-modal">
+  <div class="pm-card">
+    <button class="pm-close" onclick="fermerPremium()">×</button>
+    <div class="pm-eye">⭐ DataBaseball Premium</div>
+    <div class="pm-h">Débloque TOUS les pronos</div>
+    <div class="pm-sub">Tu as <strong>1 pronostic offert chaque jour</strong> — le meilleur, complet.<br>Premium débloque <strong>tout le reste</strong>.</div>
+    <div class="pm-feat"><b>✓</b><div><strong>Tous les pronos du jour</strong> — chaque match, chaque pari (Victoire, Total, Run line) avec cote et analyse complète.</div></div>
+    <div class="pm-feat"><b>✓</b><div><strong>La Sélection complète</strong> — les 5 meilleurs coups notés sur 100, pas seulement le n°1.</div></div>
+    <div class="pm-feat"><b>✓</b><div><strong>Tendances & séries</strong> façon datafoot + <strong>value bets</strong> où le modèle bat le marché.</div></div>
+    <div class="pm-feat"><b>✓</b><div><strong>Bankroll & suivi</strong> : mise auto, courbe de gains, calibration.</div></div>
+    <div class="pm-plans">
+      <div class="pm-plan" id="plan-mois" onclick="choisirPlan('mois')"><div class="pm-plan-price">9,99€</div><div class="pm-plan-per">/ mois</div></div>
+      <div class="pm-plan sel" id="plan-an" onclick="choisirPlan('an')"><div class="pm-plan-tag">2 MOIS OFFERTS</div><div class="pm-plan-price">99€</div><div class="pm-plan-per">/ an</div><div class="pm-plan-eco">soit 8,25€/mois</div></div>
+    </div>
+    <button class="pm-cta" onclick="lancerAbonnement()">⭐ Devenir Premium</button>
+    <div class="pm-foot">Sans engagement · Annulable à tout moment · Paiement sécurisé.<br>Les matchs du soir n'attendent pas — débloque maintenant.</div>
+  </div>
+</div>
+
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v14 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v19 · 27/06</span></div>
   <div class="topbar-r">
-    <span id="user-chip" style="display:none"><span class="uc-email"></span><button class="uc-logout" onclick="logout()">Déconnexion</button></span>
+    <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
+    <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
+    <span id="premium-badge" class="premium-badge" style="display:none">⭐ Premium</span>
+    <span id="user-chip" style="display:none"><span class="uc-email"></span><button class="uc-logout" onclick="logout()">⎋ Déconnexion</button></span>
     <span class="api-pill" id="api-pill">⏳</span>
-    <div style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--red)"><div class="pulse"></div>LIVE</div>
+    <div class="live-ind" style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--red)"><div class="pulse"></div>LIVE</div>
   </div>
 </header>
 
@@ -503,7 +576,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
     <button class="io-btn" onclick="exporterHistorique()">⬇️ Exporter (JSON)</button>
     <label class="io-btn">⬆️ Importer (JSON)<input type="file" accept="application/json" onchange="importerHistorique(this)" style="display:none"></label>
-    <button class="io-btn" onclick="reinitialiserStats()">♻️ Réinitialiser les stats</button>
+    <button class="io-btn" id="reinit-btn" style="display:none" onclick="reinitialiserStats()">♻️ Réinitialiser les stats</button>
     <span style="font-size:10px;color:var(--muted);line-height:1.4;flex:1;min-width:200px">⚠️ Sur fichier local (Android <code>content://</code>), le stockage du navigateur peut s'effacer entre sessions. Exportez régulièrement, ou hébergez l'app sur GitHub Pages pour une persistance fiable.</span>
   </div>
 
@@ -648,7 +721,72 @@ async function loadSnapshot(){
 // ═══════════════════════════════════════════════════
 // AUTHENTIFICATION (Supabase) — compte obligatoire pour accéder à l'app
 // ═══════════════════════════════════════════════════
-let authMode='login'; // 'login' | 'signup'
+let authMode='login'; // 'login' | 'signup' | 'reset'
+const ADMIN_EMAIL='thibaudnempont73@gmail.com'; // seul ce compte voit les outils admin (ex. réinitialiser les stats)
+let adminViewFree=false; // admin : simuler la vue d'un membre gratuit (debug). Lu depuis le stockage dans demarrerApp().
+function isAdmin(){const s=getSession();return !!(s&&s.email&&s.email.toLowerCase()===ADMIN_EMAIL);}
+function applyAdminUI(){
+  const real=isAdmin();
+  const rb=document.getElementById('reinit-btn');if(rb)rb.style.display=(real&&!adminViewFree)?'':'none';
+  const ab=document.getElementById('admin-view-btn');
+  if(ab){ab.style.display=real?'':'none';ab.textContent=adminViewFree?'🛠 Vue : Gratuit':'🛠 Vue : Premium';ab.classList.toggle('view-free',adminViewFree);}
+}
+function toggleAdminView(){
+  adminViewFree=!adminViewFree;
+  if(adminViewFree)lsSet('db_admin_viewfree','1');else lsRemove('db_admin_viewfree');
+  location.reload(); // recharge pour appliquer proprement tout le verrouillage
+}
+
+// ─── PREMIUM (gratuit = 1 pick/jour, le reste verrouillé) ───
+let userPremium=false;                 // sera renseigné par Supabase à l'étape 3b (abonnement Stripe)
+let FREE_PICK_ID=null,FREE_PICK_GAME=null; // le pronostic offert du jour + son match
+let planChoisi='an';
+function isPremium(){if(isAdmin()&&adminViewFree)return false;return userPremium||isAdmin();}
+function applyPremiumUI(){
+  const free=!isPremium();
+  const pb=document.getElementById('premium-btn'),bg=document.getElementById('premium-badge');
+  if(pb)pb.style.display=free?'':'none';
+  if(bg)bg.style.display=free?'none':'';
+}
+// Le meilleur pronostic du jour (offert) = top de la Sélection, sinon meilleure confiance
+function computeFreePick(pronos){
+  const elig=pronos.filter(p=>p.coteVegas&&p.proba>=53&&p.coteVegas>=1.45&&p.coteVegas<=2.8&&p.dataDispos>=60);
+  const top=elig.map(p=>({p,note:noteJouabilite(p)})).filter(x=>x.note!=null).sort((a,b)=>b.note-a.note);
+  const best=top.length?top[0].p:[...pronos].sort((a,b)=>(b.confScore??0)-(a.confScore??0))[0];
+  FREE_PICK_ID=best?best.id:null;
+  FREE_PICK_GAME=best?best.gamePk:null;
+}
+// Carte de pronostic verrouillée (FOMO)
+function mkPronoLocked(p){
+  const cs=p.confScore??50;
+  return `<div class="prono lock-card">
+    <div class="prono-meta" style="justify-content:center;margin-bottom:6px">
+      <span class="time-badge">📅 ${p.dateCourt||''} · ⏱ ${p.heure}</span>
+      <span class="tag">${p.typeLabel}</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${p.matchLabel}</div>
+    <div class="lk-blur" style="font-size:17px;font-weight:800;margin-bottom:8px">${p.pick}</div>
+    <div class="lock-ic">🔒</div>
+    <div class="lock-t">Pronostic réservé aux membres Premium</div>
+    <div class="lock-s">Confiance <strong style="color:${confColor(cs)}">${cs}/100</strong> · la cote, l'analyse détaillée et le value bet sont débloqués avec Premium.</div>
+    <button class="lock-btn" onclick="ouvrirPremium()">⭐ Débloquer ce pronostic</button>
+  </div>`;
+}
+function pageLockHTML(titre,desc){
+  return `<div class="page-lock"><div class="lock-ic" style="font-size:42px">🔒</div>
+    <div class="pl-t">${titre} — réservé aux membres Premium</div>
+    <div class="pl-d">${desc}</div>
+    <button class="lock-btn" onclick="ouvrirPremium()">⭐ Passer Premium</button>
+    <div class="pl-note">Rappel : 1 pronostic complet t'est offert chaque jour dans l'onglet ⚡ Pronostics.</div></div>`;
+}
+function ouvrirPremium(){document.getElementById('premium-modal').style.display='flex';}
+function fermerPremium(){document.getElementById('premium-modal').style.display='none';}
+function choisirPlan(p){planChoisi=p;document.getElementById('plan-mois').classList.toggle('sel',p==='mois');document.getElementById('plan-an').classList.toggle('sel',p==='an');}
+function lancerAbonnement(){
+  // Étape 3b : ouvrira le paiement Stripe. Pour l'instant, message.
+  toast('💳 Le paiement sécurisé arrive très bientôt — merci de ta patience !','info');
+  fermerPremium();
+}
 function getSession(){try{return JSON.parse(lsGet('db_session')||'null');}catch(e){return null;}}
 function setSession(s){if(s)lsSet('db_session',JSON.stringify(s));else lsRemove('db_session');}
 function authMsg(txt,type){const m=document.getElementById('auth-msg');if(!m)return;m.className='auth-msg '+(type||'');m.innerHTML=txt||'';}
@@ -762,12 +900,14 @@ function showAuthScreen(){
   document.getElementById('auth-screen').style.display='flex';
 }
 function demarrerApp(s){
+  adminViewFree=lsGet('db_admin_viewfree')==='1'; // sûr ici : le stockage est prêt
   document.getElementById('auth-screen').style.display='none';
   const uc=document.getElementById('user-chip');
   if(uc&&s){
     uc.style.display='';uc.querySelector('.uc-email').textContent=s.email||'Mon compte';
-    if(!s.email&&s.access_token)fetchUserEmail(s.access_token).then(em=>{if(em){s.email=em;setSession(s);uc.querySelector('.uc-email').textContent=em;}});
+    if(!s.email&&s.access_token)fetchUserEmail(s.access_token).then(em=>{if(em){s.email=em;setSession(s);uc.querySelector('.uc-email').textContent=em;applyAdminUI();applyPremiumUI();}});
   }
+  applyAdminUI();applyPremiumUI();
   if(!loaded['pronos']){loaded['pronos']=true;loadPronos();}
 }
 
@@ -943,6 +1083,11 @@ function setOk(){const p=document.getElementById('api-pill');p.textContent='✅ 
 function setErr(){const p=document.getElementById('api-pill');p.textContent='❌ Hors ligne';p.className='api-pill err';}
 function today(){return new Date().toISOString().split('T')[0];}
 function fdate(){return new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});}
+// Horodatage dans le fuseau LOCAL du visiteur (repli sur l'heure pré-formatée du serveur si gameDate absent)
+function fmtHeureLoc(iso){try{const d=new Date(iso);return isNaN(d)?null:d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}catch(e){return null;}}
+function fmtDateLoc(iso){try{const d=new Date(iso);return isNaN(d)?null:d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'});}catch(e){return null;}}
+function heureProno(p){return (p.gameDate&&fmtHeureLoc(p.gameDate))||p.heure||'—';}
+function dateProno(p){return (p.gameDate&&fmtDateLoc(p.gameDate))||p.dateCourt||'';}
 function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().split('T')[0];}
 function pt(n,dec=1){return Math.round(n*(10**dec))/(10**dec);}
 
@@ -955,6 +1100,13 @@ function goTo(page){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.querySelector(`[onclick="goTo('${page}')"]`).classList.add('active');
+  // Onglets réservés au Premium (gratuit = 1 pick/jour dans ⚡ Pronostics)
+  if(!isPremium()&&(page==='tendances'||page==='bankroll')){
+    document.getElementById('page-'+page).innerHTML=pageLockHTML(
+      page==='tendances'?'Les Tendances & séries':'La Bankroll & le suivi',
+      page==='tendances'?'Bilans 10 derniers matchs, séries en cours, Over X/10, couverture du handicap… façon datafoot, sur tous les matchs.':'Mise automatique selon ton capital (Kelly), courbe de gains, ROI et calibration de tes paris.');
+    loaded[page]=true;return;
+  }
   // Bankroll & Historique sont locaux (pas d'API) → on les rafraîchit à CHAQUE visite
   if(page==='bankroll'){renderBankroll();loaded[page]=true;return;}
   if(page==='historique'){loadHistorique();loaded[page]=true;return;}
@@ -1573,6 +1725,7 @@ async function loadPronos(){
     SNAP=snap; matchDataMap=snap.matchDataMap||{}; tendancesJour=snap.tendancesJour||[]; pythMap=snap.pythMap||{};
     if(snap.vide||!(snap.pronos||[]).length){document.getElementById('pronos-list').innerHTML=`<div class="empty">⚾ Aucun match MLB aujourd'hui.<br>Revenez demain !</div>`; tousLesPronos=[]; return;}
     tousLesPronos=snap.pronos;
+    computeFreePick(tousLesPronos);        // détermine le pronostic offert du jour
     ajouterPronos(tousLesPronos);
     renderKPIs(tousLesPronos);
     renderSelection(tousLesPronos);
@@ -1964,16 +2117,33 @@ function renderSelection(pronos){
   if(!top.length){el.innerHTML='';return;}
   const col=n=>n>=72?'var(--green)':n>=58?'var(--amber)':'var(--muted)';
   let figeTxt='';
-  try{if(SNAP&&SNAP.generatedAt){const d=new Date(SNAP.generatedAt);figeTxt=` · 🔒 établie le ${d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',timeZone:'Europe/Paris'})} à ${d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'})}, figée pour la journée`;}}catch(e){}
+  try{if(SNAP&&SNAP.generatedAt){const d=new Date(SNAP.generatedAt);figeTxt=` · 🔒 établie le ${d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})} à ${d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}, figée pour la journée`;}}catch(e){}
+  const nMatch=new Set(pronos.map(p=>p.gamePk)).size;
+  const subTxt=isPremium()
+    ? `Les ${top.length} meilleurs coups parmi les ${nMatch} matchs, notés sur 100 (chance de gagner × cote × fiabilité). Cliquez pour parier.${figeTxt}`
+    : `🎁 <strong style="color:var(--green)">1 pronostic offert aujourd'hui</strong> — le n°1, 100% complet. Les ${Math.max(0,top.length-1)} autres coups du jour sont réservés aux membres <strong style="color:var(--amber)">Premium</strong>.${figeTxt}`;
   el.innerHTML=`<div class="selection">
     <div class="selection-h">⭐ SÉLECTION DU JOUR</div>
-    <div class="selection-sub">Les ${top.length} meilleurs coups parmi les ${new Set(pronos.map(p=>p.gamePk)).size} matchs, notés sur 100 (chance de gagner × cote × fiabilité). Cliquez pour parier.${figeTxt}</div>
+    <div class="selection-sub">${subTxt}</div>
     ${top.map((x,i)=>{
       const p=x.p,edge=p.fairProba!=null?((p.proba/100-p.fairProba)*100):null;
+      const locked=!isPremium()&&p.id!==FREE_PICK_ID;
+      const free=!isPremium()&&p.id===FREE_PICK_ID;
+      if(locked){
+        return `<div class="sel-pick locked" onclick="ouvrirPremium()">
+          <div class="sel-note" style="background:${col(x.note)}22;border:1px solid ${col(x.note)}55"><span class="sel-note-v" style="color:${col(x.note)}">${x.note}</span><span class="sel-note-l" style="color:${col(x.note)}">/100</span></div>
+          <div class="sel-body">
+            <div class="sel-rank">#${i+1} · ${p.typeLabel} · ${p.matchLabel}</div>
+            <div class="sel-pickname">${p.pick}</div>
+            <div class="sel-meta"><span class="sel-lock-tag">🔒 PREMIUM</span>Débloque ce pick et toute la sélection</div>
+          </div>
+          <div class="sel-right"><div class="sel-cote">${p.coteVegas.toFixed(2)}</div><div class="sel-cote-l">cote</div></div>
+        </div>`;
+      }
       return `<div class="sel-pick" onclick="ouvrirMatchDepuis(${p.gamePk})">
         <div class="sel-note" style="background:${col(x.note)}22;border:1px solid ${col(x.note)}55"><span class="sel-note-v" style="color:${col(x.note)}">${x.note}</span><span class="sel-note-l" style="color:${col(x.note)}">/100</span></div>
         <div class="sel-body">
-          <div class="sel-rank">#${i+1} · ${p.typeLabel} · ${p.matchLabel} · <span style="color:var(--blue)">📅 ${p.dateCourt||''} ⏱ ${p.heure}</span></div>
+          <div class="sel-rank">#${i+1} · ${p.typeLabel} · ${p.matchLabel} · <span style="color:var(--blue)">📅 ${dateProno(p)} ⏱ ${heureProno(p)}</span>${free?'<span class="free-badge">🎁 GRATUIT</span>':''}</div>
           <div class="sel-pickname">${p.pick}</div>
           <div class="sel-meta">${p.proba.toFixed(0)}% de réussite${edge!=null&&edge>=1?` · <span style="color:var(--green)">valeur +${edge.toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
           <div class="sel-why">💡 ${raisonPick(p)}</div>
@@ -2003,9 +2173,11 @@ function ouvrirMatchDepuis(gamePk){
 function renderKPIs(pronos){
   document.getElementById('k-tot').textContent=pronos.length;
   document.getElementById('k-forte').textContent=pronos.filter(p=>(p.confScore??0)>=70).length;
-  document.getElementById('k-best').textContent=(Math.max(...pronos.map(p=>p.proba))).toFixed(1)+'%';
+  const probas=pronos.map(p=>p.proba).filter(v=>typeof v==='number'&&!isNaN(v));
+  document.getElementById('k-best').textContent=(probas.length?Math.max(...probas):0).toFixed(1)+'%';
   document.getElementById('k-games').textContent=new Set(pronos.map(p=>p.gamePk)).size;
-  document.getElementById('k-data').textContent=Math.round(pronos.reduce((a,p)=>a+p.dataDispos,0)/pronos.length)+'%';
+  const dispo=pronos.map(p=>p.dataDispos).filter(v=>typeof v==='number'&&!isNaN(v));
+  document.getElementById('k-data').textContent=(dispo.length?Math.round(dispo.reduce((a,b)=>a+b,0)/dispo.length):0)+'%';
 }
 
 // edge réel d'un prono (proba modèle − proba implicite de la meilleure cote)
@@ -2067,6 +2239,7 @@ function critereInfo(nom){
 }
 
 function mkProno(p){
+  if(!isPremium()&&p.id!==FREE_PICK_ID)return mkPronoLocked(p); // gratuit = seulement le pick du jour
   const cs=p.confScore??50;
   const isFort=cs>=70,isMoyen=cs>=50;
   const col=isFort?'var(--green)':isMoyen?'var(--amber)':'var(--muted)';
@@ -2114,7 +2287,7 @@ function mkProno(p){
   return `<div class="prono ${isFort?'forte':isMoyen?'moyenne':''}">
     <div class="prono-top">
       <div class="prono-meta">
-        <span class="time-badge">📅 ${p.dateCourt||''} · ⏱ ${p.heure}</span>
+        <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>
         <span style="font-size:10px;color:var(--muted)">${p.matchLabel}</span>
         <span class="tag ${tagClass}">${p.typeLabel}</span>
         ${isFort?'<span class="pill pg">🔥 FORTE CONFIANCE</span>':isMoyen?'<span class="pill py">✅ BONNE CONFIANCE</span>':''}
@@ -2237,7 +2410,7 @@ async function loadMatchs(){
     document.getElementById('matchs-list').innerHTML=games.map(g=>{
       const st=g.state;
       const as=g.awayScore??'—',hs=g.homeScore??'—';
-      const t=g.gameDate?new Date(g.gameDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'}):'—';
+      const t=g.gameDate?new Date(g.gameDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
       const awP=g.awayP??'Partant non annoncé',hmP=g.homeP??'Partant non annoncé';
       const stBadge=st==='Live'?'<span class="pill pr">EN COURS</span>':st==='Final'?'<span class="pill pm">TERMINÉ</span>':'<span class="pill py">À VENIR</span>';
       return `<div class="card mb12" style="cursor:pointer" onclick="ouvrirMatch(${g.gamePk})">
@@ -2263,6 +2436,11 @@ async function loadMatchs(){
 async function ouvrirMatch(gamePk){
   document.getElementById('matchs-list').style.display='none';
   document.getElementById('match-detail').style.display='block';
+  // Gratuit : seul le match du pronostic offert est consultable en détail
+  if(!isPremium()&&gamePk!==FREE_PICK_GAME){
+    document.getElementById('match-detail').innerHTML=`<button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">← Retour aux matchs</button>`+pageLockHTML('L\'analyse de ce match',"Pronostics, meilleures cotes et données complètes de ce match sont réservés aux membres Premium.");
+    window.scrollTo(0,0);return;
+  }
   const matchPronos=tousLesPronos.filter(p=>p.gamePk===gamePk);
   const vProno=matchPronos.find(p=>p.type==='victoire');
   if(!vProno){
@@ -2507,6 +2685,7 @@ function viderHistorique(){
 
 // Réinitialise les statistiques : supprime les pronos TERMINÉS (gagnés/perdus), garde les EN ATTENTE
 function reinitialiserStats(){
+  if(!isAdmin()){toast('Action réservée à l\'administrateur.','info');return;}
   const hist=getHistorique();
   const enAttente=hist.filter(h=>h.resultat==='P');
   const termines=hist.length-enAttente.length;
@@ -2743,8 +2922,9 @@ if(!STORAGE_OK){
     }
   }
   const s=await ensureAuth();
-  if(s)demarrerApp(s);
-  else showAuthScreen();
+  if(s){demarrerApp(s);return;}
+  showAuthScreen();
+  if(new URLSearchParams(location.search).get('auth')==='signup')setAuthMode('signup'); // arrivée depuis « Créer un compte »
 })();
 </script>
 </body>
