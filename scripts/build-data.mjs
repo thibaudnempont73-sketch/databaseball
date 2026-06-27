@@ -47,16 +47,28 @@ export function parseEventOdds(ev){
   const home=ev.home_team,away=ev.away_team,books=ev.bookmakers||[];if(!books.length)return null;
   const e={home,away,commence:ev.commence_time};
   const up=(o,cote,bk)=>(!o||cote>o.cote)?{cote,bk}:o;
-  // H2H
-  let bH,bA,bHu,bAu,bHe,bAe;
+  // H2H — filtre anti-aberration : une cote moneyline MLB réaliste reste dans ~[1.01, 8]
+  const okH2H=(c)=>typeof c==='number'&&c>=1.01&&c<=8;
+  let bH,bA,bHu,bAu,bHe,bAe; const pairs=[];
   books.forEach(bk=>{const h=bk.markets?.find(m=>m.key==='h2h');if(!h)return;const eu=isEU(bk.key);
-    const oH=h.outcomes.find(o=>o.name===home)?.price,oA=h.outcomes.find(o=>o.name===away)?.price;
+    let oH=h.outcomes.find(o=>o.name===home)?.price,oA=h.outcomes.find(o=>o.name===away)?.price;
+    if(!okH2H(oH))oH=null; if(!okH2H(oA))oA=null;
     if(oH){bH=up(bH,oH,bk.title);if(eu)bHe=up(bHe,oH,bk.title);else bHu=up(bHu,oH,bk.title);}
     if(oA){bA=up(bA,oA,bk.title);if(eu)bAe=up(bAe,oA,bk.title);else bAu=up(bAu,oA,bk.title);}
+    if(oH&&oA)pairs.push({key:bk.key,oH,oA,vig:1/oH+1/oA});
   });
-  if(bH&&bA){e.coteH=bH.cote;e.coteA=bA.cote;e.bkH=bH.bk;e.bkA=bA.bk;const iH=1/bH.cote,iA=1/bA.cote,tt=iH+iA;e.probaH=iH/tt*100;e.probaA=iA/tt*100;
+  if(bH&&bA){
+    e.coteH=bH.cote;e.coteA=bA.cote;e.bkH=bH.bk;e.bkA=bA.bk;
     e.coteH_us=bHu?.cote;e.bkH_us=bHu?.bk;e.coteA_us=bAu?.cote;e.bkA_us=bAu?.bk;
-    e.coteH_eu=bHe?.cote;e.bkH_eu=bHe?.bk;e.coteA_eu=bAe?.cote;e.bkA_eu=bAe?.bk;}
+    e.coteH_eu=bHe?.cote;e.bkH_eu=bHe?.bk;e.coteA_eu=bAe?.cote;e.bkA_eu=bAe?.bk;
+    // Proba de marché (dé-viggée) depuis UNE ligne 2-camps cohérente d'un seul book (Pinnacle prioritaire),
+    // jamais le max cross-book (qui mélange des cotes de books différents → résultat faussé).
+    const coherent=pairs.filter(p=>p.vig>=1.0&&p.vig<=1.2);
+    const ref=coherent.find(p=>p.key==='pinnacle')
+      ||coherent.slice().sort((a,b)=>Math.abs(a.vig-1.05)-Math.abs(b.vig-1.05))[0]
+      ||{oH:bH.cote,oA:bA.cote};
+    const iH=1/ref.oH,iA=1/ref.oA,tt=iH+iA;e.probaH=iH/tt*100;e.probaA=iA/tt*100;
+  }
   // TOTALS : ligne la plus fréquente, puis meilleures cotes (overall/us/eu) À CETTE ligne
   const cnt={};
   books.forEach(bk=>{const tot=bk.markets?.find(m=>m.key==='totals');if(!tot)return;const ov=tot.outcomes.find(o=>o.name==='Over');if(ov&&ov.point!=null)cnt[ov.point]=(cnt[ov.point]||0)+1;});

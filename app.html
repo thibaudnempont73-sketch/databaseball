@@ -52,10 +52,12 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .auth-msg.ok{display:block;color:var(--green);background:var(--green-d);border:1px solid var(--green-b)}
 .auth-foot{text-align:center;font-size:10px;color:var(--muted2);margin-top:18px;line-height:1.4}
 /* Chip utilisateur dans la barre du haut */
-#user-chip{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted)}
-.uc-email{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.uc-logout{background:none;border:1px solid var(--b2);color:var(--muted);border-radius:6px;padding:3px 8px;font-size:10px;cursor:pointer}
-.uc-logout:hover{border-color:var(--red-b);color:var(--red)}
+#user-chip{display:flex;align-items:center;gap:9px}
+.uc-avatar{width:27px;height:27px;border-radius:50%;background:linear-gradient(135deg,var(--red),#ff5566);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 12px rgba(232,25,44,.35)}
+.uc-email{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:var(--muted)}
+.uc-logout{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--b2);color:var(--white);border-radius:9px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.uc-logout:hover{border-color:var(--red-b);color:var(--red);background:var(--red-d)}
+.uc-lo-ic{font-size:13px;line-height:1}
 
 /* PREMIUM / FOMO */
 .premium-btn{background:linear-gradient(135deg,var(--amber),#ffce63);color:#1a1305;border:none;font-weight:800;font-size:11px;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;box-shadow:0 0 16px rgba(245,166,35,.35);animation:pglow 2.4s ease-in-out infinite}
@@ -507,13 +509,19 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .pari-mise{font-family:var(--mono);min-width:60px;text-align:right}
 .pari-res{min-width:74px;text-align:right;font-weight:700}
 
+/* Tablette / petit laptop : on enlève le décoratif de la barre pour éviter tout débordement */
+@media(max-width:860px){
+  .ver-badge,.live-ind,.api-pill{display:none!important}
+  .uc-email{max-width:110px}
+}
+@media(max-width:700px){ .uc-email{display:none!important} } /* en dessous : avatar + déconnexion suffisent */
+
 @media(max-width:600px){
   .g2,.g3,.g4,.g5{grid-template-columns:1fr 1fr}
   .stand-row{grid-template-columns:16px 1fr 44px 28px 44px}
   .hist-proba,.hist-conf{display:none}
-  /* Désencombre la barre du haut : la déconnexion reste prioritaire */
-  .ver-badge,.live-ind,.api-pill{display:none!important}
-  .uc-email{max-width:130px}
+  /* Barre du haut : avatar + bouton déconnexion restent prioritaires */
+  .uc-lo-tx{display:none!important}
   .topbar{padding:0 10px}
   .logo{font-size:17px}
 }
@@ -563,12 +571,12 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v29 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v31 · 27/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
     <span id="premium-badge" class="premium-badge" style="display:none">⭐ Premium</span>
-    <span id="user-chip" style="display:none"><span class="uc-email"></span><button class="uc-logout" onclick="logout()">⎋ Déconnexion</button></span>
+    <span id="user-chip" style="display:none"><span class="uc-avatar"></span><span class="uc-email"></span><button class="uc-logout" onclick="logout()" title="Se déconnecter"><span class="uc-lo-ic">⏻</span><span class="uc-lo-tx">Déconnexion</span></button></span>
     <span class="api-pill" id="api-pill">⏳</span>
     <div class="live-ind" style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--red)"><div class="pulse"></div>LIVE</div>
   </div>
@@ -1025,14 +1033,15 @@ async function submitAuth(e){
 function showAuthScreen(){
   document.getElementById('auth-screen').style.display='flex';
 }
+function setUserChip(email){const uc=document.getElementById('user-chip');if(!uc)return;uc.querySelector('.uc-email').textContent=email||'Mon compte';const a=uc.querySelector('.uc-avatar');if(a)a.textContent=(((email||'?').trim()[0])||'?').toUpperCase();}
 async function demarrerApp(s){
   adminViewFree=lsGet('db_admin_viewfree')==='1'; // sûr ici : le stockage est prêt
   document.getElementById('auth-screen').style.display='none';
   const uc=document.getElementById('user-chip');
-  if(uc&&s){uc.style.display='';uc.querySelector('.uc-email').textContent=s.email||'Mon compte';}
+  if(uc&&s){uc.style.display='';setUserChip(s.email);}
   applyAdminUI();applyPremiumUI();
   // Complète l'id/email manquants (ex. retour de lien email) — nécessaire pour la synchro
-  if(s&&s.access_token&&(!s.id||!s.email)){const u=await fetchUser(s.access_token);if(u){s.id=s.id||u.id;s.email=s.email||u.email;setSession(s);if(uc)uc.querySelector('.uc-email').textContent=s.email||'Mon compte';}}
+  if(s&&s.access_token&&(!s.id||!s.email)){const u=await fetchUser(s.access_token);if(u){s.id=s.id||u.id;s.email=s.email||u.email;setSession(s);setUserChip(s.email);}}
   // Abonnement (premium réel) + données utilisateur (synchro), tolérants aux pannes
   try{await fetchProfile(s);}catch(e){}
   applyAdminUI();applyPremiumUI();
