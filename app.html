@@ -150,13 +150,15 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .combo-proba{color:var(--muted)}
 .combo-gain{color:var(--green);font-weight:800;font-size:13px}
 .combo-warn{font-size:10px;color:var(--amber);background:var(--amber-d);border:1px solid var(--amber-b);border-radius:7px;padding:7px 10px;margin-top:10px;line-height:1.45}
-.outsider{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--b1);border-radius:10px;padding:10px 13px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.outsider{display:flex;align-items:flex-start;gap:11px;background:var(--card);border:1px solid var(--b1);border-radius:10px;padding:10px 13px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
 .outsider:hover{border-color:var(--b2)}
-.outsider-cote{font-family:var(--display);font-size:25px;color:var(--amber);min-width:56px;text-align:center}
+.outsider-cote{font-family:var(--display);font-size:25px;color:var(--amber);min-width:56px;text-align:center;padding-top:2px}
 .outsider-body{flex:1;min-width:0}
-.outsider-pick{font-weight:700;font-size:13px}
-.outsider-meta{font-size:10px;color:var(--muted)}
-.outsider-val{font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.outsider-pick{font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.outsider-meta{font-size:10.5px;color:var(--muted);margin-top:2px}
+.outsider-data{font-size:10px;color:var(--white);opacity:.8;margin-top:5px;line-height:1.6;border-top:1px solid var(--b1);padding-top:5px}
+.outsider-cle{font-size:10px;color:var(--green);margin-top:4px;font-weight:600}
+.outsider-val{font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
 .outsider-val.pos{color:var(--green);background:var(--green-d);border:1px solid var(--green-b)}
 .outsider-val.neg{color:var(--muted);background:var(--card2);border:1px solid var(--b2)}
 /* Fun intégré (façon Sélection) */
@@ -578,7 +580,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v36 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v37 · 28/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -2864,13 +2866,32 @@ function renderFunSection(){
     const team=homeDog?m.home:m.away,mp=homeDog?m.probaHome:m.probaAway,bk=homeDog?m.vegas.bkH:m.vegas.bkA;
     const marketP=homeDog?m.vegas.probaH:m.vegas.probaA; // proba de marché dé-viggée
     if(!team)return;
-    outs.push({gp:+gp,team,odds,mp,marketP,bk,edge:mp-(marketP??100/odds),label:`${m.away?.abbreviation||''} @ ${m.home?.abbreviation||''}`});
+    // Données réelles de l'outsider (pour montrer le « pourquoi »)
+    const d=homeDog?m.hData:m.aData, dForme=homeDog?m.hForme:m.aForme, fav=homeDog?m.aData:m.hData;
+    const stats=[];
+    if(d){
+      if(d.nomPartant&&d.fipPartant!=null)stats.push(`⚾ ${d.nomPartant} · FIP ${(+d.fipPartant).toFixed(2)}`);
+      else if(d.eraPartant!=null)stats.push(`⚾ ERA partant ${(+d.eraPartant).toFixed(2)}`);
+      if(d.ops!=null)stats.push(`💪 OPS ${(+d.ops).toFixed(3)}`);
+      if(d.pythWinPct!=null)stats.push(`🏆 ${Math.round(d.pythWinPct*100)}% théo.`);
+      if(homeDog)stats.push('🏠 à domicile');
+    }
+    if(dForme&&dForme.total)stats.push(`📈 ${dForme.wins}-${dForme.total-dForme.wins} sur 10`);
+    // Atout-clé : lanceur de l'outsider meilleur (FIP plus bas) que celui du favori
+    let cle=null;
+    if(d&&fav&&d.fipPartant!=null&&fav.fipPartant!=null&&d.fipPartant<fav.fipPartant-0.2)cle=`💡 Lanceur supérieur (FIP ${(+d.fipPartant).toFixed(2)} vs ${(+fav.fipPartant).toFixed(2)})`;
+    else if(d&&fav&&d.pythWinPct!=null&&fav.pythWinPct!=null&&d.pythWinPct>fav.pythWinPct)cle=`💡 Meilleure équipe sur la saison, sous-cotée par le marché`;
+    outs.push({gp:+gp,team,odds,mp,marketP,bk,edge:mp-(marketP??100/odds),label:`${m.away?.abbreviation||''} @ ${m.home?.abbreviation||''}`,stats,cle});
   });
   outs.sort((a,b)=>b.edge-a.edge);
   const outsHTML=!outs.length?'<div class="empty">Aucun outsider à grosse cote aujourd\'hui.</div>':outs.slice(0,6).map(o=>`<div class="outsider" onclick="ouvrirMatchDepuis(${o.gp})">
     <div class="outsider-cote">${o.odds.toFixed(2)}</div>
-    <div class="outsider-body"><div class="outsider-pick">${o.team.name} gagne</div><div class="outsider-meta">${o.label} · modèle ${o.mp.toFixed(0)}% vs marché ${o.marketP!=null?o.marketP.toFixed(0)+'%':'—'} · ${o.bk||''}</div></div>
-    <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span>
+    <div class="outsider-body">
+      <div class="outsider-pick">${o.team.name} gagne <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span></div>
+      <div class="outsider-meta">${o.label} · modèle <strong>${o.mp.toFixed(0)}%</strong> vs marché ${o.marketP!=null?o.marketP.toFixed(0)+'%':'—'} · ${o.bk||''}</div>
+      ${o.stats.length?`<div class="outsider-data">${o.stats.join(' · ')}</div>`:''}
+      ${o.cle?`<div class="outsider-cle">${o.cle}</div>`:''}
+    </div>
   </div>`).join('');
   el.innerHTML=`<div class="fun-wrap">
     <div class="fun-h">🎲 COMBINÉS & GROS COUPS</div>
