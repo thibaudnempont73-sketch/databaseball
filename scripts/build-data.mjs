@@ -293,7 +293,10 @@ async function build(){
 }
 
 async function upsertSupabase(snapshot){
-  const url=process.env.SUPABASE_URL,key=process.env.SUPABASE_SERVICE_KEY;
+  let url=(process.env.SUPABASE_URL||'').trim();
+  url=url.replace(/\/rest\/v1.*$/i,'').replace(/\/+$/,''); // enlève un éventuel /rest/v1… puis le / final
+  if(url&&!/^https?:\/\//i.test(url))url='https://'+url;   // ajoute https:// si absent
+  const key=(process.env.SUPABASE_SERVICE_KEY||'').trim();
   if(!url||!key){console.log('ℹ️  SUPABASE_URL/SERVICE_KEY absents → écriture locale snapshot.json uniquement.');fs.writeFileSync('snapshot.json',JSON.stringify(snapshot));return;}
   const r=await fetch(`${url}/rest/v1/snapshots`,{method:'POST',headers:{'apikey':key,'Authorization':`Bearer ${key}`,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify({date:snapshot.date,generated_at:snapshot.generatedAt,data:snapshot})});
   if(!r.ok)throw new Error('Supabase upsert '+r.status+' '+await r.text());
