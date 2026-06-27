@@ -398,7 +398,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .sel-hd{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .sel-rk{font-family:var(--display);font-size:14px;color:var(--white);background:var(--bg2);border:1px solid var(--b2);border-radius:6px;padding:0 7px;line-height:1.45}
 .sel-tag{font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-d);border:1px solid var(--blue-b);border-radius:20px;padding:2px 9px}
-.sel-time{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-d);border:1px solid var(--blue-b);border-radius:7px;padding:2px 8px;white-space:nowrap;letter-spacing:.3px}
+.sel-time{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--blue);background:var(--blue-d);border:1px solid var(--blue-b);border-radius:7px;padding:2px 8px;white-space:nowrap;letter-spacing:.3px}
 .sel-row{display:flex;align-items:center;gap:12px}
 .sel-note{flex-shrink:0;width:46px;height:46px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--display)}
 .sel-note-v{font-size:19px;line-height:1}
@@ -578,7 +578,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v34 · 27/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v36 · 27/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -2313,6 +2313,7 @@ function renderSelection(pronos){
           </div>
           ${coteBox}
         </div>
+        ${regionsBox(p)}
         <div class="sel-why">💡 ${raisonPick(p)}</div>
       </div>`;
     }).join('')}
@@ -2347,6 +2348,12 @@ function renderKPIs(pronos){
 
 // edge réel d'un prono (proba modèle − proba implicite de la meilleure cote)
 function pronoEdge(p){return p.coteVegas?(p.proba/100-1/p.coteVegas):null;}
+// Bloc « meilleure cote US / EU » (avec bookmaker) — réutilisé sur les pronos ET la sélection
+function regionsBox(p){
+  if(!p.coteUS&&!p.coteEU)return '';
+  const box=(flag,lbl,cote,bk,col)=>`<div class="odds-reg"><span class="r-flag">${flag}</span><div class="r-body"><div class="r-lbl">${lbl}</div>${bk?`<div class="r-bk">${bk}</div>`:''}</div><span class="r-cote" style="color:${col}">${cote.toFixed(2)}</span></div>`;
+  return `<div class="odds-regions">${p.coteUS?box('🇺🇸','Meilleure cote US',p.coteUS,p.bkUS,'var(--blue)'):''}${p.coteEU?box('🇪🇺','Meilleure cote EU',p.coteEU,p.bkEU,'var(--green)'):''}</div>`;
+}
 // Liste filtrée selon le mode courant
 function pronosFiltres(){
   if(filtreMode==='tous')return tousLesPronos;
@@ -2443,11 +2450,7 @@ function mkProno(p){
   if(p.coteVegas){
     const edge=(p.proba/100-1/p.coteVegas)*100;
     const ec=edge>=0?'edge-pos':'edge-neg';
-    const regBox=(flag,lbl,cote,bk,col)=>`<div class="odds-reg"><span class="r-flag">${flag}</span><div class="r-body"><div class="r-lbl">${lbl}</div>${bk?`<div class="r-bk">${bk}</div>`:''}</div><span class="r-cote" style="color:${col}">${cote.toFixed(2)}</span></div>`;
-    const regions=(p.coteUS||p.coteEU)?`<div class="odds-regions">
-      ${p.coteUS?regBox('🇺🇸','Meilleure cote US',p.coteUS,p.bkUS,'var(--blue)'):''}
-      ${p.coteEU?regBox('🇪🇺','Meilleure cote EU',p.coteEU,p.bkEU,'var(--green)'):''}
-    </div>`:'';
+    const regions=regionsBox(p);
     oddsBar=`<div class="odds-bar">
       <div class="odds-main"><span class="odds-lbl">Meilleure cote</span><span class="odds-cote">${p.coteVegas.toFixed(2)}</span>${p.bookmaker?`<span class="odds-bk">${p.bookmaker}</span>`:''}</div>
       <div class="odds-edge"><div class="odds-edge-v ${ec}">Edge ${edge>=0?'+':''}${edge.toFixed(1)}%</div><div class="odds-edge-sub">notre proba ${p.proba.toFixed(1)}% · marché ${(100/p.coteVegas).toFixed(1)}%</div></div>
