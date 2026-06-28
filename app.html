@@ -613,7 +613,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v61 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v62 · 28/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -871,7 +871,7 @@ const I18N={
  fr:{
   nav_pronos:'⚡ Pronostics',nav_matchs:'⚾ Matchs',nav_tendances:'📈 Tendances',nav_historique:'📊 Historique',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Classements',nav_joueurs:'🏆 Joueurs',
   auth_login_title:'Connexion',auth_login_sub:'Connecte-toi pour accéder aux pronostics du jour.',auth_signup_title:'Créer un compte',auth_signup_sub:'Crée ton compte gratuit pour accéder aux pronostics.',auth_login_btn:'Se connecter',auth_signup_btn:'Créer mon compte',auth_pass_ph:'Mot de passe (min. 6 caractères)',auth_forgot:'Mot de passe oublié ?',auth_back:"← Retour à l'accueil",auth_foot:"🔒 Connexion sécurisée. Outil d'analyse à but informatif — 18+. Aucun pari n'est sans risque.",auth_no_acc:'Pas encore de compte ?',auth_create:'Créer un compte',auth_have_acc:'Déjà un compte ?',auth_login_link:'Se connecter',auth_email_ph:'Adresse email',auth_need_email:"Entre d'abord ton adresse email, puis clique « Mot de passe oublié ».",auth_sending:'Envoi…',auth_reset_sent:'📧 Email envoyé à {email}. Clique le lien reçu pour choisir un nouveau mot de passe.',auth_reset_expired:'Lien expiré. Refais une demande de réinitialisation.',auth_signup_ok:'✅ Compte créé ! Un email de confirmation a été envoyé à {email}. Clique le lien reçu, puis connecte-toi.',auth_link_expired:'Le lien a peut-être expiré.',auth_reset_title:'Nouveau mot de passe',auth_reset_sub:'Choisis un nouveau mot de passe pour ton compte.',auth_reset_btn:'Enregistrer',auth_reset_ph:'Nouveau mot de passe (min. 6)',
-  kpi_total:'Total pronos',kpi_total_m:'générés',kpi_forte:'Forte confiance',kpi_forte_m:'score 70/100+',kpi_proba:'Meilleure proba',kpi_proba_m:'probabilité max',kpi_matchs:'Matchs analysés',kpi_matchs_m:"aujourd'hui",kpi_data:'Données dispo',kpi_data_m:'critères moyens',
+  kpi_total:'Total pronos',kpi_total_m:'générés',kpi_forte:'Forte chance',kpi_forte_m:'≥62% de chances',kpi_proba:'Meilleure proba',kpi_proba_m:'probabilité max',kpi_matchs:'Matchs analysés',kpi_matchs_m:"aujourd'hui",kpi_data:'Données dispo',kpi_data_m:'critères moyens',
   ph_pronos_title:'PRONOSTICS DU JOUR',ph_pronos_sub:'100% données réelles MLB · FIP des lanceurs · park factors · splits · forme réelle · cotes du marché · meilleure cote bookmaker · zéro simulation',
   pm_h:'Débloque TOUS les pronos',pm_cta:'⭐ Devenir Premium',pm_mois:'/ mois',pm_an:'/ an',pm_an_tag:'2 MOIS OFFERTS',pm_an_eco:'soit 4,92€/mois',
   pm_sub:'Tu as <strong>1 pronostic offert chaque jour</strong> — le meilleur, complet.<br>Premium débloque <strong>tout le reste</strong>.',
@@ -902,7 +902,7 @@ const I18N={
   bet_won:'✅ Gagné',bet_lost:'❌ Perdu',bet_pending:'⏳ En attente',bet_placed:'🎟️ Parié',odds_lbl:'cote',bet_cancel:'annuler',bet_analyse:'📊 Analyse seule — aucune cote bookmaker pour ce type de pari',bet_setbk:'💰 Définir ma bankroll pour parier',bet_action:'🎯 Parier',bet_value:'valeur',bet_suivi:'suivi (pas de valeur)',match_fin_closed:'🔒 Match terminé — pari fermé',match_live_closed:'🔒 Match commencé — pari fermé',
   live_won:'✅ Gagné',live_lost:'❌ Perdu',live_fin:'Terminé',live_now:'🔴 EN DIRECT',live_soon:'🕐 À venir',live_top:'début',live_bot:'fin',inning_suf:'ᵉ',
   m_none:"Aucun match aujourd'hui",m_unavail:'⚠️ Données indisponibles',m_live:'🔴 EN DIRECT',m_fin:'✅ TERMINÉ',m_soon:'🕐 À VENIR',m_nostarter:'Partant non annoncé',m_seefull:"Voir l'analyse complète avec tous les pronostics →",rec_w:'V',rec_l:'D',
-  lock_t:'Pronostic réservé aux membres Premium',lock_s_pre:'Confiance',lock_s_post:"· la cote, l'analyse détaillée et le value bet sont débloqués avec Premium.",lock_unlock1:'⭐ Débloquer ce pronostic',pl_suffix:'— réservé aux membres Premium',pl_premium:'⭐ Passer Premium',pl_note:"Rappel : 1 pronostic complet t'est offert chaque jour dans l'onglet ⚡ Pronostics.",pl_back:'← Retour aux matchs',
+  lock_t:'Pronostic réservé aux membres Premium',lock_s_pre:'Chance de gagner',lock_s_post:"· la cote, l'analyse détaillée et le value bet sont débloqués avec Premium.",lock_unlock1:'⭐ Débloquer ce pronostic',pl_suffix:'— réservé aux membres Premium',pl_premium:'⭐ Passer Premium',pl_note:"Rappel : 1 pronostic complet t'est offert chaque jour dans l'onglet ⚡ Pronostics.",pl_back:'← Retour aux matchs',
   lk_tend_t:'Les Tendances & séries',lk_tend_d:'Bilans 10 derniers matchs, séries en cours, Over X/10, couverture du handicap… sur tous les matchs.',lk_bank_t:'La Bankroll & le suivi',lk_bank_d:'Mise automatique selon ton capital (Kelly), courbe de gains, ROI et suivi de tes paris.',lk_hist_t:"L'historique des pronostics",lk_hist_d:'Le suivi de tous les pronostics du jour, leurs résultats et la fiabilité du modèle — réservé aux membres Premium.',lk_match_t:"L'analyse de ce match",lk_match_d:'Pronostics, meilleures cotes et données complètes de ce match sont réservés aux membres Premium.',
   combo_bet:'🎟️ Parier ce combiné (mise auto)',out_bet:'🎟️ Parier cet outsider',
   conf_tres:'TRÈS FIABLE',conf_fiable:'FIABLE',conf_modere:'MODÉRÉ',conf_incertain:'INCERTAIN',
@@ -960,7 +960,7 @@ const I18N={
   ci_rlwin_q:"La probabilité que cette équipe gagne le match, selon notre modèle.",ci_rlwin_p:"Sert de base à tous les autres calculs (handicap, etc.).",
   ci_rlcover_q:"La probabilité que l'équipe « couvre » son handicap : gagner par 2+ (si −1.5) ou ne pas perdre par 2+ (si +1.5).",ci_rlcover_p:"Dérivée de la proba de victoire (donc cohérente avec elle). C'est ce qui détermine la valeur du pari run line.",
   tlbl_victoire:'Victoire du match',tlbl_ou:'Total points (O/U)',tlbl_runline:'Run line (handicap)',pk_win:'{team} remporte le match',pk_over:'OVER {line} points au total',pk_under:'UNDER {line} points au total',pk_rl:'{team} {point}',expl_win:'Modèle sur données réelles (stats MLB + cotes du marché) : {team} a {proba}% de chances de gagner (intervalle {lo}–{hi}%). Runs estimés : {ra} − {rh}.',expl_ou:'Estimation sur données réelles : total attendu {total} points ({ra} − {rh}) vs ligne {line}. Probabilité {side} : {proba}%.',expl_rl:'Run line : {cond}. Couverture estimée : {proba}%.',expl_rl_neg:'{team} doit gagner par 2 points ou plus',expl_rl_pos:'{team} peut perdre par 1 point max (ou gagner)',
-  prono_q:"ⓘ c'est quoi ?",odds_best:'Meilleure cote',prono_ourproba:'notre proba',prono_market:'marché',data_real:'données réelles',prono_hi:'🔥 FORTE CONFIANCE',prono_good:'✅ BONNE CONFIANCE',prono_probability:'PROBABILITÉ',prono_form:'Forme (récent → ancien) :',prono_weights:'⚖️ POIDS DE CHAQUE CRITÈRE',odds_us:'Meilleure cote US',odds_eu:'Meilleure cote EU',
+  prono_q:"ⓘ c'est quoi ?",odds_best:'Meilleure cote',prono_ourproba:'notre proba',prono_market:'marché',data_real:'données réelles',prono_hi:'🔥 FORTE CHANCE',prono_good:'✅ BONNE CHANCE',prono_probability:'PROBABILITÉ',prono_form:'Forme (récent → ancien) :',prono_weights:'⚖️ POIDS DE CHAQUE CRITÈRE',odds_us:'Meilleure cote US',odds_eu:'Meilleure cote EU',
   tr_t:'Track record vérifié',tr_s:'Tous les pronostics, résultats réels — sur <strong>{n}</strong> réglés',tr_win:'réussite',pr_empty_value:"Aucun pari de valeur aujourd'hui — le marché est efficace sur ces matchs. C'est normal : les vrais value bets sont rares.",pr_empty_filter:'Aucun pronostic pour ce filtre',
   dlg_cancel:'Annuler',dlg_confirm:'Confirmer',dlg_bet_ok:'Parier',win_verb:'gagne',
   dc_combo_t:'🎯 Parier ce combiné ?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} sélections<br><span style="font-size:12px">{legs}</span><br><br>Mise : <strong>{m}€</strong> · Cote totale : <strong>{c}</strong><br>Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>Probabilité réelle : <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gagne uniquement si les {n} sélections passent. Mise = quart de Kelly, plafond 5%.</span>',
@@ -974,7 +974,7 @@ const I18N={
  en:{
   nav_pronos:'⚡ Predictions',nav_matchs:'⚾ Games',nav_tendances:'📈 Trends',nav_historique:'📊 History',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Standings',nav_joueurs:'🏆 Players',
   auth_login_title:'Login',auth_login_sub:"Log in to access today's predictions.",auth_signup_title:'Create account',auth_signup_sub:'Create your free account to access the predictions.',auth_login_btn:'Log in',auth_signup_btn:'Create my account',auth_pass_ph:'Password (min. 6 characters)',auth_forgot:'Forgot password?',auth_back:'← Back to home',auth_foot:'🔒 Secure login. Informational analysis tool — 18+. No bet is risk-free.',auth_no_acc:'No account yet?',auth_create:'Create an account',auth_have_acc:'Already have an account?',auth_login_link:'Log in',auth_email_ph:'Email address',auth_need_email:'Enter your email address first, then click "Forgot password".',auth_sending:'Sending…',auth_reset_sent:'📧 Email sent to {email}. Click the link to choose a new password.',auth_reset_expired:'Link expired. Request a new reset.',auth_signup_ok:'✅ Account created! A confirmation email was sent to {email}. Click the link, then log in.',auth_link_expired:'The link may have expired.',auth_reset_title:'New password',auth_reset_sub:'Choose a new password for your account.',auth_reset_btn:'Save',auth_reset_ph:'New password (min. 6)',
-  kpi_total:'Total predictions',kpi_total_m:'generated',kpi_forte:'High confidence',kpi_forte_m:'score 70/100+',kpi_proba:'Best probability',kpi_proba_m:'max probability',kpi_matchs:'Games analyzed',kpi_matchs_m:'today',kpi_data:'Data available',kpi_data_m:'avg. criteria',
+  kpi_total:'Total predictions',kpi_total_m:'generated',kpi_forte:'High chance',kpi_forte_m:'≥62% chance',kpi_proba:'Best probability',kpi_proba_m:'max probability',kpi_matchs:'Games analyzed',kpi_matchs_m:'today',kpi_data:'Data available',kpi_data_m:'avg. criteria',
   ph_pronos_title:"TODAY'S PREDICTIONS",ph_pronos_sub:'100% real MLB data · pitcher FIP · park factors · splits · real form · market odds · best bookmaker odds · zero simulation',
   pm_h:'Unlock ALL predictions',pm_cta:'⭐ Go Premium',pm_mois:'/ month',pm_an:'/ year',pm_an_tag:'2 MONTHS FREE',pm_an_eco:'i.e. €4.92/month',
   pm_sub:'You get <strong>1 free pick every day</strong> — the best one, fully detailed.<br>Premium unlocks <strong>everything else</strong>.',
@@ -1005,7 +1005,7 @@ const I18N={
   bet_won:'✅ Won',bet_lost:'❌ Lost',bet_pending:'⏳ Pending',bet_placed:'🎟️ Bet',odds_lbl:'odds',bet_cancel:'cancel',bet_analyse:'📊 Analysis only — no bookmaker odds for this bet type',bet_setbk:'💰 Set my bankroll to bet',bet_action:'🎯 Bet',bet_value:'value',bet_suivi:'follow (no value)',match_fin_closed:'🔒 Game finished — betting closed',match_live_closed:'🔒 Game started — betting closed',
   live_won:'✅ Won',live_lost:'❌ Lost',live_fin:'Final',live_now:'🔴 LIVE',live_soon:'🕐 Upcoming',live_top:'top',live_bot:'bot',inning_suf:'',
   m_none:'No game today',m_unavail:'⚠️ Data unavailable',m_live:'🔴 LIVE',m_fin:'✅ FINAL',m_soon:'🕐 UPCOMING',m_nostarter:'Starter TBA',m_seefull:'See the full analysis with all predictions →',rec_w:'W',rec_l:'L',
-  lock_t:'Prediction reserved for Premium members',lock_s_pre:'Confidence',lock_s_post:'· odds, detailed analysis and value bet are unlocked with Premium.',lock_unlock1:'⭐ Unlock this prediction',pl_suffix:'— reserved for Premium members',pl_premium:'⭐ Go Premium',pl_note:'Reminder: 1 full prediction is free every day in the ⚡ Predictions tab.',pl_back:'← Back to games',
+  lock_t:'Prediction reserved for Premium members',lock_s_pre:'Win chance',lock_s_post:'· odds, detailed analysis and value bet are unlocked with Premium.',lock_unlock1:'⭐ Unlock this prediction',pl_suffix:'— reserved for Premium members',pl_premium:'⭐ Go Premium',pl_note:'Reminder: 1 full prediction is free every day in the ⚡ Predictions tab.',pl_back:'← Back to games',
   lk_tend_t:'Trends & streaks',lk_tend_d:'Last-10 records, current streaks, Over X/10, run-line coverage… on every game.',lk_bank_t:'Bankroll & tracking',lk_bank_d:'Automatic stake based on your capital (Kelly), profit curve, ROI and bet tracking.',lk_hist_t:'Predictions history',lk_hist_d:"Tracking of every daily prediction, its results and the model's reliability — reserved for Premium members.",lk_match_t:"This game's analysis",lk_match_d:'Predictions, best odds and full data for this game are reserved for Premium members.',
   combo_bet:'🎟️ Bet this parlay (auto stake)',out_bet:'🎟️ Bet this underdog',
   conf_tres:'VERY RELIABLE',conf_fiable:'RELIABLE',conf_modere:'MODERATE',conf_incertain:'UNCERTAIN',
@@ -1063,7 +1063,7 @@ const I18N={
   ci_rlwin_q:'The probability this team wins the game, per our model.',ci_rlwin_p:'Serves as the basis for all the other calculations (handicap, etc.).',
   ci_rlcover_q:'The probability the team "covers" its handicap: win by 2+ (if −1.5) or not lose by 2+ (if +1.5).',ci_rlcover_p:'Derived from the win probability (so consistent with it). It determines the value of the run line bet.',
   tlbl_victoire:'Game winner',tlbl_ou:'Total runs (O/U)',tlbl_runline:'Run line (handicap)',pk_win:'{team} wins the game',pk_over:'OVER {line} total runs',pk_under:'UNDER {line} total runs',pk_rl:'{team} {point}',expl_win:'Model on real data (MLB stats + market odds): {team} has a {proba}% chance to win (range {lo}–{hi}%). Estimated runs: {ra} − {rh}.',expl_ou:'Estimate on real data: expected total {total} runs ({ra} − {rh}) vs line {line}. {side} probability: {proba}%.',expl_rl:'Run line: {cond}. Estimated coverage: {proba}%.',expl_rl_neg:'{team} must win by 2 runs or more',expl_rl_pos:'{team} can lose by 1 run max (or win)',
-  prono_q:"ⓘ what's this?",odds_best:'Best odds',prono_ourproba:'our prob.',prono_market:'market',data_real:'real data',prono_hi:'🔥 HIGH CONFIDENCE',prono_good:'✅ GOOD CONFIDENCE',prono_probability:'PROBABILITY',prono_form:'Form (recent → old):',prono_weights:'⚖️ WEIGHT OF EACH CRITERION',odds_us:'Best US odds',odds_eu:'Best EU odds',
+  prono_q:"ⓘ what's this?",odds_best:'Best odds',prono_ourproba:'our prob.',prono_market:'market',data_real:'real data',prono_hi:'🔥 HIGH CHANCE',prono_good:'✅ GOOD CHANCE',prono_probability:'PROBABILITY',prono_form:'Form (recent → old):',prono_weights:'⚖️ WEIGHT OF EACH CRITERION',odds_us:'Best US odds',odds_eu:'Best EU odds',
   tr_t:'Verified track record',tr_s:'All predictions, real results — over <strong>{n}</strong> settled',tr_win:'win rate',pr_empty_value:"No value bet today — the market is efficient on these games. That's normal: true value bets are rare.",pr_empty_filter:'No prediction for this filter',
   dlg_cancel:'Cancel',dlg_confirm:'Confirm',dlg_bet_ok:'Bet',win_verb:'wins',
   dc_combo_t:'🎯 Bet this parlay?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} picks<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Total odds: <strong>{c}</strong><br>Potential win: <strong style="color:var(--green)">+{g}€</strong><br>Real probability: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Wins only if all {n} picks hit. Stake = quarter Kelly, 5% cap.</span>',
@@ -1077,7 +1077,7 @@ const I18N={
  es:{
   nav_pronos:'⚡ Pronósticos',nav_matchs:'⚾ Partidos',nav_tendances:'📈 Tendencias',nav_historique:'📊 Historial',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Clasificación',nav_joueurs:'🏆 Jugadores',
   auth_login_title:'Iniciar sesión',auth_login_sub:'Inicia sesión para ver los pronósticos del día.',auth_signup_title:'Crear cuenta',auth_signup_sub:'Crea tu cuenta gratis para acceder a los pronósticos.',auth_login_btn:'Entrar',auth_signup_btn:'Crear mi cuenta',auth_pass_ph:'Contraseña (mín. 6 caracteres)',auth_forgot:'¿Olvidaste tu contraseña?',auth_back:'← Volver al inicio',auth_foot:'🔒 Conexión segura. Herramienta de análisis informativa — 18+. Ninguna apuesta está libre de riesgo.',auth_no_acc:'¿Aún no tienes cuenta?',auth_create:'Crear una cuenta',auth_have_acc:'¿Ya tienes cuenta?',auth_login_link:'Iniciar sesión',auth_email_ph:'Correo electrónico',auth_need_email:'Introduce primero tu correo, luego haz clic en "¿Olvidaste la contraseña?".',auth_sending:'Enviando…',auth_reset_sent:'📧 Correo enviado a {email}. Haz clic en el enlace para elegir una nueva contraseña.',auth_reset_expired:'Enlace caducado. Solicita otro restablecimiento.',auth_signup_ok:'✅ ¡Cuenta creada! Se envió un correo de confirmación a {email}. Haz clic en el enlace y luego inicia sesión.',auth_link_expired:'El enlace puede haber caducado.',auth_reset_title:'Nueva contraseña',auth_reset_sub:'Elige una nueva contraseña para tu cuenta.',auth_reset_btn:'Guardar',auth_reset_ph:'Nueva contraseña (mín. 6)',
-  kpi_total:'Pronósticos totales',kpi_total_m:'generados',kpi_forte:'Alta confianza',kpi_forte_m:'score 70/100+',kpi_proba:'Mejor probabilidad',kpi_proba_m:'prob. máxima',kpi_matchs:'Partidos analizados',kpi_matchs_m:'hoy',kpi_data:'Datos disponibles',kpi_data_m:'criterios prom.',
+  kpi_total:'Pronósticos totales',kpi_total_m:'generados',kpi_forte:'Alta probabilidad',kpi_forte_m:'≥62% de prob.',kpi_proba:'Mejor probabilidad',kpi_proba_m:'prob. máxima',kpi_matchs:'Partidos analizados',kpi_matchs_m:'hoy',kpi_data:'Datos disponibles',kpi_data_m:'criterios prom.',
   ph_pronos_title:'PRONÓSTICOS DEL DÍA',ph_pronos_sub:'100% datos reales MLB · FIP de lanzadores · park factors · splits · forma real · cuotas del mercado · mejor cuota bookmaker · cero simulación',
   pm_h:'Desbloquea TODOS los pronósticos',pm_cta:'⭐ Hazte Premium',pm_mois:'/ mes',pm_an:'/ año',pm_an_tag:'2 MESES GRATIS',pm_an_eco:'o sea 4,92€/mes',
   pm_sub:'Tienes <strong>1 pronóstico gratis cada día</strong> — el mejor, completo.<br>Premium desbloquea <strong>todo lo demás</strong>.',
@@ -1108,7 +1108,7 @@ const I18N={
   bet_won:'✅ Ganado',bet_lost:'❌ Perdido',bet_pending:'⏳ Pendiente',bet_placed:'🎟️ Apostado',odds_lbl:'cuota',bet_cancel:'cancelar',bet_analyse:'📊 Solo análisis — sin cuota de bookmaker para este tipo de apuesta',bet_setbk:'💰 Define tu bankroll para apostar',bet_action:'🎯 Apostar',bet_value:'valor',bet_suivi:'seguir (sin valor)',match_fin_closed:'🔒 Partido terminado — apuestas cerradas',match_live_closed:'🔒 Partido empezado — apuestas cerradas',
   live_won:'✅ Ganado',live_lost:'❌ Perdido',live_fin:'Terminado',live_now:'🔴 EN DIRECTO',live_soon:'🕐 Próximamente',live_top:'alta',live_bot:'baja',inning_suf:'ª',
   m_none:'No hay partidos hoy',m_unavail:'⚠️ Datos no disponibles',m_live:'🔴 EN DIRECTO',m_fin:'✅ TERMINADO',m_soon:'🕐 PRÓXIMAMENTE',m_nostarter:'Lanzador por confirmar',m_seefull:'Ver el análisis completo con todos los pronósticos →',rec_w:'G',rec_l:'P',
-  lock_t:'Pronóstico reservado a los miembros Premium',lock_s_pre:'Confianza',lock_s_post:'· la cuota, el análisis detallado y el value bet se desbloquean con Premium.',lock_unlock1:'⭐ Desbloquear este pronóstico',pl_suffix:'— reservado a los miembros Premium',pl_premium:'⭐ Hazte Premium',pl_note:'Recordatorio: 1 pronóstico completo gratis cada día en la pestaña ⚡ Pronósticos.',pl_back:'← Volver a los partidos',
+  lock_t:'Pronóstico reservado a los miembros Premium',lock_s_pre:'Probabilidad de ganar',lock_s_post:'· la cuota, el análisis detallado y el value bet se desbloquean con Premium.',lock_unlock1:'⭐ Desbloquear este pronóstico',pl_suffix:'— reservado a los miembros Premium',pl_premium:'⭐ Hazte Premium',pl_note:'Recordatorio: 1 pronóstico completo gratis cada día en la pestaña ⚡ Pronósticos.',pl_back:'← Volver a los partidos',
   lk_tend_t:'Tendencias y rachas',lk_tend_d:'Balances de los últimos 10, rachas actuales, Over X/10, cobertura del hándicap… en todos los partidos.',lk_bank_t:'Bankroll y seguimiento',lk_bank_d:'Stake automático según tu capital (Kelly), curva de ganancias, ROI y seguimiento de tus apuestas.',lk_hist_t:'Historial de pronósticos',lk_hist_d:'Seguimiento de todos los pronósticos del día, sus resultados y la fiabilidad del modelo — reservado a los miembros Premium.',lk_match_t:'El análisis de este partido',lk_match_d:'Pronósticos, mejores cuotas y datos completos de este partido están reservados a los miembros Premium.',
   combo_bet:'🎟️ Apostar esta combinada (stake auto)',out_bet:'🎟️ Apostar este outsider',
   conf_tres:'MUY FIABLE',conf_fiable:'FIABLE',conf_modere:'MODERADO',conf_incertain:'INCIERTO',
@@ -1166,7 +1166,7 @@ const I18N={
   ci_rlwin_q:'La probabilidad de que este equipo gane el partido, según nuestro modelo.',ci_rlwin_p:'Sirve de base para todos los demás cálculos (hándicap, etc.).',
   ci_rlcover_q:'La probabilidad de que el equipo "cubra" su hándicap: ganar por 2+ (si −1.5) o no perder por 2+ (si +1.5).',ci_rlcover_p:'Derivada de la probabilidad de victoria (coherente con ella). Determina el valor de la apuesta run line.',
   tlbl_victoire:'Ganador del partido',tlbl_ou:'Total carreras (O/U)',tlbl_runline:'Run line (hándicap)',pk_win:'{team} gana el partido',pk_over:'OVER {line} carreras en total',pk_under:'UNDER {line} carreras en total',pk_rl:'{team} {point}',expl_win:'Modelo sobre datos reales (stats MLB + cuotas del mercado): {team} tiene un {proba}% de probabilidad de ganar (rango {lo}–{hi}%). Carreras estimadas: {ra} − {rh}.',expl_ou:'Estimación sobre datos reales: total esperado {total} carreras ({ra} − {rh}) vs línea {line}. Probabilidad {side}: {proba}%.',expl_rl:'Run line: {cond}. Cobertura estimada: {proba}%.',expl_rl_neg:'{team} debe ganar por 2 carreras o más',expl_rl_pos:'{team} puede perder por 1 carrera máx (o ganar)',
-  prono_q:"ⓘ ¿qué es?",odds_best:'Mejor cuota',prono_ourproba:'nuestra prob.',prono_market:'mercado',data_real:'datos reales',prono_hi:'🔥 ALTA CONFIANZA',prono_good:'✅ BUENA CONFIANZA',prono_probability:'PROBABILIDAD',prono_form:'Forma (reciente → antiguo):',prono_weights:'⚖️ PESO DE CADA CRITERIO',odds_us:'Mejor cuota US',odds_eu:'Mejor cuota EU',
+  prono_q:"ⓘ ¿qué es?",odds_best:'Mejor cuota',prono_ourproba:'nuestra prob.',prono_market:'mercado',data_real:'datos reales',prono_hi:'🔥 ALTA PROBABILIDAD',prono_good:'✅ BUENA PROBABILIDAD',prono_probability:'PROBABILIDAD',prono_form:'Forma (reciente → antiguo):',prono_weights:'⚖️ PESO DE CADA CRITERIO',odds_us:'Mejor cuota US',odds_eu:'Mejor cuota EU',
   tr_t:'Track record verificado',tr_s:'Todos los pronósticos, resultados reales — sobre <strong>{n}</strong> resueltos',tr_win:'acierto',pr_empty_value:'No hay apuesta de valor hoy — el mercado es eficiente en estos partidos. Es normal: los value bets reales son raros.',pr_empty_filter:'Sin pronóstico para este filtro',
   dlg_cancel:'Cancelar',dlg_confirm:'Confirmar',dlg_bet_ok:'Apostar',win_verb:'gana',
   dc_combo_t:'🎯 ¿Apostar esta combinada?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} selecciones<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Cuota total: <strong>{c}</strong><br>Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>Probabilidad real: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gana solo si entran las {n} selecciones. Stake = Kelly fraccionado, tope 5%.</span>',
@@ -1276,7 +1276,7 @@ function computeFreePick(pronos){
 }
 // Carte de pronostic verrouillée (FOMO)
 function mkPronoLocked(p){
-  const cs=p.confScore??50;
+  const cs=Math.round(p.proba); // note unique = chance de gagner
   return `<div class="prono lock-card">
     <div class="prono-meta" style="justify-content:center;margin-bottom:6px">
       <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}
@@ -2814,7 +2814,7 @@ function ouvrirMatchDepuis(gamePk){
 
 function renderKPIs(pronos){
   document.getElementById('k-tot').textContent=pronos.length;
-  document.getElementById('k-forte').textContent=pronos.filter(p=>(p.confScore??0)>=70).length;
+  document.getElementById('k-forte').textContent=pronos.filter(p=>(p.proba??0)>=62).length;
   const probas=pronos.map(p=>p.proba).filter(v=>typeof v==='number'&&!isNaN(v));
   document.getElementById('k-best').textContent=(probas.length?Math.max(...probas):0).toFixed(1)+'%';
   document.getElementById('k-games').textContent=new Set(pronos.map(p=>p.gamePk)).size;
@@ -2897,8 +2897,8 @@ function critereInfo(f){
 
 function mkProno(p){
   if(!isPremium()&&p.id!==FREE_PICK_ID)return mkPronoLocked(p); // gratuit = seulement le pick du jour
-  const cs=p.confScore??50;
-  const isFort=cs>=70,isMoyen=cs>=50;
+  const cs=Math.round(p.proba); // note unique = chance de gagner (le pari passe)
+  const isFort=cs>=62,isMoyen=cs>=54; // paliers adaptés à une probabilité (≥62% = forte chance, ≥54% = bonne)
   const col=isFort?'var(--green)':isMoyen?'var(--amber)':'var(--muted)';
   const tagClass={victoire:'tag-v',ou:'tag-ou',runline:'tag-marge'}[p.type]||'tag-v';
   const raisons=p.facteurs.map(f=>{
@@ -2961,7 +2961,6 @@ function mkProno(p){
           <div class="ring">${ring(p.proba,col)}</div>
           <div class="ring-lbl">${t('prono_probability')}</div>
           ${ciHTML}
-          ${conf100HTML}
         </div>
         <div class="prono-cnt">
           <div class="prono-pick">🎯 ${displayPick(p)}</div>
@@ -3577,8 +3576,7 @@ function renderHistList(hist,filtre){
       </div>
       <div class="histc-pick">${h.pick||''}</div>
       <div class="histc-stats">
-        <span>📊 ${t('hl_proba')} <b>${h.proba!=null?h.proba.toFixed(0)+'%':'—'}</b></span>
-        <span>🎯 ${t('hl_conf')} <b style="color:${confColor(cs)}">${cs}/100</b></span>
+        <span>🎯 ${t('hl_proba')} <b style="color:${confColor(h.proba??50)}">${h.proba!=null?h.proba.toFixed(0)+'%':'—'}</b></span>
         ${cote?`<span>💰 ${t('hl_cote')} <b>${(+cote).toFixed(2)}</b></span>`:''}
         ${h.scoreReel?`<span>📋 ${t('hl_score')} <b>${h.scoreReel}</b></span>`:''}
         ${h.parie?`<span style="color:var(--amber)">🎟️ ${t('hl_stake')} ${(+h.mise||0).toFixed(2)}€</span>`:''}
