@@ -64,6 +64,9 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 @keyframes pglow{0%,100%{box-shadow:0 0 12px rgba(245,166,35,.3)}50%{box-shadow:0 0 22px rgba(245,166,35,.55)}}
 .premium-badge{font-size:10px;color:var(--amber);font-weight:800;border:1px solid var(--amber-b);border-radius:8px;padding:4px 9px;white-space:nowrap}
 .admin-btn{font-size:10px;font-weight:700;color:var(--purple);background:rgba(155,109,255,.1);border:1px solid rgba(155,109,255,.4);border-radius:8px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+.lang-sel{font-size:11px;font-weight:700;color:var(--txt);background:var(--card2);border:1px solid var(--b2);border-radius:8px;padding:5px 6px;cursor:pointer;-webkit-appearance:none;appearance:none;text-align:center}
+.lang-sel:hover{border-color:var(--b3)}
+.lang-sel option{background:#101826;color:var(--txt)}
 .admin-btn:hover{background:rgba(155,109,255,.2)}
 .admin-btn.view-free{color:var(--amber);background:var(--amber-d);border-color:var(--amber-b)}
 .free-badge{display:inline-block;background:var(--green-d);color:var(--green);border:1px solid var(--green-b);font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 7px;border-radius:20px;margin-left:6px}
@@ -578,14 +581,14 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     <div class="auth-sub" id="auth-sub">Connecte-toi pour accéder aux pronostics du jour.</div>
     <div class="auth-msg" id="auth-msg"></div>
     <form id="auth-form" onsubmit="return submitAuth(event)">
-      <input class="auth-field" id="auth-email" type="email" placeholder="Adresse email" autocomplete="email" required>
+      <input class="auth-field" id="auth-email" type="email" placeholder="Adresse email" data-i18n-ph="auth_email_ph" autocomplete="email" required>
       <input class="auth-field" id="auth-pass" type="password" placeholder="Mot de passe (min. 6 caractères)" autocomplete="current-password" minlength="6" required>
       <button class="auth-btn" id="auth-submit" type="submit">Se connecter</button>
     </form>
-    <div class="auth-toggle" id="auth-forgot" style="margin-top:12px"><a onclick="forgotPassword()">Mot de passe oublié ?</a></div>
+    <div class="auth-toggle" id="auth-forgot" style="margin-top:12px"><a onclick="forgotPassword()" data-i18n="auth_forgot">Mot de passe oublié ?</a></div>
     <div class="auth-toggle" id="auth-toggle-line">Pas encore de compte ? <a onclick="toggleAuthMode()" id="auth-toggle-link">Créer un compte</a></div>
-    <div class="auth-toggle" style="margin-top:14px"><a href="index.html">← Retour à l'accueil</a></div>
-    <div class="auth-foot">🔒 Connexion sécurisée. Outil d'analyse à but informatif — 18+. Aucun pari n'est sans risque.</div>
+    <div class="auth-toggle" style="margin-top:14px"><a href="index.html" data-i18n="auth_back">← Retour à l'accueil</a></div>
+    <div class="auth-foot" data-i18n="auth_foot">🔒 Connexion sécurisée. Outil d'analyse à but informatif — 18+. Aucun pari n'est sans risque.</div>
   </div>
 </div>
 
@@ -594,24 +597,25 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
   <div class="pm-card">
     <button class="pm-close" onclick="fermerPremium()">×</button>
     <div class="pm-eye">⭐ DataBaseball Premium</div>
-    <div class="pm-h">Débloque TOUS les pronos</div>
-    <div class="pm-sub">Tu as <strong>1 pronostic offert chaque jour</strong> — le meilleur, complet.<br>Premium débloque <strong>tout le reste</strong>.</div>
-    <div class="pm-feat"><b>✓</b><div><strong>Tous les pronos du jour</strong> — chaque match, chaque pari (Victoire, Total, Run line) avec cote et analyse complète.</div></div>
-    <div class="pm-feat"><b>✓</b><div><strong>La Sélection complète</strong> — les 5 meilleurs coups notés sur 100, pas seulement le n°1.</div></div>
-    <div class="pm-feat"><b>✓</b><div><strong>Tendances & séries</strong> détaillées + <strong>value bets</strong> où le modèle bat le marché.</div></div>
-    <div class="pm-feat"><b>✓</b><div><strong>Bankroll & suivi</strong> : mise auto, courbe de gains, calibration.</div></div>
+    <div class="pm-h" data-i18n="pm_h">Débloque TOUS les pronos</div>
+    <div class="pm-sub" data-i18n-html="pm_sub">Tu as <strong>1 pronostic offert chaque jour</strong> — le meilleur, complet.<br>Premium débloque <strong>tout le reste</strong>.</div>
+    <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f1"><strong>Tous les pronos du jour</strong> — chaque match, chaque pari (Victoire, Total, Run line) avec cote et analyse complète.</div></div>
+    <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f2"><strong>La Sélection complète</strong> — les 5 meilleurs coups notés sur 100, pas seulement le n°1.</div></div>
+    <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f3"><strong>Tendances & séries</strong> détaillées + <strong>value bets</strong> où le modèle bat le marché.</div></div>
+    <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f4"><strong>Bankroll & suivi</strong> : mise auto, courbe de gains, calibration.</div></div>
     <div class="pm-plans">
-      <div class="pm-plan" id="plan-mois" onclick="choisirPlan('mois')"><div class="pm-plan-price">5,99€</div><div class="pm-plan-per">/ mois</div></div>
-      <div class="pm-plan sel" id="plan-an" onclick="choisirPlan('an')"><div class="pm-plan-tag">2 MOIS OFFERTS</div><div class="pm-plan-price">59€</div><div class="pm-plan-per">/ an</div><div class="pm-plan-eco">soit 4,92€/mois</div></div>
+      <div class="pm-plan" id="plan-mois" onclick="choisirPlan('mois')"><div class="pm-plan-price">5,99€</div><div class="pm-plan-per" data-i18n="pm_mois">/ mois</div></div>
+      <div class="pm-plan sel" id="plan-an" onclick="choisirPlan('an')"><div class="pm-plan-tag" data-i18n="pm_an_tag">2 MOIS OFFERTS</div><div class="pm-plan-price">59€</div><div class="pm-plan-per" data-i18n="pm_an">/ an</div><div class="pm-plan-eco" data-i18n="pm_an_eco">soit 4,92€/mois</div></div>
     </div>
-    <button class="pm-cta" onclick="lancerAbonnement()">⭐ Devenir Premium</button>
-    <div class="pm-foot">Sans engagement · Annulable à tout moment · Paiement sécurisé.<br>Les matchs du soir n'attendent pas — débloque maintenant.</div>
+    <button class="pm-cta" onclick="lancerAbonnement()" data-i18n="pm_cta">⭐ Devenir Premium</button>
+    <div class="pm-foot" data-i18n-html="pm_foot">Sans engagement · Annulable à tout moment · Paiement sécurisé.<br>Les matchs du soir n'attendent pas — débloque maintenant.</div>
   </div>
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v45 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v52 · 28/06</span></div>
   <div class="topbar-r">
+    <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
     <span id="premium-badge" class="premium-badge" style="display:none">⭐<span class="pb-tx"> Premium</span></span>
@@ -622,133 +626,133 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </header>
 
 <nav class="nav-tabs">
-  <button class="nav-tab active" onclick="goTo('pronos')">⚡ Pronostics</button>
-  <button class="nav-tab" onclick="goTo('matchs')">⚾ Matchs</button>
-  <button class="nav-tab" onclick="goTo('tendances')">📈 Tendances</button>
-  <button class="nav-tab" onclick="goTo('historique')">📊 Historique</button>
-  <button class="nav-tab" onclick="goTo('bankroll')">💰 Bankroll</button>
-  <button class="nav-tab" onclick="goTo('classements')">📊 Classements</button>
-  <button class="nav-tab" onclick="goTo('joueurs')">🏆 Joueurs</button>
+  <button class="nav-tab active" onclick="goTo('pronos')" data-i18n="nav_pronos">⚡ Pronostics</button>
+  <button class="nav-tab" onclick="goTo('matchs')" data-i18n="nav_matchs">⚾ Matchs</button>
+  <button class="nav-tab" onclick="goTo('tendances')" data-i18n="nav_tendances">📈 Tendances</button>
+  <button class="nav-tab" onclick="goTo('historique')" data-i18n="nav_historique">📊 Historique</button>
+  <button class="nav-tab" onclick="goTo('bankroll')" data-i18n="nav_bankroll">💰 Bankroll</button>
+  <button class="nav-tab" onclick="goTo('classements')" data-i18n="nav_classements">📊 Classements</button>
+  <button class="nav-tab" onclick="goTo('joueurs')" data-i18n="nav_joueurs">🏆 Joueurs</button>
 </nav>
 
 <!-- ═══ PRONOSTICS ═══ -->
 <div class="page active" id="page-pronos">
   <div class="ph">
     <div class="ph-eye">Aujourd'hui · <span id="date-txt">—</span></div>
-    <div class="ph-title">PRONOSTICS DU JOUR</div>
-    <div class="ph-sub">100% données réelles MLB · FIP des lanceurs · park factors · splits · forme réelle · cotes du marché · meilleure cote bookmaker · zéro simulation</div>
+    <div class="ph-title" data-i18n="ph_pronos_title">PRONOSTICS DU JOUR</div>
+    <div class="ph-sub" data-i18n="ph_pronos_sub">100% données réelles MLB · FIP des lanceurs · park factors · splits · forme réelle · cotes du marché · meilleure cote bookmaker · zéro simulation</div>
     <div class="ph-note">🕐 Tous les pronostics du jour sont calculés <strong>automatiquement une fois par jour</strong> (vers 15h, heure de Paris) puis <strong>figés</strong> : ils ne changent plus en cours de journée.</div>
   </div>
   <div class="g5 mb16" id="kpi-row">
-    <div class="kpi"><div class="kpi::before" style="background:var(--red)"></div><div class="kpi-l">Total pronos</div><div class="kpi-v" style="color:var(--red)" id="k-tot">—</div><div class="kpi-m">générés</div></div>
-    <div class="kpi"><div class="kpi-l">Forte confiance</div><div class="kpi-v" style="color:var(--green)" id="k-forte">—</div><div class="kpi-m">score 70/100+</div></div>
-    <div class="kpi"><div class="kpi-l">Meilleure proba</div><div class="kpi-v" style="color:var(--amber)" id="k-best">—</div><div class="kpi-m">probabilité max</div></div>
-    <div class="kpi"><div class="kpi-l">Matchs analysés</div><div class="kpi-v" style="color:var(--blue)" id="k-games">—</div><div class="kpi-m">aujourd'hui</div></div>
-    <div class="kpi"><div class="kpi-l">Données dispo</div><div class="kpi-v" style="color:var(--purple)" id="k-data">—</div><div class="kpi-m">critères moyens</div></div>
+    <div class="kpi"><div class="kpi::before" style="background:var(--red)"></div><div class="kpi-l" data-i18n="kpi_total">Total pronos</div><div class="kpi-v" style="color:var(--red)" id="k-tot">—</div><div class="kpi-m" data-i18n="kpi_total_m">générés</div></div>
+    <div class="kpi"><div class="kpi-l" data-i18n="kpi_forte">Forte confiance</div><div class="kpi-v" style="color:var(--green)" id="k-forte">—</div><div class="kpi-m" data-i18n="kpi_forte_m">score 70/100+</div></div>
+    <div class="kpi"><div class="kpi-l" data-i18n="kpi_proba">Meilleure proba</div><div class="kpi-v" style="color:var(--amber)" id="k-best">—</div><div class="kpi-m" data-i18n="kpi_proba_m">probabilité max</div></div>
+    <div class="kpi"><div class="kpi-l" data-i18n="kpi_matchs">Matchs analysés</div><div class="kpi-v" style="color:var(--blue)" id="k-games">—</div><div class="kpi-m" data-i18n="kpi_matchs_m">aujourd'hui</div></div>
+    <div class="kpi"><div class="kpi-l" data-i18n="kpi_data">Données dispo</div><div class="kpi-v" style="color:var(--purple)" id="k-data">—</div><div class="kpi-m" data-i18n="kpi_data_m">critères moyens</div></div>
   </div>
   <div id="track-record"></div>
   <div id="best-bet"></div>
   <div id="fun-section"></div>
   <details class="help-box">
-    <summary>🔰 Comment lire un pronostic ? (cliquez)</summary>
+    <summary data-i18n="help_summary">🔰 Comment lire un pronostic ? (cliquez)</summary>
     <div class="help-content">
-      <div class="help-item" style="color:var(--green)"><strong>🟢 100% données réelles, zéro simulation.</strong> Tout vient des stats officielles MLB (FIP des lanceurs, OPS, splits domicile/extérieur, forme réelle, park factors) et des vraies cotes des bookmakers.</div>
-      <div class="help-item"><strong>⭐ Sélection du jour</strong> — En haut : les meilleurs coups du jour, notés sur <strong>100</strong> (équilibre entre chance de gagner, cote et fiabilité). C'est ce qu'il faut regarder en premier. Cliquez une ligne pour ouvrir le match et parier.</div>
-      <div class="help-item"><strong>3 types de paris</strong> (les seuls vraiment proposés par les bookmakers) : <strong>🏆 Victoire</strong> (qui gagne), <strong>📊 Total points</strong> (Over/Under = beaucoup ou peu de points), <strong>📐 Run line</strong> (handicap ±1.5 : le favori doit gagner par 2+, ou l'outsider peut perdre par 1).</div>
-      <div class="help-item"><strong>Probabilité</strong> — La chance estimée que le pari passe, avec sa fourchette (ex : <span class="mono">67% (62–72%)</span>). Calibrée sur le marché pour rester réaliste.</div>
-      <div class="help-item"><strong>Score de confiance /100</strong> — À quel point on peut <em>faire confiance</em> à l'estimation (qualité + quantité de données + écart entre les équipes). <span style="color:var(--green)">70+ = fiable</span>. <em>(≠ proba de gagner.)</em></div>
-      <div class="help-item"><strong>Meilleure cote & valeur (edge)</strong> — On compare <strong>tous les bookmakers</strong> et on affiche la plus grosse cote. L'<strong>edge</strong> = notre proba − celle du marché. Un pari a de la « valeur » si notre modèle le voit plus probable que le marché. Filtre <span style="color:var(--green)">💎 Value</span> = ne montrer que ceux-là.</div>
-      <div class="help-item"><strong>⚖️ Poids des critères + ⓘ c'est quoi ?</strong> — Chaque barre montre l'importance d'un critère. <strong>Cliquez un critère</strong> (le « ⓘ c'est quoi ? ») pour une explication simple de ce qu'il mesure et pourquoi il compte.</div>
-      <div class="help-item"><strong>🌡️ Météo</strong> — Vent + température + humidité combinés en un seul <strong>effet net</strong> sur le total de points. N'influence pas le vainqueur (les 2 équipes ont le même temps). Stade couvert (dôme) = aucun effet.</div>
-      <div class="help-item"><strong>🎯 Parier</strong> — Place le pari dans votre suivi avec une mise auto (selon votre capital, plafonnée). Suivez capital et courbe dans 💰 Bankroll, et la fiabilité réelle dans 📈 Historique (calibration).</div>
-      <div class="help-item" style="color:var(--muted)">⚠️ Outil d'analyse à but informatif. <strong>Aucun modèle ne bat le marché à coup sûr</strong> — le marché des bookmakers est très efficace. Ne misez que ce que vous pouvez perdre.</div>
+      <div class="help-item" style="color:var(--green)" data-i18n-html="help_1"><strong>🟢 100% données réelles, zéro simulation.</strong> Tout vient des stats officielles MLB (FIP des lanceurs, OPS, splits domicile/extérieur, forme réelle, park factors) et des vraies cotes des bookmakers.</div>
+      <div class="help-item" data-i18n-html="help_2"><strong>⭐ Sélection du jour</strong> — En haut : les meilleurs coups du jour, notés sur <strong>100</strong> (équilibre entre chance de gagner, cote et fiabilité). C'est ce qu'il faut regarder en premier. Cliquez une ligne pour ouvrir le match et parier.</div>
+      <div class="help-item" data-i18n-html="help_3"><strong>3 types de paris</strong> (les seuls vraiment proposés par les bookmakers) : <strong>🏆 Victoire</strong> (qui gagne), <strong>📊 Total points</strong> (Over/Under = beaucoup ou peu de points), <strong>📐 Run line</strong> (handicap ±1.5 : le favori doit gagner par 2+, ou l'outsider peut perdre par 1).</div>
+      <div class="help-item" data-i18n-html="help_4"><strong>Probabilité</strong> — La chance estimée que le pari passe, avec sa fourchette (ex : <span class="mono">67% (62–72%)</span>). Calibrée sur le marché pour rester réaliste.</div>
+      <div class="help-item" data-i18n-html="help_5"><strong>Score de confiance /100</strong> — À quel point on peut <em>faire confiance</em> à l'estimation (qualité + quantité de données + écart entre les équipes). <span style="color:var(--green)">70+ = fiable</span>. <em>(≠ proba de gagner.)</em></div>
+      <div class="help-item" data-i18n-html="help_6"><strong>Meilleure cote & valeur (edge)</strong> — On compare <strong>tous les bookmakers</strong> et on affiche la plus grosse cote. L'<strong>edge</strong> = notre proba − celle du marché. Un pari a de la « valeur » si notre modèle le voit plus probable que le marché. Filtre <span style="color:var(--green)">💎 Value</span> = ne montrer que ceux-là.</div>
+      <div class="help-item" data-i18n-html="help_7"><strong>⚖️ Poids des critères + ⓘ c'est quoi ?</strong> — Chaque barre montre l'importance d'un critère. <strong>Cliquez un critère</strong> (le « ⓘ c'est quoi ? ») pour une explication simple de ce qu'il mesure et pourquoi il compte.</div>
+      <div class="help-item" data-i18n-html="help_8"><strong>🌡️ Météo</strong> — Vent + température + humidité combinés en un seul <strong>effet net</strong> sur le total de points. N'influence pas le vainqueur (les 2 équipes ont le même temps). Stade couvert (dôme) = aucun effet.</div>
+      <div class="help-item" data-i18n-html="help_9"><strong>🎯 Parier</strong> — Place le pari dans votre suivi avec une mise auto (selon votre capital, plafonnée). Suivez capital et courbe dans 💰 Bankroll, et la fiabilité réelle dans 📈 Historique (calibration).</div>
+      <div class="help-item" style="color:var(--muted)" data-i18n-html="help_10">⚠️ Outil d'analyse à but informatif. <strong>Aucun modèle ne bat le marché à coup sûr</strong> — le marché des bookmakers est très efficace. Ne misez que ce que vous pouvez perdre.</div>
     </div>
   </details>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
     <div style="display:flex;gap:4px;flex-wrap:wrap" id="filtres">
-      <button class="tab-btn active" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('tous',this)">Tous</button>
-      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--green-b);color:var(--green)" onclick="filtrer('value',this)">💎 Value (rentables)</button>
-      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('victoire',this)">🏆 Victoire</button>
-      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('ou',this)">📊 Total points</button>
-      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('runline',this)">📐 Run line</button>
+      <button class="tab-btn active" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('tous',this)" data-i18n="f_tous">Tous</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--green-b);color:var(--green)" onclick="filtrer('value',this)" data-i18n="f2_value">💎 Value (rentables)</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('victoire',this)" data-i18n="f2_victoire">🏆 Victoire</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('ou',this)" data-i18n="f2_ou">📊 Total points</button>
+      <button class="tab-btn" style="border-radius:20px;border:1px solid var(--b1)" onclick="filtrer('runline',this)" data-i18n="f2_runline">📐 Run line</button>
     </div>
     <div style="display:flex;gap:4px">
-      <button class="tab-btn" style="border:1px solid var(--b1)" onclick="trierPar('conf')">Confiance ↓</button>
-      <button class="tab-btn" style="border:1px solid var(--b1)" onclick="trierPar('proba')">Proba ↓</button>
-      <button onclick="exporterPDF()" class="export-btn">📄 Export</button>
+      <button class="tab-btn" style="border:1px solid var(--b1)" onclick="trierPar('conf')" data-i18n="sort_conf">Confiance ↓</button>
+      <button class="tab-btn" style="border:1px solid var(--b1)" onclick="trierPar('proba')" data-i18n="sort_proba">Proba ↓</button>
+      <button onclick="exporterPDF()" class="export-btn" data-i18n="export_pdf">📄 Export</button>
     </div>
   </div>
-  <div id="pronos-list"><div class="loading"><div class="spinner"></div>Analyse mathématique en cours...</div></div>
+  <div id="pronos-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading_pronos">Analyse mathématique en cours...</span></div></div>
 </div>
 
 <!-- ═══ MATCHS ═══ -->
 <div class="page" id="page-matchs">
-  <div class="ph"><div class="ph-eye">En direct</div><div class="ph-title">MATCHS DU JOUR</div><div class="ph-sub">Cliquez pour voir l'analyse complète avec toutes les données croisées</div></div>
+  <div class="ph"><div class="ph-eye" data-i18n="mh_eye">En direct</div><div class="ph-title" data-i18n="mh_title">MATCHS DU JOUR</div><div class="ph-sub" data-i18n="mh_sub">Cliquez pour voir l'analyse complète avec toutes les données croisées</div></div>
   <div id="matchs-list"><div class="loading"><div class="spinner"></div></div></div>
   <div id="match-detail" style="display:none"></div>
 </div>
 
 <!-- ═══ TENDANCES ═══ -->
 <div class="page" id="page-tendances">
-  <div class="ph"><div class="ph-eye">Séries & forme · 100% données réelles</div><div class="ph-title">TENDANCES DU JOUR</div><div class="ph-sub">Les séries des équipes qui jouent aujourd'hui, calculées sur leurs 10 derniers vrais matchs. Triez pour repérer les équipes chaudes.</div></div>
+  <div class="ph"><div class="ph-eye" data-i18n="th_eye">Séries & forme · 100% données réelles</div><div class="ph-title" data-i18n="th_title">TENDANCES DU JOUR</div><div class="ph-sub" data-i18n="th_sub">Les séries des équipes qui jouent aujourd'hui, calculées sur leurs 10 derniers vrais matchs. Triez pour repérer les équipes chaudes.</div></div>
   <div class="tabs" id="tend-tris">
-    <button class="tab-btn active" onclick="trierTendances('forme',this)">🔥 Forme</button>
-    <button class="tab-btn" onclick="trierTendances('over',this)">📊 Over 8.5</button>
-    <button class="tab-btn" onclick="trierTendances('serie',this)">⚡ Série en cours</button>
-    <button class="tab-btn" onclick="trierTendances('cover',this)">📐 Gagne par 2+</button>
+    <button class="tab-btn active" onclick="trierTendances('forme',this)" data-i18n="tend_forme">🔥 Forme</button>
+    <button class="tab-btn" onclick="trierTendances('over',this)" data-i18n="tend_over">📊 Over 8.5</button>
+    <button class="tab-btn" onclick="trierTendances('serie',this)" data-i18n="tend_serie">⚡ Série en cours</button>
+    <button class="tab-btn" onclick="trierTendances('cover',this)" data-i18n="tend_cover">📐 Gagne par 2+</button>
   </div>
-  <div id="tendances-list"><div class="empty">Chargez d'abord les pronostics (onglet ⚡) pour calculer les tendances.</div></div>
+  <div id="tendances-list"><div class="empty" data-i18n="tend_empty">Chargez d'abord les pronostics (onglet ⚡) pour calculer les tendances.</div></div>
 </div>
 
 
 <!-- ═══ HISTORIQUE ═══ -->
 <div class="page" id="page-historique">
-  <div class="ph"><div class="ph-eye">Mémoire</div><div class="ph-title">HISTORIQUE DES PRONOSTICS</div><div class="ph-sub">Tous les pronos générés sont suivis ici pour mesurer la fiabilité du modèle (calibration). Vos <strong>paris réels</strong> sont dans 💰 Bankroll.</div></div>
+  <div class="ph"><div class="ph-eye" data-i18n="hh_eye">Mémoire</div><div class="ph-title" data-i18n="hh_title">HISTORIQUE DES PRONOSTICS</div><div class="ph-sub" data-i18n-html="hh_sub">Tous les pronos générés sont suivis ici pour mesurer la fiabilité du modèle (calibration). Vos <strong>paris réels</strong> sont dans 💰 Bankroll.</div></div>
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
-    <button class="io-btn" onclick="exporterHistorique()">⬇️ Exporter (JSON)</button>
-    <label class="io-btn">⬆️ Importer (JSON)<input type="file" accept="application/json" onchange="importerHistorique(this)" style="display:none"></label>
-    <button class="io-btn" id="reinit-btn" style="display:none" onclick="reinitialiserStats()">♻️ Réinitialiser les stats</button>
-    <span style="font-size:10px;color:var(--muted);line-height:1.4;flex:1;min-width:200px">⚠️ Sur fichier local (Android <code>content://</code>), le stockage du navigateur peut s'effacer entre sessions. Exportez régulièrement, ou hébergez l'app sur GitHub Pages pour une persistance fiable.</span>
+    <button class="io-btn" onclick="exporterHistorique()" data-i18n="io_export">⬇️ Exporter (JSON)</button>
+    <label class="io-btn"><span data-i18n="io_import">⬆️ Importer (JSON)</span><input type="file" accept="application/json" onchange="importerHistorique(this)" style="display:none"></label>
+    <button class="io-btn" id="reinit-btn" style="display:none" onclick="reinitialiserStats()" data-i18n="io_reinit">♻️ Réinitialiser les stats</button>
+    <span style="font-size:10px;color:var(--muted);line-height:1.4;flex:1;min-width:200px" data-i18n-html="io_warn">⚠️ Sur fichier local (Android <code>content://</code>), le stockage du navigateur peut s'effacer entre sessions. Exportez régulièrement, ou hébergez l'app sur GitHub Pages pour une persistance fiable.</span>
   </div>
 
   <div class="tabs" id="hist-tabs" style="margin-bottom:14px">
-    <button class="tab-btn active" onclick="switchHistView('global',this)">📊 Suivi global</button>
-    <button class="tab-btn" onclick="switchHistView('fun',this)">🎲 Paris Fun</button>
+    <button class="tab-btn active" onclick="switchHistView('global',this)" data-i18n="hist_tab_global">📊 Suivi global</button>
+    <button class="tab-btn" onclick="switchHistView('fun',this)" data-i18n="hist_tab_fun">🎲 Paris Fun</button>
   </div>
 
   <div id="hist-view-global">
   <div class="g4 mb16">
-    <div class="kpi"><div class="kpi-l">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="h-taux">—</div><div class="kpi-m">pronos terminés</div></div>
-    <div class="kpi"><div class="kpi-l">Pronos analysés</div><div class="kpi-v" style="color:var(--blue)" id="h-total">—</div><div class="kpi-m">depuis le début</div></div>
-    <div class="kpi"><div class="kpi-l">ROI théorique</div><div class="kpi-v" style="color:var(--amber)" id="h-roi">—</div><div class="kpi-m">si 1u sur chaque prono</div></div>
-    <div class="kpi"><div class="kpi-l">En attente</div><div class="kpi-v" style="color:var(--muted)" id="h-attente">—</div><div class="kpi-m">résultats inconnus</div></div>
+    <div class="kpi"><div class="kpi-l" data-i18n="h_taux">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="h-taux">—</div><div class="kpi-m" data-i18n="h_taux_m">pronos terminés</div></div>
+    <div class="kpi"><div class="kpi-l" data-i18n="h_total">Pronos analysés</div><div class="kpi-v" style="color:var(--blue)" id="h-total">—</div><div class="kpi-m" data-i18n="h_total_m">depuis le début</div></div>
+    <div class="kpi"><div class="kpi-l" data-i18n="h_roi">ROI théorique</div><div class="kpi-v" style="color:var(--amber)" id="h-roi">—</div><div class="kpi-m" data-i18n="h_roi_m">si 1u sur chaque prono</div></div>
+    <div class="kpi"><div class="kpi-l" data-i18n="h_attente">En attente</div><div class="kpi-v" style="color:var(--muted)" id="h-attente">—</div><div class="kpi-m" data-i18n="h_attente_m">résultats inconnus</div></div>
   </div>
 
   <div class="card mb12">
-    <div class="card-h"><div class="card-ht">Réussite par niveau de confiance</div><div class="card-hs">Est-ce que plus de confiance = plus de victoires ?</div></div>
+    <div class="card-h"><div class="card-ht" data-i18n="hc_conf">Réussite par niveau de confiance</div><div class="card-hs" data-i18n="hc_conf_s">Est-ce que plus de confiance = plus de victoires ?</div></div>
     <div style="padding:12px" id="hist-by-conf"></div>
   </div>
 
   <div class="card mb12">
-    <div class="card-h"><div class="card-ht">Réussite par type de pari</div></div>
+    <div class="card-h"><div class="card-ht" data-i18n="hc_type">Réussite par type de pari</div></div>
     <div style="padding:12px" id="hist-by-type"></div>
   </div>
 
   <div class="card mb12" id="cal-card" style="display:none">
-    <div class="card-h"><div class="card-ht">📐 Calibration du modèle <span style="font-size:9px;color:var(--purple);border:1px solid rgba(155,109,255,.4);border-radius:6px;padding:1px 6px;margin-left:4px">ADMIN</span></div><div class="card-hs">Quand on annonce X%, gagne-t-on vraiment X% du temps ? (outil de pilotage interne)</div></div>
+    <div class="card-h"><div class="card-ht"><span data-i18n="hc_cal">📐 Calibration du modèle</span> <span style="font-size:9px;color:var(--purple);border:1px solid rgba(155,109,255,.4);border-radius:6px;padding:1px 6px;margin-left:4px">ADMIN</span></div><div class="card-hs" data-i18n="hc_cal_s">Quand on annonce X%, gagne-t-on vraiment X% du temps ? (outil de pilotage interne)</div></div>
     <div style="padding:12px" id="hist-calibration"></div>
   </div>
 
   <div class="card">
     <div class="card-h">
-      <div class="card-ht">Tous les pronostics</div>
+      <div class="card-ht" data-i18n="hc_all">Tous les pronostics</div>
       <div style="display:flex;gap:6px">
-        <button class="tab-btn active" style="border:1px solid var(--b1)" onclick="filtrerHist('tous',this)">Tous</button>
-        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('W',this)">✅ Gagnés</button>
-        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('L',this)">❌ Perdus</button>
-        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('P',this)">⏳ En attente</button>
-        <button onclick="viderHistorique()" style="background:var(--red-d);border:1px solid var(--red-b);color:var(--red);padding:4px 10px;border-radius:5px;font-size:10px;cursor:pointer">Effacer</button>
+        <button class="tab-btn active" style="border:1px solid var(--b1)" onclick="filtrerHist('tous',this)" data-i18n="f_tous">Tous</button>
+        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('W',this)" data-i18n="f_won">✅ Gagnés</button>
+        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('L',this)" data-i18n="f_lost">❌ Perdus</button>
+        <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHist('P',this)" data-i18n="f_pend">⏳ En attente</button>
+        <button onclick="viderHistorique()" style="background:var(--red-d);border:1px solid var(--red-b);color:var(--red);padding:4px 10px;border-radius:5px;font-size:10px;cursor:pointer" data-i18n="f_clear">Effacer</button>
       </div>
     </div>
     <div id="hist-list"></div>
@@ -757,13 +761,13 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 
   <div id="hist-view-fun" style="display:none">
     <div class="g4 mb16">
-      <div class="kpi"><div class="kpi-l">Pronos fun suivis</div><div class="kpi-v" style="color:var(--purple)" id="hf-nb">—</div><div class="kpi-m">combinés + outsiders</div></div>
-      <div class="kpi"><div class="kpi-l">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="hf-taux">—</div><div class="kpi-m">pronos fun terminés</div></div>
-      <div class="kpi"><div class="kpi-l">Gain / Perte</div><div class="kpi-v" id="hf-roi">—</div><div class="kpi-m">sur tes paris fun</div></div>
-      <div class="kpi"><div class="kpi-l">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="hf-jeu">—</div><div class="kpi-m">paris fun en attente</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="hf_nb">Pronos fun suivis</div><div class="kpi-v" style="color:var(--purple)" id="hf-nb">—</div><div class="kpi-m" data-i18n="hf_nb_m">combinés + outsiders</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="h_taux">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="hf-taux">—</div><div class="kpi-m" data-i18n="hf_taux_m">pronos fun terminés</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="hf_roi">Gain / Perte</div><div class="kpi-v" id="hf-roi">—</div><div class="kpi-m" data-i18n="hf_roi_m">sur tes paris fun</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="hf_jeu">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="hf-jeu">—</div><div class="kpi-m" data-i18n="hf_jeu_m">paris fun en attente</div></div>
     </div>
     <div class="card">
-      <div class="card-h"><div class="card-ht">🎲 Tous les pronos fun</div><div class="card-hs">Suivi de TOUS les combinés & outsiders suggérés chaque jour (pariés ou non) et leur résultat. 🎟️ = pari placé.</div></div>
+      <div class="card-h"><div class="card-ht" data-i18n="hf_all">🎲 Tous les pronos fun</div><div class="card-hs" data-i18n="hf_all_s">Suivi de TOUS les combinés & outsiders suggérés chaque jour (pariés ou non) et leur résultat. 🎟️ = pari placé.</div></div>
       <div id="hist-fun-list"></div>
     </div>
   </div>
@@ -771,40 +775,40 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 
 <!-- ═══ BANKROLL ═══ -->
 <div class="page" id="page-bankroll">
-  <div class="ph"><div class="ph-eye">Gestion financière</div><div class="ph-title">MA BANKROLL</div><div class="ph-sub">Définissez votre capital, pariez depuis l'onglet ⚡ Pronostics, suivez votre courbe ici</div></div>
+  <div class="ph"><div class="ph-eye" data-i18n="bh_eye">Gestion financière</div><div class="ph-title" data-i18n="bh_title">MA BANKROLL</div><div class="ph-sub" data-i18n="bh_sub">Définissez votre capital, pariez depuis l'onglet ⚡ Pronostics, suivez votre courbe ici</div></div>
 
   <div class="card mb16">
-    <div class="card-h"><div class="card-ht">💰 Votre capital de départ</div><div class="card-hs">Mises calculées automatiquement (Kelly fractionné 25%)</div></div>
+    <div class="card-h"><div class="card-ht" data-i18n="bk_cap">💰 Votre capital de départ</div><div class="card-hs" data-i18n="bk_cap_s">Mises calculées automatiquement (Kelly fractionné 25%)</div></div>
     <div style="padding:14px;display:flex;gap:10px;align-items:center">
       <input class="bk-input" id="bk-input" type="number" placeholder="Ex: 500" min="1">
-      <button class="bk-btn" onclick="sauverBankroll()">Sauvegarder</button>
+      <button class="bk-btn" onclick="sauverBankroll()" data-i18n="bk_save">Sauvegarder</button>
     </div>
     <div style="padding:0 14px 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">
-      <div class="kpi"><div class="kpi-l">Capital actuel</div><div class="kpi-v" style="color:var(--green)" id="bk-actuel">—</div><div class="kpi-m">euros</div></div>
-      <div class="kpi"><div class="kpi-l">Gain/Perte</div><div class="kpi-v" id="bk-delta">—</div><div class="kpi-m">paris terminés</div></div>
-      <div class="kpi"><div class="kpi-l">ROI</div><div class="kpi-v" id="bk-roi">—</div><div class="kpi-m">% rendement</div></div>
-      <div class="kpi"><div class="kpi-l">Paris placés</div><div class="kpi-v" style="color:var(--blue)" id="bk-nb">—</div><div class="kpi-m">au total</div></div>
-      <div class="kpi"><div class="kpi-l">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="bk-jeu">—</div><div class="kpi-m">paris en attente</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="bk_actuel">Capital actuel</div><div class="kpi-v" style="color:var(--green)" id="bk-actuel">—</div><div class="kpi-m" data-i18n="bk_actuel_m">euros</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="bk_delta">Gain/Perte</div><div class="kpi-v" id="bk-delta">—</div><div class="kpi-m" data-i18n="bk_delta_m">paris terminés</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="bk_roi">ROI</div><div class="kpi-v" id="bk-roi">—</div><div class="kpi-m" data-i18n="bk_roi_m">% rendement</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="bk_nb">Paris placés</div><div class="kpi-v" style="color:var(--blue)" id="bk-nb">—</div><div class="kpi-m" data-i18n="bk_nb_m">au total</div></div>
+      <div class="kpi"><div class="kpi-l" data-i18n="bk_jeu">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="bk-jeu">—</div><div class="kpi-m" data-i18n="bk_jeu_m">paris en attente</div></div>
     </div>
   </div>
 
   <div class="card mb16">
-    <div class="card-h"><div class="card-ht">📈 Évolution du capital</div><div class="card-hs">Après chaque pari terminé</div></div>
+    <div class="card-h"><div class="card-ht" data-i18n="bk_evo">📈 Évolution du capital</div><div class="card-hs" data-i18n="bk_evo_s">Après chaque pari terminé</div></div>
     <div style="padding:14px"><div class="bk-chart" id="bk-curve"></div></div>
   </div>
 
   <div class="card">
-    <div class="card-h"><div class="card-ht">🎟️ Mes paris</div><div class="card-hs">Placés depuis l'onglet Pronostics</div></div>
-    <div id="paris-list"><div class="empty" style="padding:24px">Aucun pari placé pour l'instant.<br>Allez dans ⚡ Pronostics et cliquez sur <strong>🎯 Parier</strong> sous un pronostic.</div></div>
+    <div class="card-h"><div class="card-ht" data-i18n="bk_mybets">🎟️ Mes paris</div><div class="card-hs" data-i18n="bk_mybets_s">Placés depuis l'onglet Pronostics</div></div>
+    <div id="paris-list"><div class="empty" style="padding:24px" data-i18n-html="bk_empty">Aucun pari placé pour l'instant.<br>Allez dans ⚡ Pronostics et cliquez sur <strong>🎯 Parier</strong> sous un pronostic.</div></div>
   </div>
 </div>
 
 <!-- ═══ CLASSEMENTS ═══ -->
 <div class="page" id="page-classements">
-  <div class="ph"><div class="ph-eye">Saison 2026</div><div class="ph-title">CLASSEMENTS MLB</div><div class="ph-sub">Données officielles — Win% pythagoricien calculé sur runs réels</div></div>
+  <div class="ph"><div class="ph-eye" data-i18n="ch_eye">Saison 2026</div><div class="ph-title" data-i18n="ch_title">CLASSEMENTS MLB</div><div class="ph-sub" data-i18n="ch_sub">Données officielles — Win% pythagoricien calculé sur runs réels</div></div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('cl','al',this)">Ligue Américaine</button>
-    <button class="tab-btn" onclick="switchTab('cl','nl',this)">Ligue Nationale</button>
+    <button class="tab-btn active" onclick="switchTab('cl','al',this)" data-i18n="cl_al">Ligue Américaine</button>
+    <button class="tab-btn" onclick="switchTab('cl','nl',this)" data-i18n="cl_nl">Ligue Nationale</button>
   </div>
   <div class="tc active" id="tc-cl-al"><div id="stand-al"><div class="loading"><div class="spinner"></div></div></div></div>
   <div class="tc" id="tc-cl-nl"><div id="stand-nl"></div></div>
@@ -812,33 +816,33 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 
 <!-- ═══ JOUEURS ═══ -->
 <div class="page" id="page-joueurs">
-  <div class="ph"><div class="ph-eye">Saison 2026</div><div class="ph-title">MEILLEURS JOUEURS</div><div class="ph-sub">Classements officiels MLB avec explications simples</div></div>
+  <div class="ph"><div class="ph-eye" data-i18n="ch_eye">Saison 2026</div><div class="ph-title" data-i18n="jh_title">MEILLEURS JOUEURS</div><div class="ph-sub" data-i18n="jh_sub">Classements officiels MLB avec explications simples</div></div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('jou','bat',this)">Batteurs</button>
-    <button class="tab-btn" onclick="switchTab('jou','lan',this)">Lanceurs</button>
+    <button class="tab-btn active" onclick="switchTab('jou','bat',this)" data-i18n="jou_bat">Batteurs</button>
+    <button class="tab-btn" onclick="switchTab('jou','lan',this)" data-i18n="jou_lan">Lanceurs</button>
   </div>
   <div class="tc active" id="tc-jou-bat">
     <div class="g3">
-      <div class="card"><div class="card-h"><div><div class="card-ht">💣 Plus de circuits</div><div class="card-hs">Balle envoyée hors du terrain — tous les coureurs marquent</div></div></div><div id="l-hr"><div class="loading"><div class="spinner"></div></div></div></div>
-      <div class="card"><div class="card-h"><div><div class="card-ht">🏏 Meilleure moyenne</div><div class="card-hs">Coups sûrs ÷ passages au bâton</div></div></div><div id="l-avg"><div class="loading"><div class="spinner"></div></div></div></div>
-      <div class="card"><div class="card-h"><div><div class="card-ht">📈 Plus de points produits</div><div class="card-hs">Coéquipiers fait marquer</div></div></div><div id="l-rbi"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_hr">💣 Plus de circuits</div><div class="card-hs" data-i18n="pl_hr_s">Balle envoyée hors du terrain — tous les coureurs marquent</div></div></div><div id="l-hr"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_avg">🏏 Meilleure moyenne</div><div class="card-hs" data-i18n="pl_avg_s">Coups sûrs ÷ passages au bâton</div></div></div><div id="l-avg"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_rbi">📈 Plus de points produits</div><div class="card-hs" data-i18n="pl_rbi_s">Coéquipiers fait marquer</div></div></div><div id="l-rbi"><div class="loading"><div class="spinner"></div></div></div></div>
     </div>
     <div class="g3">
-      <div class="card"><div class="card-h"><div><div class="card-ht">⚡ Force offensive totale</div><div class="card-hs">Capacité à atteindre les bases + puissance de frappe</div></div></div><div id="l-ops"><div class="loading"><div class="spinner"></div></div></div></div>
-      <div class="card"><div class="card-h"><div><div class="card-ht">🏃 Bases volées</div><div class="card-hs">Volé une base sans se faire éliminer</div></div></div><div id="l-sb"><div class="loading"><div class="spinner"></div></div></div></div>
-      <div class="card"><div class="card-h"><div><div class="card-ht">🎯 Points marqués</div><div class="card-hs">Fois où le joueur a lui-même passé le marbre</div></div></div><div id="l-runs"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_ops">⚡ Force offensive totale</div><div class="card-hs" data-i18n="pl_ops_s">Capacité à atteindre les bases + puissance de frappe</div></div></div><div id="l-ops"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_sb">🏃 Bases volées</div><div class="card-hs" data-i18n="pl_sb_s">Volé une base sans se faire éliminer</div></div></div><div id="l-sb"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_runs">🎯 Points marqués</div><div class="card-hs" data-i18n="pl_runs_s">Fois où le joueur a lui-même passé le marbre</div></div></div><div id="l-runs"><div class="loading"><div class="spinner"></div></div></div></div>
     </div>
   </div>
   <div class="tc" id="tc-jou-lan">
     <div class="g3">
-      <div class="card"><div class="card-h"><div><div class="card-ht">🎯 Moins de points encaissés</div><div class="card-hs">Moyenne points encaissés sur 9 manches — plus c'est bas, mieux c'est</div></div></div><div id="l-era"><div class="loading"><div class="spinner"></div></div></div></div>
-      <div class="card"><div class="card-h"><div><div class="card-ht">💨 Plus d'éliminations directes</div><div class="card-hs">Batteurs mis hors-jeu directement</div></div></div><div id="l-so"><div class="loading"><div class="spinner"></div></div></div></div>
-      <div class="card"><div class="card-h"><div><div class="card-ht">✅ Plus de victoires</div><div class="card-hs">Matchs gagnés quand le lanceur était en jeu</div></div></div><div id="l-wins"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_era">🎯 Moins de points encaissés</div><div class="card-hs" data-i18n="pl_era_s">Moyenne points encaissés sur 9 manches — plus c'est bas, mieux c'est</div></div></div><div id="l-era"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_so">💨 Plus d'éliminations directes</div><div class="card-hs" data-i18n="pl_so_s">Batteurs mis hors-jeu directement</div></div></div><div id="l-so"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_wins">✅ Plus de victoires</div><div class="card-hs" data-i18n="pl_wins_s">Matchs gagnés quand le lanceur était en jeu</div></div></div><div id="l-wins"><div class="loading"><div class="spinner"></div></div></div></div>
     </div>
     <div class="g3">
-      <div class="card"><div class="card-h"><div><div class="card-ht">🔢 Efficacité globale</div><div class="card-hs">Marcheurs + coups sûrs concédés par manche — plus c'est bas, mieux c'est</div></div></div><div id="l-whip"><div class="loading"><div class="spinner"></div></div></div></div>
-      <div class="card"><div class="card-h"><div><div class="card-ht">💾 Matchs sauvegardés</div><div class="card-hs">Entre en fin de match et préserve la victoire</div></div></div><div id="l-saves"><div class="loading"><div class="spinner"></div></div></div></div>
-      <div class="card"><div class="card-h"><div><div class="card-ht">📐 Éliminations par manche</div><div class="card-hs">Moyenne d'éliminations directes pour 9 manches lancées</div></div></div><div id="l-k9"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_whip">🔢 Efficacité globale</div><div class="card-hs" data-i18n="pl_whip_s">Marcheurs + coups sûrs concédés par manche — plus c'est bas, mieux c'est</div></div></div><div id="l-whip"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_saves">💾 Matchs sauvegardés</div><div class="card-hs" data-i18n="pl_saves_s">Entre en fin de match et préserve la victoire</div></div></div><div id="l-saves"><div class="loading"><div class="spinner"></div></div></div></div>
+      <div class="card"><div class="card-h"><div><div class="card-ht" data-i18n="pl_k9">📐 Éliminations par manche</div><div class="card-hs" data-i18n="pl_k9_s">Moyenne d'éliminations directes pour 9 manches lancées</div></div></div><div id="l-k9"><div class="loading"><div class="spinner"></div></div></div></div>
     </div>
   </div>
 </div>
@@ -860,6 +864,244 @@ const SUPA_URL='https://qjuwtaxlidvxxhbjdsyl.supabase.co';
 const REDIRECT_URL=location.origin+location.pathname; // où Supabase renvoie après clic sur le lien email
 const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqdXd0YXhsaWR2eHhoYmpkc3lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTk2NTUsImV4cCI6MjA5ODEzNTY1NX0.EZmxxQ3FRJm_zeHF4Nzu7mMBht9wM9h4bpBDuAztwXQ';
 let SNAP=null;
+// ═══════════════════════════════════════════════════
+// i18n — FR / EN / ES (cadre principal ; les phrases des pronos restent à traduire côté serveur)
+// ═══════════════════════════════════════════════════
+const I18N={
+ fr:{
+  nav_pronos:'⚡ Pronostics',nav_matchs:'⚾ Matchs',nav_tendances:'📈 Tendances',nav_historique:'📊 Historique',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Classements',nav_joueurs:'🏆 Joueurs',
+  auth_login_title:'Connexion',auth_login_sub:'Connecte-toi pour accéder aux pronostics du jour.',auth_signup_title:'Créer un compte',auth_signup_sub:'Crée ton compte gratuit pour accéder aux pronostics.',auth_login_btn:'Se connecter',auth_signup_btn:'Créer mon compte',auth_pass_ph:'Mot de passe (min. 6 caractères)',auth_forgot:'Mot de passe oublié ?',auth_back:"← Retour à l'accueil",auth_foot:"🔒 Connexion sécurisée. Outil d'analyse à but informatif — 18+. Aucun pari n'est sans risque.",auth_no_acc:'Pas encore de compte ?',auth_create:'Créer un compte',auth_have_acc:'Déjà un compte ?',auth_login_link:'Se connecter',auth_email_ph:'Adresse email',auth_need_email:"Entre d'abord ton adresse email, puis clique « Mot de passe oublié ».",auth_sending:'Envoi…',auth_reset_sent:'📧 Email envoyé à {email}. Clique le lien reçu pour choisir un nouveau mot de passe.',auth_reset_expired:'Lien expiré. Refais une demande de réinitialisation.',auth_signup_ok:'✅ Compte créé ! Un email de confirmation a été envoyé à {email}. Clique le lien reçu, puis connecte-toi.',auth_link_expired:'Le lien a peut-être expiré.',auth_reset_title:'Nouveau mot de passe',auth_reset_sub:'Choisis un nouveau mot de passe pour ton compte.',auth_reset_btn:'Enregistrer',auth_reset_ph:'Nouveau mot de passe (min. 6)',
+  kpi_total:'Total pronos',kpi_total_m:'générés',kpi_forte:'Forte confiance',kpi_forte_m:'score 70/100+',kpi_proba:'Meilleure proba',kpi_proba_m:'probabilité max',kpi_matchs:'Matchs analysés',kpi_matchs_m:"aujourd'hui",kpi_data:'Données dispo',kpi_data_m:'critères moyens',
+  ph_pronos_title:'PRONOSTICS DU JOUR',ph_pronos_sub:'100% données réelles MLB · FIP des lanceurs · park factors · splits · forme réelle · cotes du marché · meilleure cote bookmaker · zéro simulation',
+  pm_h:'Débloque TOUS les pronos',pm_cta:'⭐ Devenir Premium',pm_mois:'/ mois',pm_an:'/ an',pm_an_tag:'2 MOIS OFFERTS',pm_an_eco:'soit 4,92€/mois',
+  pm_sub:'Tu as <strong>1 pronostic offert chaque jour</strong> — le meilleur, complet.<br>Premium débloque <strong>tout le reste</strong>.',
+  pm_f1:'<strong>Tous les pronos du jour</strong> — chaque match, chaque pari (Victoire, Total, Run line) avec cote et analyse complète.',
+  pm_f2:'<strong>La Sélection complète</strong> — les 5 meilleurs coups notés sur 100, pas seulement le n°1.',
+  pm_f3:'<strong>Tendances & séries</strong> détaillées + <strong>value bets</strong> où le modèle bat le marché.',
+  pm_f4:'<strong>Bankroll & suivi</strong> : mise auto, courbe de gains, calibration.',
+  pm_foot:"Sans engagement · Annulable à tout moment · Paiement sécurisé.<br>Les matchs du soir n'attendent pas — débloque maintenant.",
+  mh_eye:'En direct',mh_title:'MATCHS DU JOUR',mh_sub:"Cliquez pour voir l'analyse complète avec toutes les données croisées",
+  th_eye:'Séries & forme · 100% données réelles',th_title:'TENDANCES DU JOUR',th_sub:"Les séries des équipes qui jouent aujourd'hui, calculées sur leurs 10 derniers vrais matchs. Triez pour repérer les équipes chaudes.",
+  tend_forme:'🔥 Forme',tend_over:'📊 Over 8.5',tend_serie:'⚡ Série en cours',tend_cover:'📐 Gagne par 2+',tend_empty:"Chargez d'abord les pronostics (onglet ⚡) pour calculer les tendances.",
+  hh_eye:'Mémoire',hh_title:'HISTORIQUE DES PRONOSTICS',hh_sub:'Tous les pronos générés sont suivis ici pour mesurer la fiabilité du modèle (calibration). Vos <strong>paris réels</strong> sont dans 💰 Bankroll.',
+  io_export:'⬇️ Exporter (JSON)',io_import:'⬆️ Importer (JSON)',io_reinit:'♻️ Réinitialiser les stats',io_warn:"⚠️ Sur fichier local (Android <code>content://</code>), le stockage du navigateur peut s'effacer entre sessions. Exportez régulièrement, ou hébergez l'app sur GitHub Pages pour une persistance fiable.",
+  hist_tab_global:'📊 Suivi global',hist_tab_fun:'🎲 Paris Fun',
+  h_taux:'Taux de réussite',h_taux_m:'pronos terminés',h_total:'Pronos analysés',h_total_m:'depuis le début',h_roi:'ROI théorique',h_roi_m:'si 1u sur chaque prono',h_attente:'En attente',h_attente_m:'résultats inconnus',
+  hc_conf:'Réussite par niveau de confiance',hc_conf_s:'Est-ce que plus de confiance = plus de victoires ?',hc_type:'Réussite par type de pari',hc_cal:'📐 Calibration du modèle',hc_cal_s:'Quand on annonce X%, gagne-t-on vraiment X% du temps ? (outil de pilotage interne)',hc_all:'Tous les pronostics',
+  f_tous:'Tous',f_won:'✅ Gagnés',f_lost:'❌ Perdus',f_pend:'⏳ En attente',f_clear:'Effacer',
+  hf_nb:'Pronos fun suivis',hf_nb_m:'combinés + outsiders',hf_taux_m:'pronos fun terminés',hf_roi:'Gain / Perte',hf_roi_m:'sur tes paris fun',hf_jeu:'En jeu',hf_jeu_m:'paris fun en attente',hf_all:'🎲 Tous les pronos fun',hf_all_s:'Suivi de TOUS les combinés & outsiders suggérés chaque jour (pariés ou non) et leur résultat. 🎟️ = pari placé.',
+  bh_eye:'Gestion financière',bh_title:'MA BANKROLL',bh_sub:"Définissez votre capital, pariez depuis l'onglet ⚡ Pronostics, suivez votre courbe ici",
+  bk_cap:'💰 Votre capital de départ',bk_cap_s:'Mises calculées automatiquement (Kelly fractionné 25%)',bk_save:'Sauvegarder',
+  bk_actuel:'Capital actuel',bk_actuel_m:'euros',bk_delta:'Gain/Perte',bk_delta_m:'paris terminés',bk_roi:'ROI',bk_roi_m:'% rendement',bk_nb:'Paris placés',bk_nb_m:'au total',bk_jeu:'En jeu',bk_jeu_m:'paris en attente',
+  bk_evo:'📈 Évolution du capital',bk_evo_s:'Après chaque pari terminé',bk_mybets:'🎟️ Mes paris',bk_mybets_s:"Placés depuis l'onglet Pronostics",bk_empty:'Aucun pari placé pour l\'instant.<br>Allez dans ⚡ Pronostics et cliquez sur <strong>🎯 Parier</strong> sous un pronostic.',
+  ch_eye:'Saison 2026',ch_title:'CLASSEMENTS MLB',ch_sub:'Données officielles — Win% pythagoricien calculé sur runs réels',cl_al:'Ligue Américaine',cl_nl:'Ligue Nationale',
+  jh_title:'MEILLEURS JOUEURS',jh_sub:'Classements officiels MLB avec explications simples',jou_bat:'Batteurs',jou_lan:'Lanceurs',
+  pl_hr:'💣 Plus de circuits',pl_hr_s:'Balle envoyée hors du terrain — tous les coureurs marquent',pl_avg:'🏏 Meilleure moyenne',pl_avg_s:'Coups sûrs ÷ passages au bâton',pl_rbi:'📈 Plus de points produits',pl_rbi_s:'Coéquipiers fait marquer',pl_ops:'⚡ Force offensive totale',pl_ops_s:'Capacité à atteindre les bases + puissance de frappe',pl_sb:'🏃 Bases volées',pl_sb_s:'Volé une base sans se faire éliminer',pl_runs:'🎯 Points marqués',pl_runs_s:'Fois où le joueur a lui-même passé le marbre',
+  pl_era:'🎯 Moins de points encaissés',pl_era_s:"Moyenne points encaissés sur 9 manches — plus c'est bas, mieux c'est",pl_so:"💨 Plus d'éliminations directes",pl_so_s:'Batteurs mis hors-jeu directement',pl_wins:'✅ Plus de victoires',pl_wins_s:'Matchs gagnés quand le lanceur était en jeu',pl_whip:'🔢 Efficacité globale',pl_whip_s:"Marcheurs + coups sûrs concédés par manche — plus c'est bas, mieux c'est",pl_saves:'💾 Matchs sauvegardés',pl_saves_s:'Entre en fin de match et préserve la victoire',pl_k9:'📐 Éliminations par manche',pl_k9_s:"Moyenne d'éliminations directes pour 9 manches lancées",
+  f2_value:'💎 Value (rentables)',f2_victoire:'🏆 Victoire',f2_ou:'📊 Total points',f2_runline:'📐 Run line',sort_conf:'Confiance ↓',sort_proba:'Proba ↓',export_pdf:'📄 Export',loading_pronos:'Analyse mathématique en cours...',help_summary:'🔰 Comment lire un pronostic ? (cliquez)',
+  bet_won:'✅ Gagné',bet_lost:'❌ Perdu',bet_pending:'⏳ En attente',bet_placed:'🎟️ Parié',odds_lbl:'cote',bet_cancel:'annuler',bet_analyse:'📊 Analyse seule — aucune cote bookmaker pour ce type de pari',bet_setbk:'💰 Définir ma bankroll pour parier',bet_action:'🎯 Parier',bet_value:'valeur',bet_suivi:'suivi (pas de valeur)',match_fin_closed:'🔒 Match terminé — pari fermé',match_live_closed:'🔒 Match commencé — pari fermé',
+  live_won:'✅ Gagné',live_lost:'❌ Perdu',live_fin:'Terminé',live_now:'🔴 EN DIRECT',live_soon:'🕐 À venir',live_top:'début',live_bot:'fin',inning_suf:'ᵉ',
+  m_none:"Aucun match aujourd'hui",m_unavail:'⚠️ Données indisponibles',m_live:'🔴 EN DIRECT',m_fin:'✅ TERMINÉ',m_soon:'🕐 À VENIR',m_nostarter:'Partant non annoncé',m_seefull:"Voir l'analyse complète avec tous les pronostics →",rec_w:'V',rec_l:'D',
+  lock_t:'Pronostic réservé aux membres Premium',lock_s_pre:'Confiance',lock_s_post:"· la cote, l'analyse détaillée et le value bet sont débloqués avec Premium.",lock_unlock1:'⭐ Débloquer ce pronostic',pl_suffix:'— réservé aux membres Premium',pl_premium:'⭐ Passer Premium',pl_note:"Rappel : 1 pronostic complet t'est offert chaque jour dans l'onglet ⚡ Pronostics.",pl_back:'← Retour aux matchs',
+  lk_tend_t:'Les Tendances & séries',lk_tend_d:'Bilans 10 derniers matchs, séries en cours, Over X/10, couverture du handicap… sur tous les matchs.',lk_bank_t:'La Bankroll & le suivi',lk_bank_d:'Mise automatique selon ton capital (Kelly), courbe de gains, ROI et suivi de tes paris.',lk_hist_t:"L'historique des pronostics",lk_hist_d:'Le suivi de tous les pronostics du jour, leurs résultats et la fiabilité du modèle — réservé aux membres Premium.',lk_match_t:"L'analyse de ce match",lk_match_d:'Pronostics, meilleures cotes et données complètes de ce match sont réservés aux membres Premium.',
+  combo_bet:'🎟️ Parier ce combiné (mise auto)',out_bet:'🎟️ Parier cet outsider',
+  conf_tres:'TRÈS FIABLE',conf_fiable:'FIABLE',conf_modere:'MODÉRÉ',conf_incertain:'INCERTAIN',
+  sel_h:'⭐ SÉLECTION DU JOUR',sel_sub_premium:'Les {n} meilleurs coups parmi les {m} matchs, notés sur 100 (chance de gagner × cote × fiabilité). Cliquez pour parier.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 pronostic offert aujourd\'hui</strong> — le n°1, 100% complet. Les {x} autres coups du jour sont réservés aux membres <strong style="color:var(--amber)">Premium</strong>.',sel_fige:' · 🔒 établie le {d} à {h}, figée pour la journée',sel_unlock_meta:'Débloque ce pick et toute la sélection',sel_success:'de réussite',
+  help_1:`<strong>🟢 100% données réelles, zéro simulation.</strong> Tout vient des stats officielles MLB (FIP des lanceurs, OPS, splits domicile/extérieur, forme réelle, park factors) et des vraies cotes des bookmakers.`,
+  help_2:`<strong>⭐ Sélection du jour</strong> — En haut : les meilleurs coups du jour, notés sur <strong>100</strong> (équilibre entre chance de gagner, cote et fiabilité). C'est ce qu'il faut regarder en premier. Cliquez une ligne pour ouvrir le match et parier.`,
+  help_3:`<strong>3 types de paris</strong> (les seuls vraiment proposés par les bookmakers) : <strong>🏆 Victoire</strong> (qui gagne), <strong>📊 Total points</strong> (Over/Under = beaucoup ou peu de points), <strong>📐 Run line</strong> (handicap ±1.5 : le favori doit gagner par 2+, ou l'outsider peut perdre par 1).`,
+  help_4:`<strong>Probabilité</strong> — La chance estimée que le pari passe, avec sa fourchette (ex : <span class="mono">67% (62–72%)</span>). Calibrée sur le marché pour rester réaliste.`,
+  help_5:`<strong>Score de confiance /100</strong> — À quel point on peut <em>faire confiance</em> à l'estimation (qualité + quantité de données + écart entre les équipes). <span style="color:var(--green)">70+ = fiable</span>. <em>(≠ proba de gagner.)</em>`,
+  help_6:`<strong>Meilleure cote & valeur (edge)</strong> — On compare <strong>tous les bookmakers</strong> et on affiche la plus grosse cote. L'<strong>edge</strong> = notre proba − celle du marché. Un pari a de la « valeur » si notre modèle le voit plus probable que le marché. Filtre <span style="color:var(--green)">💎 Value</span> = ne montrer que ceux-là.`,
+  help_7:`<strong>⚖️ Poids des critères + ⓘ c'est quoi ?</strong> — Chaque barre montre l'importance d'un critère. <strong>Cliquez un critère</strong> (le « ⓘ c'est quoi ? ») pour une explication simple de ce qu'il mesure et pourquoi il compte.`,
+  help_8:`<strong>🌡️ Météo</strong> — Vent + température + humidité combinés en un seul <strong>effet net</strong> sur le total de points. N'influence pas le vainqueur (les 2 équipes ont le même temps). Stade couvert (dôme) = aucun effet.`,
+  help_9:`<strong>🎯 Parier</strong> — Place le pari dans votre suivi avec une mise auto (selon votre capital, plafonnée). Suivez capital et courbe dans 💰 Bankroll, et la fiabilité réelle dans 📈 Historique (calibration).`,
+  help_10:`⚠️ Outil d'analyse à but informatif. <strong>Aucun modèle ne bat le marché à coup sûr</strong> — le marché des bookmakers est très efficace. Ne misez que ce que vous pouvez perdre.`,
+  ts_pay_soon:'💳 Le paiement sécurisé arrive très bientôt — merci de ta patience !',ts_login_first:"Connecte-toi d'abord.",ts_import_ok:'✅ Import réussi : {n} pronostics fusionnés.',ts_file_invalid:'Fichier invalide : ',ts_combo_dup:'Ce combiné est déjà suivi.',ts_combo_started:'⛔ Un match du combiné a déjà commencé — pari fermé.',ts_setcap:"💰 Définissez d'abord votre capital dans l'onglet Bankroll",ts_combo_novalue:'Mise nulle : pas de valeur sur ce combiné à cette cote.',ts_combo_placed:'✅ Combiné placé : <strong>{m}€</strong> · cote {c}',ts_match_started:'⛔ Ce match a déjà commencé — pari fermé.',ts_bet_placed:'✅ Pari placé : <strong>{m}€</strong> sur {x}',ts_hist_cleared:'Historique effacé',ts_admin_only:"Action réservée à l'administrateur.",ts_nostats:'Aucune statistique à réinitialiser (rien de terminé).',ts_stats_reset:'Stats réinitialisées · {n} en attente conservé(s)',ts_no_odds:'Aucune cote bookmaker pour ce pari.',ts_bet_cancelled:'Pari annulé',ts_amount_invalid:'Entrez un montant valide.',ts_bankroll_saved:"Bankroll enregistrée ✅ Vous pouvez maintenant parier depuis l'onglet ⚡ Pronostics.",
+  tend_intro:`Tendances des équipes qui jouent aujourd'hui, sur leurs <b>10 derniers vrais matchs</b>. &nbsp;<b>🔥</b> en forme · <b>❄️</b> en difficulté · <b>Over 8.5</b> = matchs avec 9 points ou + au total · <b>Gagne par 2+</b> = l'équipe l'emporte par au moins 2 points (couvre le handicap −1.5).`,
+  tend_home:'🏠 À domicile',tend_away:"✈️ À l'extérieur",tend_last10:'10 derniers :',tend_over_bar:'📊 Matchs Over 8.5 pts',tend_cover_bar:'📐 Gagne par 2+ points',serie_win:'{n} victoire{s} de suite',serie_loss:'{n} défaite{s} de suite',
+  typ_victoire:'🏆 Victoire',typ_ou:'📊 Total',typ_runline:'📐 Run line',
+  hf_empty:"Aucun prono fun pour l'instant.<br>Ils s'enregistrent <strong>automatiquement chaque jour</strong> (combinés + outsiders), même sans parier.",hf_suggested:'suggéré (non parié)',hf_stake:'mise',hc_b1:'75-100 · très fiable',hc_b2:'62-74 · fiable',hc_b3:'50-61 · modéré',hc_b4:'< 50 · incertain',tl_victoire:'Victoire',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'proba',hl_conf:'confiance',hl_cote:'cote',hl_score:'score',hl_stake:'misé',bk_undefined:'Non défini',bk_curve_empty:'La courbe apparaîtra dès qu\'un pari sera terminé (gagné ou perdu).',bk_pending:'en attente',dlg_yes_cancel:'Oui, annuler',st_first:'1er',st_theo:'théo.',st_division:'Division',st_unavail:'Classements indisponibles',storage_warn:`⚠️ Stockage du navigateur bloqué (fichier local) — vos paris et historique <strong>ne seront pas conservés après fermeture</strong>. Exportez en JSON (onglet Historique) ou hébergez l'app sur GitHub Pages.`,
+  fun_h:'🎲 COMBINÉS & GROS COUPS',fun_sub_locked:'Combinés (du prudent au gros coup) à cotes multipliées + outsiders à grosse cote, avec toutes les maths réelles.',fun_locked_t:'Réservé aux membres Premium',fun_unlock:'⭐ Débloquer les gros coups',fun_sub:`<strong>C'est le modèle qui choisit les sélections</strong> (probabilité ou edge), pas nous — tous types de paris confondus. Plus de jambes = plus grosse cote, plus faible probabilité. Cotes et probabilités 100% réelles, edge affiché.`,fun_no_combo:"Pas assez de pronostics fiables aujourd'hui pour un combiné.",fun_outs_h:'🐶 Outsiders à grosse cote',fun_outs_sub:`Victoires surprises (cote ≥ 2). <strong>💎</strong> = le modèle bat le marché. Clique pour l'analyse complète.`,fun_no_outs:"Aucun outsider à grosse cote aujourd'hui.",
+  combo_prudent_n:'Combiné Prudent',combo_prudent_c:'les 2 paris les plus probables',combo_equil_n:'Combiné Équilibré',combo_equil_c:'les 3 meilleures valeurs (edge)',combo_gros_n:'Combiné Gros coup',combo_gros_c:'les 4 meilleures valeurs empilées',combo_subline:"{n} sélections · {crit} · clique une ligne pour l'analyse",combo_total_odds:'cote totale',combo_realproba:'Proba réelle',combo_market:'Marché',combo_default_crit:'choisies par le modèle',combo_warn:'⚠️ Un combiné ne gagne que si <strong>TOUTES</strong> les sélections passent. Plus la cote est grosse, plus la probabilité réelle est faible : pour le fun, petites mises.',out_model:'modèle',
+  md_winchance:'chances de gagner',md_tab_pronos:'⚡ Pronostics ({n})',md_tab_data:'📋 Données complètes',md_load_first:'Chargez d\'abord les pronostics (onglet ⚡)',md_data_na:"Données non disponibles. Ouvrez d'abord l'onglet ⚡ Pronostics pour les charger.",md_visitor_home:'visiteur / domicile',md_net_over:'net {v} pts Over',md_vegas:'Cotes Vegas (marché)',md_vegas_hint:'Probabilités implicites du marché',md_r_score:'🏆 Score composite du modèle',md_r_score_h:'Note globale sur tous les critères croisés',md_r_proba:'Probabilité de victoire',md_r_season:'Bilan saison',md_r_pyth:'% victoires théorique',md_r_pyth_h:'Formule pythagoricienne (runs réels)',md_r_form:'Forme (10 derniers réels)',md_r_form_h:'Vrais résultats via API MLB',md_r_rest:'Repos sur 7 jours',md_r_rest_h:'Plus de repos = plus frais',md_rest_val:'{d} j ({m} matchs)',md_r_ops:'💪 Force offensive (OPS)',md_r_ops_h1:'Split domicile/extérieur réel',md_r_ops_h2:'Saison complète',md_r_era:'🛡️ ERA équipe (défense)',md_r_era_h:'Points encaissés/9 manches, tous lanceurs',md_r_starter:'⚾ Lanceur partant',md_r_fip:'FIP partant',md_r_fip_h:"Vraie qualité du lanceur, isolée de sa défense (plus prédictif que l'ERA)",md_r_erap:'ERA partant',md_r_erap_h:'Points encaissés / 9 manches',md_r_whip:'WHIP partant',md_r_whip_h:'Coureurs concédés/manche',md_r_k9:'K/9 partant',md_r_k9_h:'Éliminations directes/9 manches',md_r_runs:'📊 Runs estimés',md_r_runs_h:'Estimés sur données réelles (offense, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Impact du stade sur les points (100 = neutre, >104 = offensif)',md_tba:'Non annoncé',md_foot:"✅ = meilleure valeur. Toutes ces données proviennent en temps réel de l'API officielle MLB{meteo}.",md_foot_meteo:" et d'Open-Meteo",
+  prono_q:"ⓘ c'est quoi ?",odds_best:'Meilleure cote',prono_ourproba:'notre proba',prono_market:'marché',prono_hi:'🔥 FORTE CONFIANCE',prono_good:'✅ BONNE CONFIANCE',prono_probability:'PROBABILITÉ',prono_form:'Forme (récent → ancien) :',prono_weights:'⚖️ POIDS DE CHAQUE CRITÈRE',odds_us:'Meilleure cote US',odds_eu:'Meilleure cote EU',
+  tr_t:'Track record vérifié',tr_s:'Tous les pronostics, résultats réels — sur <strong>{n}</strong> réglés',tr_win:'réussite',pr_empty_value:"Aucun pari de valeur aujourd'hui — le marché est efficace sur ces matchs. C'est normal : les vrais value bets sont rares.",pr_empty_filter:'Aucun pronostic pour ce filtre',
+  dlg_cancel:'Annuler',dlg_confirm:'Confirmer',dlg_bet_ok:'Parier',win_verb:'gagne',
+  dc_combo_t:'🎯 Parier ce combiné ?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} sélections<br><span style="font-size:12px">{legs}</span><br><br>Mise : <strong>{m}€</strong> · Cote totale : <strong>{c}</strong><br>Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>Probabilité réelle : <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gagne uniquement si les {n} sélections passent. Mise = quart de Kelly, plafond 5%.</span>',
+  dc_out_t:'🎯 Parier cet outsider ?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Mise : <strong>{m}€</strong> · Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Valeur : <strong style="color:var(--green)">+{e}%</strong> vs marché',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Gros coup risqué</strong> — mise de suivi réduite.',
+  dc_clear_t:"Effacer tout l'historique ?",dc_clear_b:'Cette action est <strong>irréversible</strong>. Pensez à exporter avant si besoin.',
+  dc_reinit_t:'Réinitialiser les statistiques ?',dc_reinit_ok:'Réinitialiser',dc_reinit_b:'Les <strong>{tt}</strong> pronostic(s) terminé(s) (gagnés/perdus) seront effacés → taux de réussite, ROI, calibration remis à zéro.<br><br>Les <strong>{a}</strong> pari(s)/prono(s) <strong>en attente</strong> sont conservés.',
+  dc_pari_t:'🎯 Placer ce pari ?',dc_pari_b:'<strong>{pick}</strong><br>{match}<br><br>Mise : <strong>{m}€</strong> · Cote : <strong>{c}</strong><br>Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_pari_val:'Valeur (edge) : <strong style="color:var(--green)">+{e}%</strong> vs marché<br><span style="font-size:11px">Mise = quart de Kelly (plafond 5% du capital).</span>',dc_pari_risk:'<strong style="color:var(--amber)">⚠️ Pas de valeur selon le modèle</strong> (le marché paie moins).<br><span style="font-size:11px">Tu restes libre de suivre ce pari — mise de suivi réduite (~0,5% du capital).</span>',
+  dc_cancelbet_t:'Annuler ce pari ?',dc_cancelbet_b:'Le pari sera retiré de votre suivi.',
+  lang_label:'Langue'
+ },
+ en:{
+  nav_pronos:'⚡ Predictions',nav_matchs:'⚾ Games',nav_tendances:'📈 Trends',nav_historique:'📊 History',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Standings',nav_joueurs:'🏆 Players',
+  auth_login_title:'Login',auth_login_sub:"Log in to access today's predictions.",auth_signup_title:'Create account',auth_signup_sub:'Create your free account to access the predictions.',auth_login_btn:'Log in',auth_signup_btn:'Create my account',auth_pass_ph:'Password (min. 6 characters)',auth_forgot:'Forgot password?',auth_back:'← Back to home',auth_foot:'🔒 Secure login. Informational analysis tool — 18+. No bet is risk-free.',auth_no_acc:'No account yet?',auth_create:'Create an account',auth_have_acc:'Already have an account?',auth_login_link:'Log in',auth_email_ph:'Email address',auth_need_email:'Enter your email address first, then click "Forgot password".',auth_sending:'Sending…',auth_reset_sent:'📧 Email sent to {email}. Click the link to choose a new password.',auth_reset_expired:'Link expired. Request a new reset.',auth_signup_ok:'✅ Account created! A confirmation email was sent to {email}. Click the link, then log in.',auth_link_expired:'The link may have expired.',auth_reset_title:'New password',auth_reset_sub:'Choose a new password for your account.',auth_reset_btn:'Save',auth_reset_ph:'New password (min. 6)',
+  kpi_total:'Total predictions',kpi_total_m:'generated',kpi_forte:'High confidence',kpi_forte_m:'score 70/100+',kpi_proba:'Best probability',kpi_proba_m:'max probability',kpi_matchs:'Games analyzed',kpi_matchs_m:'today',kpi_data:'Data available',kpi_data_m:'avg. criteria',
+  ph_pronos_title:"TODAY'S PREDICTIONS",ph_pronos_sub:'100% real MLB data · pitcher FIP · park factors · splits · real form · market odds · best bookmaker odds · zero simulation',
+  pm_h:'Unlock ALL predictions',pm_cta:'⭐ Go Premium',pm_mois:'/ month',pm_an:'/ year',pm_an_tag:'2 MONTHS FREE',pm_an_eco:'i.e. €4.92/month',
+  pm_sub:'You get <strong>1 free pick every day</strong> — the best one, fully detailed.<br>Premium unlocks <strong>everything else</strong>.',
+  pm_f1:'<strong>All daily picks</strong> — every game, every bet (Moneyline, Total, Run line) with odds and full analysis.',
+  pm_f2:'<strong>The full Selection</strong> — the top 5 plays scored out of 100, not just #1.',
+  pm_f3:'<strong>Detailed trends & streaks</strong> + <strong>value bets</strong> where the model beats the market.',
+  pm_f4:'<strong>Bankroll & tracking</strong>: auto stake, profit curve, calibration.',
+  pm_foot:"No commitment · Cancel anytime · Secure payment.<br>Tonight's games won't wait — unlock now.",
+  mh_eye:'Live',mh_title:"TODAY'S GAMES",mh_sub:'Click to see the full analysis with all the cross-data.',
+  th_eye:'Streaks & form · 100% real data',th_title:"TODAY'S TRENDS",th_sub:'Streaks of the teams playing today, computed over their last 10 real games. Sort to spot hot teams.',
+  tend_forme:'🔥 Form',tend_over:'📊 Over 8.5',tend_serie:'⚡ Current streak',tend_cover:'📐 Wins by 2+',tend_empty:'Load the predictions first (⚡ tab) to compute the trends.',
+  hh_eye:'Memory',hh_title:'PREDICTIONS HISTORY',hh_sub:"Every generated pick is tracked here to measure the model's reliability (calibration). Your <strong>real bets</strong> are in 💰 Bankroll.",
+  io_export:'⬇️ Export (JSON)',io_import:'⬆️ Import (JSON)',io_reinit:'♻️ Reset stats',io_warn:'⚠️ On a local file (Android <code>content://</code>), browser storage may be cleared between sessions. Export regularly, or host the app on GitHub Pages for reliable persistence.',
+  hist_tab_global:'📊 Global tracking',hist_tab_fun:'🎲 Fun bets',
+  h_taux:'Win rate',h_taux_m:'settled picks',h_total:'Picks analyzed',h_total_m:'since the start',h_roi:'Theoretical ROI',h_roi_m:'if 1u on each pick',h_attente:'Pending',h_attente_m:'unknown results',
+  hc_conf:'Win rate by confidence level',hc_conf_s:'Does more confidence = more wins?',hc_type:'Win rate by bet type',hc_cal:'📐 Model calibration',hc_cal_s:'When we say X%, do we really win X% of the time? (internal tuning tool)',hc_all:'All predictions',
+  f_tous:'All',f_won:'✅ Won',f_lost:'❌ Lost',f_pend:'⏳ Pending',f_clear:'Clear',
+  hf_nb:'Fun picks tracked',hf_nb_m:'combos + underdogs',hf_taux_m:'settled fun picks',hf_roi:'Profit / Loss',hf_roi_m:'on your fun bets',hf_jeu:'At stake',hf_jeu_m:'pending fun bets',hf_all:'🎲 All fun picks',hf_all_s:'Tracking of ALL combos & underdogs suggested each day (bet or not) and their result. 🎟️ = bet placed.',
+  bh_eye:'Money management',bh_title:'MY BANKROLL',bh_sub:'Set your capital, bet from the ⚡ Predictions tab, follow your curve here.',
+  bk_cap:'💰 Your starting capital',bk_cap_s:'Stakes computed automatically (quarter Kelly)',bk_save:'Save',
+  bk_actuel:'Current capital',bk_actuel_m:'euros',bk_delta:'Profit/Loss',bk_delta_m:'settled bets',bk_roi:'ROI',bk_roi_m:'% return',bk_nb:'Bets placed',bk_nb_m:'in total',bk_jeu:'At stake',bk_jeu_m:'pending bets',
+  bk_evo:'📈 Capital evolution',bk_evo_s:'After each settled bet',bk_mybets:'🎟️ My bets',bk_mybets_s:'Placed from the Predictions tab',bk_empty:'No bet placed yet.<br>Go to ⚡ Predictions and click <strong>🎯 Bet</strong> under a prediction.',
+  ch_eye:'2026 season',ch_title:'MLB STANDINGS',ch_sub:'Official data — Pythagorean win% computed on real runs',cl_al:'American League',cl_nl:'National League',
+  jh_title:'TOP PLAYERS',jh_sub:'Official MLB rankings with simple explanations',jou_bat:'Batters',jou_lan:'Pitchers',
+  pl_hr:'💣 Most home runs',pl_hr_s:'Ball hit out of the park — all runners score',pl_avg:'🏏 Best average',pl_avg_s:'Hits ÷ at-bats',pl_rbi:'📈 Most RBIs',pl_rbi_s:'Teammates driven in to score',pl_ops:'⚡ Total offensive power',pl_ops_s:'Ability to reach base + hitting power',pl_sb:'🏃 Stolen bases',pl_sb_s:'Stole a base without being thrown out',pl_runs:'🎯 Runs scored',pl_runs_s:'Times the player crossed home plate himself',
+  pl_era:'🎯 Fewest runs allowed',pl_era_s:'Average runs allowed per 9 innings — lower is better',pl_so:'💨 Most strikeouts',pl_so_s:'Batters struck out directly',pl_wins:'✅ Most wins',pl_wins_s:'Games won while the pitcher was in',pl_whip:'🔢 Overall efficiency',pl_whip_s:'Walks + hits allowed per inning — lower is better',pl_saves:'💾 Saves',pl_saves_s:'Comes in late and preserves the win',pl_k9:'📐 Strikeouts per inning',pl_k9_s:'Average strikeouts per 9 innings pitched',
+  f2_value:'💎 Value (profitable)',f2_victoire:'🏆 Moneyline',f2_ou:'📊 Total runs',f2_runline:'📐 Run line',sort_conf:'Confidence ↓',sort_proba:'Probability ↓',export_pdf:'📄 Export',loading_pronos:'Running the math…',help_summary:'🔰 How to read a prediction? (click)',
+  bet_won:'✅ Won',bet_lost:'❌ Lost',bet_pending:'⏳ Pending',bet_placed:'🎟️ Bet',odds_lbl:'odds',bet_cancel:'cancel',bet_analyse:'📊 Analysis only — no bookmaker odds for this bet type',bet_setbk:'💰 Set my bankroll to bet',bet_action:'🎯 Bet',bet_value:'value',bet_suivi:'follow (no value)',match_fin_closed:'🔒 Game finished — betting closed',match_live_closed:'🔒 Game started — betting closed',
+  live_won:'✅ Won',live_lost:'❌ Lost',live_fin:'Final',live_now:'🔴 LIVE',live_soon:'🕐 Upcoming',live_top:'top',live_bot:'bot',inning_suf:'',
+  m_none:'No game today',m_unavail:'⚠️ Data unavailable',m_live:'🔴 LIVE',m_fin:'✅ FINAL',m_soon:'🕐 UPCOMING',m_nostarter:'Starter TBA',m_seefull:'See the full analysis with all predictions →',rec_w:'W',rec_l:'L',
+  lock_t:'Prediction reserved for Premium members',lock_s_pre:'Confidence',lock_s_post:'· odds, detailed analysis and value bet are unlocked with Premium.',lock_unlock1:'⭐ Unlock this prediction',pl_suffix:'— reserved for Premium members',pl_premium:'⭐ Go Premium',pl_note:'Reminder: 1 full prediction is free every day in the ⚡ Predictions tab.',pl_back:'← Back to games',
+  lk_tend_t:'Trends & streaks',lk_tend_d:'Last-10 records, current streaks, Over X/10, run-line coverage… on every game.',lk_bank_t:'Bankroll & tracking',lk_bank_d:'Automatic stake based on your capital (Kelly), profit curve, ROI and bet tracking.',lk_hist_t:'Predictions history',lk_hist_d:"Tracking of every daily prediction, its results and the model's reliability — reserved for Premium members.",lk_match_t:"This game's analysis",lk_match_d:'Predictions, best odds and full data for this game are reserved for Premium members.',
+  combo_bet:'🎟️ Bet this parlay (auto stake)',out_bet:'🎟️ Bet this underdog',
+  conf_tres:'VERY RELIABLE',conf_fiable:'RELIABLE',conf_modere:'MODERATE',conf_incertain:'UNCERTAIN',
+  sel_h:"⭐ TODAY'S SELECTION",sel_sub_premium:'The top {n} plays among {m} games, scored out of 100 (win chance × odds × reliability). Click to bet.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 free pick today</strong> — #1, fully detailed. The other {x} plays of the day are reserved for <strong style="color:var(--amber)">Premium</strong> members.',sel_fige:' · 🔒 set on {d} at {h}, locked for the day',sel_unlock_meta:'Unlock this pick and the whole selection',sel_success:'win chance',
+  help_1:`<strong>🟢 100% real data, zero simulation.</strong> Everything comes from official MLB stats (pitcher FIP, OPS, home/away splits, real form, park factors) and real bookmaker odds.`,
+  help_2:`<strong>⭐ Today's Selection</strong> — At the top: the best plays of the day, scored out of <strong>100</strong> (balance of win chance, odds and reliability). Look here first. Click a row to open the game and bet.`,
+  help_3:`<strong>3 bet types</strong> (the only ones bookmakers really offer): <strong>🏆 Moneyline</strong> (who wins), <strong>📊 Total runs</strong> (Over/Under = many or few runs), <strong>📐 Run line</strong> (±1.5 handicap: the favorite must win by 2+, or the underdog may lose by 1).`,
+  help_4:`<strong>Probability</strong> — The estimated chance the bet hits, with its range (e.g. <span class="mono">67% (62–72%)</span>). Calibrated against the market to stay realistic.`,
+  help_5:`<strong>Confidence score /100</strong> — How much you can <em>trust</em> the estimate (data quality + quantity + gap between teams). <span style="color:var(--green)">70+ = reliable</span>. <em>(≠ win probability.)</em>`,
+  help_6:`<strong>Best odds & value (edge)</strong> — We compare <strong>all bookmakers</strong> and show the highest odds. The <strong>edge</strong> = our probability − the market's. A bet has "value" if our model rates it more likely than the market. The <span style="color:var(--green)">💎 Value</span> filter shows only those.`,
+  help_7:`<strong>⚖️ Criteria weights + ⓘ what's this?</strong> — Each bar shows a criterion's importance. <strong>Click a criterion</strong> (the "ⓘ what's this?") for a simple explanation of what it measures and why it matters.`,
+  help_8:`<strong>🌡️ Weather</strong> — Wind + temperature + humidity combined into a single <strong>net effect</strong> on the run total. Doesn't affect the winner (both teams share the weather). Covered stadium (dome) = no effect.`,
+  help_9:`<strong>🎯 Bet</strong> — Adds the bet to your tracking with an auto stake (based on your capital, capped). Follow capital and curve in 💰 Bankroll, and real reliability in 📈 History (calibration).`,
+  help_10:`⚠️ Analysis tool for informational purposes. <strong>No model beats the market for sure</strong> — the bookmaker market is very efficient. Only bet what you can afford to lose.`,
+  ts_pay_soon:'💳 Secure payment is coming very soon — thanks for your patience!',ts_login_first:'Log in first.',ts_import_ok:'✅ Import successful: {n} predictions merged.',ts_file_invalid:'Invalid file: ',ts_combo_dup:'This parlay is already tracked.',ts_combo_started:'⛔ A game in the parlay has already started — betting closed.',ts_setcap:'💰 Set your capital first in the Bankroll tab',ts_combo_novalue:'Zero stake: no value on this parlay at these odds.',ts_combo_placed:'✅ Parlay placed: <strong>{m}€</strong> · odds {c}',ts_match_started:'⛔ This game has already started — betting closed.',ts_bet_placed:'✅ Bet placed: <strong>{m}€</strong> on {x}',ts_hist_cleared:'History cleared',ts_admin_only:'Action reserved for the administrator.',ts_nostats:'No stats to reset (nothing settled).',ts_stats_reset:'Stats reset · {n} pending kept',ts_no_odds:'No bookmaker odds for this bet.',ts_bet_cancelled:'Bet cancelled',ts_amount_invalid:'Enter a valid amount.',ts_bankroll_saved:'Bankroll saved ✅ You can now bet from the ⚡ Predictions tab.',
+  tend_intro:`Trends of teams playing today, over their <b>last 10 real games</b>. &nbsp;<b>🔥</b> in form · <b>❄️</b> struggling · <b>Over 8.5</b> = games with 9+ total runs · <b>Wins by 2+</b> = the team wins by at least 2 (covers the −1.5 handicap).`,
+  tend_home:'🏠 At home',tend_away:'✈️ Away',tend_last10:'Last 10:',tend_over_bar:'📊 Over 8.5 games',tend_cover_bar:'📐 Wins by 2+',serie_win:'{n}-game win streak',serie_loss:'{n}-game losing streak',
+  typ_victoire:'🏆 Win',typ_ou:'📊 Total',typ_runline:'📐 Run line',
+  hf_empty:"No fun pick yet.<br>They're saved <strong>automatically every day</strong> (parlays + underdogs), even without betting.",hf_suggested:'suggested (not bet)',hf_stake:'stake',hc_b1:'75-100 · very reliable',hc_b2:'62-74 · reliable',hc_b3:'50-61 · moderate',hc_b4:'< 50 · uncertain',tl_victoire:'Moneyline',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'prob.',hl_conf:'confidence',hl_cote:'odds',hl_score:'score',hl_stake:'staked',bk_undefined:'Not set',bk_curve_empty:'The curve will appear once a bet is settled (won or lost).',bk_pending:'pending',dlg_yes_cancel:'Yes, cancel',st_first:'1st',st_theo:'theo.',st_division:'Division',st_unavail:'Standings unavailable',storage_warn:`⚠️ Browser storage blocked (local file) — your bets and history <strong>won't be kept after closing</strong>. Export to JSON (History tab) or host the app on GitHub Pages.`,
+  fun_h:'🎲 PARLAYS & LONG SHOTS',fun_sub_locked:'Parlays (from safe to long shot) with multiplied odds + big-odds underdogs, with all the real math.',fun_locked_t:'Reserved for Premium members',fun_unlock:'⭐ Unlock the long shots',fun_sub:`<strong>The model picks the selections</strong> (probability or edge), not us — across all bet types. More legs = bigger odds, lower probability. 100% real odds and probabilities, edge shown.`,fun_no_combo:'Not enough reliable predictions today for a parlay.',fun_outs_h:'🐶 Big-odds underdogs',fun_outs_sub:`Surprise wins (odds ≥ 2). <strong>💎</strong> = the model beats the market. Click for the full analysis.`,fun_no_outs:'No big-odds underdog today.',
+  combo_prudent_n:'Safe parlay',combo_prudent_c:'the 2 most likely bets',combo_equil_n:'Balanced parlay',combo_equil_c:'the 3 best values (edge)',combo_gros_n:'Long-shot parlay',combo_gros_c:'the 4 best values stacked',combo_subline:'{n} picks · {crit} · click a row for the analysis',combo_total_odds:'total odds',combo_realproba:'Real prob.',combo_market:'Market',combo_default_crit:'picked by the model',combo_warn:'⚠️ A parlay only wins if <strong>ALL</strong> picks hit. The bigger the odds, the lower the real probability: for fun, small stakes.',out_model:'model',
+  md_winchance:'win chance',md_tab_pronos:'⚡ Predictions ({n})',md_tab_data:'📋 Full data',md_load_first:'Load the predictions first (⚡ tab)',md_data_na:'Data unavailable. Open the ⚡ Predictions tab first to load it.',md_visitor_home:'away / home',md_net_over:'net {v} pts Over',md_vegas:'Vegas odds (market)',md_vegas_hint:'Market implied probabilities',md_r_score:'🏆 Model composite score',md_r_score_h:'Overall score across all cross-referenced criteria',md_r_proba:'Win probability',md_r_season:'Season record',md_r_pyth:'Theoretical win %',md_r_pyth_h:'Pythagorean formula (real runs)',md_r_form:'Form (last 10 real)',md_r_form_h:'Real results via MLB API',md_r_rest:'Rest over 7 days',md_r_rest_h:'More rest = fresher',md_rest_val:'{d}d ({m} games)',md_r_ops:'💪 Offensive power (OPS)',md_r_ops_h1:'Real home/away split',md_r_ops_h2:'Full season',md_r_era:'🛡️ Team ERA (defense)',md_r_era_h:'Runs allowed/9 innings, all pitchers',md_r_starter:'⚾ Starting pitcher',md_r_fip:'Starter FIP',md_r_fip_h:'True pitcher quality, isolated from defense (more predictive than ERA)',md_r_erap:'Starter ERA',md_r_erap_h:'Runs allowed / 9 innings',md_r_whip:'Starter WHIP',md_r_whip_h:'Runners allowed/inning',md_r_k9:'Starter K/9',md_r_k9_h:'Strikeouts/9 innings',md_r_runs:'📊 Estimated runs',md_r_runs_h:'Estimated on real data (offense, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Stadium impact on runs (100 = neutral, >104 = hitter-friendly)',md_tba:'Not announced',md_foot:'✅ = best value. All this data comes in real time from the official MLB API{meteo}.',md_foot_meteo:' and Open-Meteo',
+  prono_q:"ⓘ what's this?",odds_best:'Best odds',prono_ourproba:'our prob.',prono_market:'market',prono_hi:'🔥 HIGH CONFIDENCE',prono_good:'✅ GOOD CONFIDENCE',prono_probability:'PROBABILITY',prono_form:'Form (recent → old):',prono_weights:'⚖️ WEIGHT OF EACH CRITERION',odds_us:'Best US odds',odds_eu:'Best EU odds',
+  tr_t:'Verified track record',tr_s:'All predictions, real results — over <strong>{n}</strong> settled',tr_win:'win rate',pr_empty_value:"No value bet today — the market is efficient on these games. That's normal: true value bets are rare.",pr_empty_filter:'No prediction for this filter',
+  dlg_cancel:'Cancel',dlg_confirm:'Confirm',dlg_bet_ok:'Bet',win_verb:'wins',
+  dc_combo_t:'🎯 Bet this parlay?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} picks<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Total odds: <strong>{c}</strong><br>Potential win: <strong style="color:var(--green)">+{g}€</strong><br>Real probability: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Wins only if all {n} picks hit. Stake = quarter Kelly, 5% cap.</span>',
+  dc_out_t:'🎯 Bet this underdog?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Stake: <strong>{m}€</strong> · Potential win: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Value: <strong style="color:var(--green)">+{e}%</strong> vs market',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Risky long shot</strong> — reduced follow stake.',
+  dc_clear_t:'Clear all history?',dc_clear_b:'This action is <strong>irreversible</strong>. Consider exporting first if needed.',
+  dc_reinit_t:'Reset statistics?',dc_reinit_ok:'Reset',dc_reinit_b:'The <strong>{tt}</strong> settled prediction(s) (won/lost) will be erased → win rate, ROI, calibration reset to zero.<br><br>The <strong>{a}</strong> <strong>pending</strong> bet(s)/pick(s) are kept.',
+  dc_pari_t:'🎯 Place this bet?',dc_pari_b:'<strong>{pick}</strong><br>{match}<br><br>Stake: <strong>{m}€</strong> · Odds: <strong>{c}</strong><br>Potential win: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_pari_val:'Value (edge): <strong style="color:var(--green)">+{e}%</strong> vs market<br><span style="font-size:11px">Stake = quarter Kelly (5% of capital cap).</span>',dc_pari_risk:'<strong style="color:var(--amber)">⚠️ No value per the model</strong> (the market pays less).<br><span style="font-size:11px">You\'re free to follow this bet — reduced follow stake (~0.5% of capital).</span>',
+  dc_cancelbet_t:'Cancel this bet?',dc_cancelbet_b:'The bet will be removed from your tracking.',
+  lang_label:'Language'
+ },
+ es:{
+  nav_pronos:'⚡ Pronósticos',nav_matchs:'⚾ Partidos',nav_tendances:'📈 Tendencias',nav_historique:'📊 Historial',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Clasificación',nav_joueurs:'🏆 Jugadores',
+  auth_login_title:'Iniciar sesión',auth_login_sub:'Inicia sesión para ver los pronósticos del día.',auth_signup_title:'Crear cuenta',auth_signup_sub:'Crea tu cuenta gratis para acceder a los pronósticos.',auth_login_btn:'Entrar',auth_signup_btn:'Crear mi cuenta',auth_pass_ph:'Contraseña (mín. 6 caracteres)',auth_forgot:'¿Olvidaste tu contraseña?',auth_back:'← Volver al inicio',auth_foot:'🔒 Conexión segura. Herramienta de análisis informativa — 18+. Ninguna apuesta está libre de riesgo.',auth_no_acc:'¿Aún no tienes cuenta?',auth_create:'Crear una cuenta',auth_have_acc:'¿Ya tienes cuenta?',auth_login_link:'Iniciar sesión',auth_email_ph:'Correo electrónico',auth_need_email:'Introduce primero tu correo, luego haz clic en "¿Olvidaste la contraseña?".',auth_sending:'Enviando…',auth_reset_sent:'📧 Correo enviado a {email}. Haz clic en el enlace para elegir una nueva contraseña.',auth_reset_expired:'Enlace caducado. Solicita otro restablecimiento.',auth_signup_ok:'✅ ¡Cuenta creada! Se envió un correo de confirmación a {email}. Haz clic en el enlace y luego inicia sesión.',auth_link_expired:'El enlace puede haber caducado.',auth_reset_title:'Nueva contraseña',auth_reset_sub:'Elige una nueva contraseña para tu cuenta.',auth_reset_btn:'Guardar',auth_reset_ph:'Nueva contraseña (mín. 6)',
+  kpi_total:'Pronósticos totales',kpi_total_m:'generados',kpi_forte:'Alta confianza',kpi_forte_m:'score 70/100+',kpi_proba:'Mejor probabilidad',kpi_proba_m:'prob. máxima',kpi_matchs:'Partidos analizados',kpi_matchs_m:'hoy',kpi_data:'Datos disponibles',kpi_data_m:'criterios prom.',
+  ph_pronos_title:'PRONÓSTICOS DEL DÍA',ph_pronos_sub:'100% datos reales MLB · FIP de lanzadores · park factors · splits · forma real · cuotas del mercado · mejor cuota bookmaker · cero simulación',
+  pm_h:'Desbloquea TODOS los pronósticos',pm_cta:'⭐ Hazte Premium',pm_mois:'/ mes',pm_an:'/ año',pm_an_tag:'2 MESES GRATIS',pm_an_eco:'o sea 4,92€/mes',
+  pm_sub:'Tienes <strong>1 pronóstico gratis cada día</strong> — el mejor, completo.<br>Premium desbloquea <strong>todo lo demás</strong>.',
+  pm_f1:'<strong>Todos los pronósticos del día</strong> — cada partido, cada apuesta (Victoria, Total, Run line) con cuota y análisis completo.',
+  pm_f2:'<strong>La Selección completa</strong> — las 5 mejores jugadas puntuadas sobre 100, no solo la n.º1.',
+  pm_f3:'<strong>Tendencias y rachas</strong> detalladas + <strong>value bets</strong> donde el modelo supera al mercado.',
+  pm_f4:'<strong>Bankroll y seguimiento</strong>: stake automático, curva de ganancias, calibración.',
+  pm_foot:'Sin compromiso · Cancela cuando quieras · Pago seguro.<br>Los partidos de la noche no esperan — desbloquea ahora.',
+  mh_eye:'En directo',mh_title:'PARTIDOS DEL DÍA',mh_sub:'Haz clic para ver el análisis completo con todos los datos cruzados.',
+  th_eye:'Rachas y forma · 100% datos reales',th_title:'TENDENCIAS DEL DÍA',th_sub:'Las rachas de los equipos que juegan hoy, calculadas sobre sus últimos 10 partidos reales. Ordena para detectar los equipos en racha.',
+  tend_forme:'🔥 Forma',tend_over:'📊 Over 8.5',tend_serie:'⚡ Racha actual',tend_cover:'📐 Gana por 2+',tend_empty:'Carga primero los pronósticos (pestaña ⚡) para calcular las tendencias.',
+  hh_eye:'Memoria',hh_title:'HISTORIAL DE PRONÓSTICOS',hh_sub:'Todos los pronósticos generados se siguen aquí para medir la fiabilidad del modelo (calibración). Tus <strong>apuestas reales</strong> están en 💰 Bankroll.',
+  io_export:'⬇️ Exportar (JSON)',io_import:'⬆️ Importar (JSON)',io_reinit:'♻️ Reiniciar estadísticas',io_warn:'⚠️ En archivo local (Android <code>content://</code>), el almacenamiento del navegador puede borrarse entre sesiones. Exporta con regularidad, o aloja la app en GitHub Pages para una persistencia fiable.',
+  hist_tab_global:'📊 Seguimiento global',hist_tab_fun:'🎲 Apuestas Fun',
+  h_taux:'Tasa de acierto',h_taux_m:'pronósticos terminados',h_total:'Pronósticos analizados',h_total_m:'desde el inicio',h_roi:'ROI teórico',h_roi_m:'si 1u en cada pronóstico',h_attente:'Pendiente',h_attente_m:'resultados desconocidos',
+  hc_conf:'Acierto por nivel de confianza',hc_conf_s:'¿Más confianza = más victorias?',hc_type:'Acierto por tipo de apuesta',hc_cal:'📐 Calibración del modelo',hc_cal_s:'Cuando decimos X%, ¿ganamos realmente el X% de las veces? (herramienta interna de ajuste)',hc_all:'Todos los pronósticos',
+  f_tous:'Todos',f_won:'✅ Ganados',f_lost:'❌ Perdidos',f_pend:'⏳ Pendiente',f_clear:'Borrar',
+  hf_nb:'Pronósticos fun seguidos',hf_nb_m:'combinadas + outsiders',hf_taux_m:'pronósticos fun terminados',hf_roi:'Ganancia / Pérdida',hf_roi_m:'en tus apuestas fun',hf_jeu:'En juego',hf_jeu_m:'apuestas fun pendientes',hf_all:'🎲 Todos los pronósticos fun',hf_all_s:'Seguimiento de TODAS las combinadas y outsiders sugeridos cada día (apostados o no) y su resultado. 🎟️ = apuesta realizada.',
+  bh_eye:'Gestión financiera',bh_title:'MI BANKROLL',bh_sub:'Define tu capital, apuesta desde la pestaña ⚡ Pronósticos, sigue tu curva aquí.',
+  bk_cap:'💰 Tu capital inicial',bk_cap_s:'Stakes calculados automáticamente (Kelly fraccionado 25%)',bk_save:'Guardar',
+  bk_actuel:'Capital actual',bk_actuel_m:'euros',bk_delta:'Ganancia/Pérdida',bk_delta_m:'apuestas terminadas',bk_roi:'ROI',bk_roi_m:'% rendimiento',bk_nb:'Apuestas realizadas',bk_nb_m:'en total',bk_jeu:'En juego',bk_jeu_m:'apuestas pendientes',
+  bk_evo:'📈 Evolución del capital',bk_evo_s:'Tras cada apuesta terminada',bk_mybets:'🎟️ Mis apuestas',bk_mybets_s:'Realizadas desde la pestaña Pronósticos',bk_empty:'Aún no hay apuestas.<br>Ve a ⚡ Pronósticos y haz clic en <strong>🎯 Apostar</strong> bajo un pronóstico.',
+  ch_eye:'Temporada 2026',ch_title:'CLASIFICACIÓN MLB',ch_sub:'Datos oficiales — Win% pitagórico calculado sobre carreras reales',cl_al:'Liga Americana',cl_nl:'Liga Nacional',
+  jh_title:'MEJORES JUGADORES',jh_sub:'Clasificaciones oficiales MLB con explicaciones sencillas',jou_bat:'Bateadores',jou_lan:'Lanzadores',
+  pl_hr:'💣 Más home runs',pl_hr_s:'Bola enviada fuera del campo — todos los corredores anotan',pl_avg:'🏏 Mejor promedio',pl_avg_s:'Hits ÷ turnos al bate',pl_rbi:'📈 Más carreras impulsadas',pl_rbi_s:'Compañeros impulsados a anotar',pl_ops:'⚡ Poder ofensivo total',pl_ops_s:'Capacidad de llegar a base + poder de bateo',pl_sb:'🏃 Bases robadas',pl_sb_s:'Robó una base sin ser eliminado',pl_runs:'🎯 Carreras anotadas',pl_runs_s:'Veces que el jugador cruzó el home',
+  pl_era:'🎯 Menos carreras permitidas',pl_era_s:'Promedio de carreras permitidas por 9 entradas — más bajo es mejor',pl_so:'💨 Más ponches',pl_so_s:'Bateadores ponchados directamente',pl_wins:'✅ Más victorias',pl_wins_s:'Partidos ganados con el lanzador en juego',pl_whip:'🔢 Eficiencia global',pl_whip_s:'Bases por bolas + hits permitidos por entrada — más bajo es mejor',pl_saves:'💾 Juegos salvados',pl_saves_s:'Entra al final y preserva la victoria',pl_k9:'📐 Ponches por entrada',pl_k9_s:'Promedio de ponches por 9 entradas lanzadas',
+  f2_value:'💎 Value (rentables)',f2_victoire:'🏆 Victoria',f2_ou:'📊 Total carreras',f2_runline:'📐 Run line',sort_conf:'Confianza ↓',sort_proba:'Probabilidad ↓',export_pdf:'📄 Exportar',loading_pronos:'Calculando…',help_summary:'🔰 ¿Cómo leer un pronóstico? (clic)',
+  bet_won:'✅ Ganado',bet_lost:'❌ Perdido',bet_pending:'⏳ Pendiente',bet_placed:'🎟️ Apostado',odds_lbl:'cuota',bet_cancel:'cancelar',bet_analyse:'📊 Solo análisis — sin cuota de bookmaker para este tipo de apuesta',bet_setbk:'💰 Define tu bankroll para apostar',bet_action:'🎯 Apostar',bet_value:'valor',bet_suivi:'seguir (sin valor)',match_fin_closed:'🔒 Partido terminado — apuestas cerradas',match_live_closed:'🔒 Partido empezado — apuestas cerradas',
+  live_won:'✅ Ganado',live_lost:'❌ Perdido',live_fin:'Terminado',live_now:'🔴 EN DIRECTO',live_soon:'🕐 Próximamente',live_top:'alta',live_bot:'baja',inning_suf:'ª',
+  m_none:'No hay partidos hoy',m_unavail:'⚠️ Datos no disponibles',m_live:'🔴 EN DIRECTO',m_fin:'✅ TERMINADO',m_soon:'🕐 PRÓXIMAMENTE',m_nostarter:'Lanzador por confirmar',m_seefull:'Ver el análisis completo con todos los pronósticos →',rec_w:'G',rec_l:'P',
+  lock_t:'Pronóstico reservado a los miembros Premium',lock_s_pre:'Confianza',lock_s_post:'· la cuota, el análisis detallado y el value bet se desbloquean con Premium.',lock_unlock1:'⭐ Desbloquear este pronóstico',pl_suffix:'— reservado a los miembros Premium',pl_premium:'⭐ Hazte Premium',pl_note:'Recordatorio: 1 pronóstico completo gratis cada día en la pestaña ⚡ Pronósticos.',pl_back:'← Volver a los partidos',
+  lk_tend_t:'Tendencias y rachas',lk_tend_d:'Balances de los últimos 10, rachas actuales, Over X/10, cobertura del hándicap… en todos los partidos.',lk_bank_t:'Bankroll y seguimiento',lk_bank_d:'Stake automático según tu capital (Kelly), curva de ganancias, ROI y seguimiento de tus apuestas.',lk_hist_t:'Historial de pronósticos',lk_hist_d:'Seguimiento de todos los pronósticos del día, sus resultados y la fiabilidad del modelo — reservado a los miembros Premium.',lk_match_t:'El análisis de este partido',lk_match_d:'Pronósticos, mejores cuotas y datos completos de este partido están reservados a los miembros Premium.',
+  combo_bet:'🎟️ Apostar esta combinada (stake auto)',out_bet:'🎟️ Apostar este outsider',
+  conf_tres:'MUY FIABLE',conf_fiable:'FIABLE',conf_modere:'MODERADO',conf_incertain:'INCIERTO',
+  sel_h:'⭐ SELECCIÓN DEL DÍA',sel_sub_premium:'Las {n} mejores jugadas entre {m} partidos, puntuadas sobre 100 (probabilidad × cuota × fiabilidad). Haz clic para apostar.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 pronóstico gratis hoy</strong> — el n.º1, 100% completo. Las otras {x} jugadas del día están reservadas a los miembros <strong style="color:var(--amber)">Premium</strong>.',sel_fige:' · 🔒 establecida el {d} a las {h}, fijada para el día',sel_unlock_meta:'Desbloquea este pick y toda la selección',sel_success:'de acierto',
+  help_1:`<strong>🟢 100% datos reales, cero simulación.</strong> Todo viene de estadísticas oficiales MLB (FIP de lanzadores, OPS, splits local/visitante, forma real, park factors) y de las cuotas reales de los bookmakers.`,
+  help_2:`<strong>⭐ Selección del día</strong> — Arriba: las mejores jugadas del día, puntuadas sobre <strong>100</strong> (equilibrio entre probabilidad, cuota y fiabilidad). Es lo primero que hay que mirar. Haz clic en una línea para abrir el partido y apostar.`,
+  help_3:`<strong>3 tipos de apuesta</strong> (los únicos que ofrecen realmente los bookmakers): <strong>🏆 Victoria</strong> (quién gana), <strong>📊 Total carreras</strong> (Over/Under = muchas o pocas carreras), <strong>📐 Run line</strong> (hándicap ±1.5: el favorito debe ganar por 2+, o el outsider puede perder por 1).`,
+  help_4:`<strong>Probabilidad</strong> — La probabilidad estimada de que la apuesta entre, con su rango (ej.: <span class="mono">67% (62–72%)</span>). Calibrada con el mercado para ser realista.`,
+  help_5:`<strong>Puntuación de confianza /100</strong> — Cuánto puedes <em>confiar</em> en la estimación (calidad + cantidad de datos + diferencia entre equipos). <span style="color:var(--green)">70+ = fiable</span>. <em>(≠ probabilidad de ganar.)</em>`,
+  help_6:`<strong>Mejor cuota y valor (edge)</strong> — Comparamos <strong>todos los bookmakers</strong> y mostramos la cuota más alta. El <strong>edge</strong> = nuestra probabilidad − la del mercado. Una apuesta tiene "valor" si nuestro modelo la ve más probable que el mercado. El filtro <span style="color:var(--green)">💎 Value</span> muestra solo esas.`,
+  help_7:`<strong>⚖️ Peso de los criterios + ⓘ ¿qué es?</strong> — Cada barra muestra la importancia de un criterio. <strong>Haz clic en un criterio</strong> (el "ⓘ ¿qué es?") para una explicación sencilla de lo que mide y por qué cuenta.`,
+  help_8:`<strong>🌡️ Clima</strong> — Viento + temperatura + humedad combinados en un único <strong>efecto neto</strong> sobre el total de carreras. No influye en el ganador (ambos equipos tienen el mismo clima). Estadio cubierto (domo) = sin efecto.`,
+  help_9:`<strong>🎯 Apostar</strong> — Añade la apuesta a tu seguimiento con un stake automático (según tu capital, con tope). Sigue capital y curva en 💰 Bankroll, y la fiabilidad real en 📈 Historial (calibración).`,
+  help_10:`⚠️ Herramienta de análisis con fines informativos. <strong>Ningún modelo vence al mercado con seguridad</strong> — el mercado de los bookmakers es muy eficiente. Apuesta solo lo que puedas permitirte perder.`,
+  ts_pay_soon:'💳 El pago seguro llega muy pronto — ¡gracias por tu paciencia!',ts_login_first:'Inicia sesión primero.',ts_import_ok:'✅ Importación correcta: {n} pronósticos fusionados.',ts_file_invalid:'Archivo no válido: ',ts_combo_dup:'Esta combinada ya está en seguimiento.',ts_combo_started:'⛔ Un partido de la combinada ya ha empezado — apuestas cerradas.',ts_setcap:'💰 Define primero tu capital en la pestaña Bankroll',ts_combo_novalue:'Stake nulo: sin valor en esta combinada a esta cuota.',ts_combo_placed:'✅ Combinada realizada: <strong>{m}€</strong> · cuota {c}',ts_match_started:'⛔ Este partido ya ha empezado — apuestas cerradas.',ts_bet_placed:'✅ Apuesta realizada: <strong>{m}€</strong> en {x}',ts_hist_cleared:'Historial borrado',ts_admin_only:'Acción reservada al administrador.',ts_nostats:'No hay estadísticas que reiniciar (nada terminado).',ts_stats_reset:'Estadísticas reiniciadas · {n} pendientes conservados',ts_no_odds:'Sin cuota de bookmaker para esta apuesta.',ts_bet_cancelled:'Apuesta cancelada',ts_amount_invalid:'Introduce un importe válido.',ts_bankroll_saved:'Bankroll guardado ✅ Ya puedes apostar desde la pestaña ⚡ Pronósticos.',
+  tend_intro:`Tendencias de los equipos que juegan hoy, sobre sus <b>últimos 10 partidos reales</b>. &nbsp;<b>🔥</b> en forma · <b>❄️</b> en apuros · <b>Over 8.5</b> = partidos con 9+ carreras totales · <b>Gana por 2+</b> = el equipo gana por al menos 2 (cubre el hándicap −1.5).`,
+  tend_home:'🏠 En casa',tend_away:'✈️ Fuera',tend_last10:'Últimos 10:',tend_over_bar:'📊 Partidos Over 8.5',tend_cover_bar:'📐 Gana por 2+',serie_win:'{n} victoria{s} seguidas',serie_loss:'{n} derrota{s} seguidas',
+  typ_victoire:'🏆 Victoria',typ_ou:'📊 Total',typ_runline:'📐 Run line',
+  hf_empty:'Aún no hay pronóstico fun.<br>Se guardan <strong>automáticamente cada día</strong> (combinadas + outsiders), incluso sin apostar.',hf_suggested:'sugerido (no apostado)',hf_stake:'stake',hc_b1:'75-100 · muy fiable',hc_b2:'62-74 · fiable',hc_b3:'50-61 · moderado',hc_b4:'< 50 · incierto',tl_victoire:'Victoria',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'prob.',hl_conf:'confianza',hl_cote:'cuota',hl_score:'marcador',hl_stake:'apostado',bk_undefined:'Sin definir',bk_curve_empty:'La curva aparecerá en cuanto se resuelva una apuesta (ganada o perdida).',bk_pending:'pendiente',dlg_yes_cancel:'Sí, cancelar',st_first:'1º',st_theo:'teó.',st_division:'División',st_unavail:'Clasificación no disponible',storage_warn:`⚠️ Almacenamiento del navegador bloqueado (archivo local) — tus apuestas e historial <strong>no se conservarán al cerrar</strong>. Exporta a JSON (pestaña Historial) o aloja la app en GitHub Pages.`,
+  fun_h:'🎲 COMBINADAS Y GRANDES JUGADAS',fun_sub_locked:'Combinadas (de la prudente a la gran jugada) con cuotas multiplicadas + outsiders de cuota alta, con todas las matemáticas reales.',fun_locked_t:'Reservado a los miembros Premium',fun_unlock:'⭐ Desbloquear las grandes jugadas',fun_sub:`<strong>Es el modelo quien elige las selecciones</strong> (probabilidad o edge), no nosotros — todos los tipos de apuesta. Más patas = cuota mayor, menor probabilidad. Cuotas y probabilidades 100% reales, edge mostrado.`,fun_no_combo:'No hay suficientes pronósticos fiables hoy para una combinada.',fun_outs_h:'🐶 Outsiders de cuota alta',fun_outs_sub:`Victorias sorpresa (cuota ≥ 2). <strong>💎</strong> = el modelo supera al mercado. Haz clic para el análisis completo.`,fun_no_outs:'Hoy no hay outsider de cuota alta.',
+  combo_prudent_n:'Combinada prudente',combo_prudent_c:'las 2 apuestas más probables',combo_equil_n:'Combinada equilibrada',combo_equil_c:'los 3 mejores valores (edge)',combo_gros_n:'Combinada gran jugada',combo_gros_c:'los 4 mejores valores apilados',combo_subline:'{n} selecciones · {crit} · haz clic en una línea para el análisis',combo_total_odds:'cuota total',combo_realproba:'Prob. real',combo_market:'Mercado',combo_default_crit:'elegidas por el modelo',combo_warn:'⚠️ Una combinada solo gana si entran <strong>TODAS</strong> las selecciones. Cuanto mayor la cuota, menor la probabilidad real: para diversión, apuestas pequeñas.',out_model:'modelo',
+  md_winchance:'probabilidad de ganar',md_tab_pronos:'⚡ Pronósticos ({n})',md_tab_data:'📋 Datos completos',md_load_first:'Carga primero los pronósticos (pestaña ⚡)',md_data_na:'Datos no disponibles. Abre primero la pestaña ⚡ Pronósticos para cargarlos.',md_visitor_home:'visitante / local',md_net_over:'neto {v} pts Over',md_vegas:'Cuotas Vegas (mercado)',md_vegas_hint:'Probabilidades implícitas del mercado',md_r_score:'🏆 Puntuación compuesta del modelo',md_r_score_h:'Nota global sobre todos los criterios cruzados',md_r_proba:'Probabilidad de victoria',md_r_season:'Balance temporada',md_r_pyth:'% victorias teórico',md_r_pyth_h:'Fórmula pitagórica (carreras reales)',md_r_form:'Forma (últimos 10 reales)',md_r_form_h:'Resultados reales vía API MLB',md_r_rest:'Descanso en 7 días',md_r_rest_h:'Más descanso = más fresco',md_rest_val:'{d} d ({m} partidos)',md_r_ops:'💪 Poder ofensivo (OPS)',md_r_ops_h1:'Split local/visitante real',md_r_ops_h2:'Temporada completa',md_r_era:'🛡️ ERA del equipo (defensa)',md_r_era_h:'Carreras permitidas/9 entradas, todos los lanzadores',md_r_starter:'⚾ Lanzador abridor',md_r_fip:'FIP abridor',md_r_fip_h:'Calidad real del lanzador, aislada de su defensa (más predictivo que el ERA)',md_r_erap:'ERA abridor',md_r_erap_h:'Carreras permitidas / 9 entradas',md_r_whip:'WHIP abridor',md_r_whip_h:'Corredores permitidos/entrada',md_r_k9:'K/9 abridor',md_r_k9_h:'Ponches/9 entradas',md_r_runs:'📊 Carreras estimadas',md_r_runs_h:'Estimadas sobre datos reales (ofensiva, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Impacto del estadio en las carreras (100 = neutro, >104 = ofensivo)',md_tba:'Sin anunciar',md_foot:'✅ = mejor valor. Todos estos datos provienen en tiempo real de la API oficial MLB{meteo}.',md_foot_meteo:' y de Open-Meteo',
+  prono_q:"ⓘ ¿qué es?",odds_best:'Mejor cuota',prono_ourproba:'nuestra prob.',prono_market:'mercado',prono_hi:'🔥 ALTA CONFIANZA',prono_good:'✅ BUENA CONFIANZA',prono_probability:'PROBABILIDAD',prono_form:'Forma (reciente → antiguo):',prono_weights:'⚖️ PESO DE CADA CRITERIO',odds_us:'Mejor cuota US',odds_eu:'Mejor cuota EU',
+  tr_t:'Track record verificado',tr_s:'Todos los pronósticos, resultados reales — sobre <strong>{n}</strong> resueltos',tr_win:'acierto',pr_empty_value:'No hay apuesta de valor hoy — el mercado es eficiente en estos partidos. Es normal: los value bets reales son raros.',pr_empty_filter:'Sin pronóstico para este filtro',
+  dlg_cancel:'Cancelar',dlg_confirm:'Confirmar',dlg_bet_ok:'Apostar',win_verb:'gana',
+  dc_combo_t:'🎯 ¿Apostar esta combinada?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} selecciones<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Cuota total: <strong>{c}</strong><br>Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>Probabilidad real: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gana solo si entran las {n} selecciones. Stake = Kelly fraccionado, tope 5%.</span>',
+  dc_out_t:'🎯 ¿Apostar este outsider?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Stake: <strong>{m}€</strong> · Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Valor: <strong style="color:var(--green)">+{e}%</strong> vs mercado',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Jugada arriesgada</strong> — stake de seguimiento reducido.',
+  dc_clear_t:'¿Borrar todo el historial?',dc_clear_b:'Esta acción es <strong>irreversible</strong>. Considera exportar antes si lo necesitas.',
+  dc_reinit_t:'¿Reiniciar las estadísticas?',dc_reinit_ok:'Reiniciar',dc_reinit_b:'Los <strong>{tt}</strong> pronóstico(s) terminado(s) (ganados/perdidos) se borrarán → tasa de acierto, ROI, calibración a cero.<br><br>Los <strong>{a}</strong> apuesta(s)/pronóstico(s) <strong>pendientes</strong> se conservan.',
+  dc_pari_t:'🎯 ¿Realizar esta apuesta?',dc_pari_b:'<strong>{pick}</strong><br>{match}<br><br>Stake: <strong>{m}€</strong> · Cuota: <strong>{c}</strong><br>Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_pari_val:'Valor (edge): <strong style="color:var(--green)">+{e}%</strong> vs mercado<br><span style="font-size:11px">Stake = Kelly fraccionado (tope 5% del capital).</span>',dc_pari_risk:'<strong style="color:var(--amber)">⚠️ Sin valor según el modelo</strong> (el mercado paga menos).<br><span style="font-size:11px">Eres libre de seguir esta apuesta — stake de seguimiento reducido (~0,5% del capital).</span>',
+  dc_cancelbet_t:'¿Cancelar esta apuesta?',dc_cancelbet_b:'La apuesta se quitará de tu seguimiento.',
+  lang_label:'Idioma'
+ }
+};
+let LANG='fr';
+function t(k){const v=I18N[LANG]&&I18N[LANG][k];return v!=null?v:(I18N.fr[k]!=null?I18N.fr[k]:k);}
+function dtLoc(){return LANG==='en'?'en-US':LANG==='es'?'es-ES':'fr-FR';} // locale pour les dates/heures
+function tf(k,vars){let s=t(k);for(const x in vars)s=s.split('{'+x+'}').join(vars[x]);return s;} // t() avec variables {x}
+function detectLang(){try{const s=lsGet('db_lang');if(s&&I18N[s])return s;}catch(e){}const n=(navigator.language||'fr').slice(0,2).toLowerCase();return I18N[n]?n:'fr';}
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.getAttribute('data-i18n'));});
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.setAttribute('placeholder',t(el.getAttribute('data-i18n-ph')));});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.getAttribute('data-i18n-html'));});
+  document.documentElement.lang=LANG;
+  const sel=document.querySelector('.lang-sel');if(sel)sel.value=LANG;
+}
+function setLang(l){
+  if(!I18N[l])return;LANG=l;try{lsSet('db_lang',l);}catch(e){}
+  applyI18n();
+  try{if(typeof authMode!=='undefined'&&authMode)setAuthMode(authMode);}catch(e){} // rafraîchit l'écran de connexion
+  // Re-génère les sections rendues en JS pour appliquer la langue (sinon elles restent figées)
+  try{
+    if(typeof tousLesPronos!=='undefined'&&tousLesPronos&&tousLesPronos.length){
+      if(document.getElementById('best-bet'))renderSelection(tousLesPronos);
+      if(typeof FUN!=='undefined'&&document.getElementById('fun-section'))renderFunSection();
+      if(document.getElementById('pronos-list'))afficherPronos(pronosFiltres());
+      if(document.getElementById('k-tot'))renderKPIs(tousLesPronos);
+    }
+    const ml=document.getElementById('matchs-list');if(ml&&ml.offsetParent!==null)loadMatchs();
+    if(document.getElementById('hist-list')&&document.getElementById('page-historique').classList.contains('active'))loadHistorique();
+    if(document.getElementById('bk-curve')&&document.getElementById('page-bankroll').classList.contains('active'))renderBankroll();
+  }catch(e){}
+}
 async function loadSnapshot(){
   if(SNAP)return SNAP;
   const r=await fetch(`${SUPA_URL}/rest/v1/snapshots?select=data&order=date.desc&limit=1`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON}});
@@ -920,32 +1162,32 @@ function mkPronoLocked(p){
     <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${p.matchLabel}</div>
     <div class="lk-blur" style="font-size:17px;font-weight:800;margin-bottom:8px">${p.pick}</div>
     <div class="lock-ic">🔒</div>
-    <div class="lock-t">Pronostic réservé aux membres Premium</div>
-    <div class="lock-s">Confiance <strong style="color:${confColor(cs)}">${cs}/100</strong> · la cote, l'analyse détaillée et le value bet sont débloqués avec Premium.</div>
-    <button class="lock-btn" onclick="ouvrirPremium()">⭐ Débloquer ce pronostic</button>
+    <div class="lock-t">${t('lock_t')}</div>
+    <div class="lock-s">${t('lock_s_pre')} <strong style="color:${confColor(cs)}">${cs}/100</strong> ${t('lock_s_post')}</div>
+    <button class="lock-btn" onclick="ouvrirPremium()">${t('lock_unlock1')}</button>
   </div>`;
 }
 function pageLockHTML(titre,desc){
   return `<div class="page-lock"><div class="lock-ic" style="font-size:42px">🔒</div>
-    <div class="pl-t">${titre} — réservé aux membres Premium</div>
+    <div class="pl-t">${titre} ${t('pl_suffix')}</div>
     <div class="pl-d">${desc}</div>
-    <button class="lock-btn" onclick="ouvrirPremium()">⭐ Passer Premium</button>
-    <div class="pl-note">Rappel : 1 pronostic complet t'est offert chaque jour dans l'onglet ⚡ Pronostics.</div></div>`;
+    <button class="lock-btn" onclick="ouvrirPremium()">${t('pl_premium')}</button>
+    <div class="pl-note">${t('pl_note')}</div></div>`;
 }
 function ouvrirPremium(){document.getElementById('premium-modal').style.display='flex';}
 function fermerPremium(){document.getElementById('premium-modal').style.display='none';}
 function choisirPlan(p){planChoisi=p;document.getElementById('plan-mois').classList.toggle('sel',p==='mois');document.getElementById('plan-an').classList.toggle('sel',p==='an');}
 const STRIPE_READY=false; // ⚙️ passer à true une fois l'Edge Function "create-checkout" déployée sur Supabase
 async function lancerAbonnement(){
-  if(!STRIPE_READY){toast('💳 Le paiement sécurisé arrive très bientôt — merci de ta patience !','info');fermerPremium();return;}
-  const s=getSession();if(!s?.access_token){toast('Connecte-toi d\'abord.','err');return;}
+  if(!STRIPE_READY){toast(t('ts_pay_soon'),'info');fermerPremium();return;}
+  const s=getSession();if(!s?.access_token){toast(t('ts_login_first'),'err');return;}
   const btn=document.querySelector('.pm-cta');if(btn){btn.disabled=true;btn.textContent='Redirection…';}
   try{
     const r=await fetch(`${SUPA_URL}/functions/v1/create-checkout`,{method:'POST',headers:{apikey:SUPA_ANON,Authorization:'Bearer '+s.access_token,'Content-Type':'application/json'},body:JSON.stringify({plan:planChoisi})});
     const d=await r.json();
     if(d&&d.url){location.href=d.url;return;} // → page de paiement Stripe
     throw new Error(d&&d.error||'Paiement indisponible');
-  }catch(e){toast('⚠️ '+e.message,'err');if(btn){btn.disabled=false;btn.textContent='⭐ Devenir Premium';}}
+  }catch(e){toast('⚠️ '+e.message,'err');if(btn){btn.disabled=false;btn.textContent=t('pm_cta');}}
 }
 function getSession(){try{return JSON.parse(lsGet('db_session')||'null');}catch(e){return null;}}
 function setSession(s){if(s)lsSet('db_session',JSON.stringify(s));else lsRemove('db_session');}
@@ -1039,29 +1281,29 @@ function setAuthMode(m){
   const title=document.getElementById('auth-title'),sub=document.getElementById('auth-sub'),submit=document.getElementById('auth-submit'),toggle=document.getElementById('auth-toggle-line'),forgot=document.getElementById('auth-forgot'),pass=document.getElementById('auth-pass'),emailF=document.getElementById('auth-email');
   authMsg('');
   if(m==='reset'){
-    title.textContent='Nouveau mot de passe';
-    sub.textContent='Choisis un nouveau mot de passe pour ton compte.';
-    submit.textContent='Enregistrer';
-    emailF.style.display='none';pass.style.display='';pass.value='';pass.placeholder='Nouveau mot de passe (min. 6)';pass.autocomplete='new-password';
+    title.textContent=t('auth_reset_title');
+    sub.textContent=t('auth_reset_sub');
+    submit.textContent=t('auth_reset_btn');
+    emailF.style.display='none';pass.style.display='';pass.value='';pass.placeholder=t('auth_reset_ph');pass.autocomplete='new-password';
     toggle.style.display='none';if(forgot)forgot.style.display='none';
   }else{
     const login=m==='login';
     emailF.style.display='';pass.style.display='';
-    title.textContent=login?'Connexion':'Créer un compte';
-    sub.textContent=login?'Connecte-toi pour accéder aux pronostics du jour.':'Crée ton compte gratuit pour accéder aux pronostics.';
-    submit.textContent=login?'Se connecter':'Créer mon compte';
-    pass.placeholder='Mot de passe (min. 6 caractères)';pass.autocomplete=login?'current-password':'new-password';
+    title.textContent=login?t('auth_login_title'):t('auth_signup_title');
+    sub.textContent=login?t('auth_login_sub'):t('auth_signup_sub');
+    submit.textContent=login?t('auth_login_btn'):t('auth_signup_btn');
+    pass.placeholder=t('auth_pass_ph');pass.autocomplete=login?'current-password':'new-password';
     toggle.style.display='';
-    toggle.innerHTML=login?'Pas encore de compte ? <a onclick="toggleAuthMode()">Créer un compte</a>':'Déjà un compte ? <a onclick="toggleAuthMode()">Se connecter</a>';
+    toggle.innerHTML=login?`${t('auth_no_acc')} <a onclick="toggleAuthMode()">${t('auth_create')}</a>`:`${t('auth_have_acc')} <a onclick="toggleAuthMode()">${t('auth_login_link')}</a>`;
     if(forgot)forgot.style.display=login?'':'none';
   }
 }
 function toggleAuthMode(){setAuthMode(authMode==='login'?'signup':'login');}
 async function forgotPassword(){
   const email=document.getElementById('auth-email').value.trim();
-  if(!email){authMsg('Entre d\'abord ton adresse email, puis clique « Mot de passe oublié ».','err');return;}
-  authMsg('Envoi…','ok');
-  try{await recover(email);authMsg('📧 Email envoyé à '+email+'. Clique le lien reçu pour choisir un nouveau mot de passe.','ok');}
+  if(!email){authMsg(t('auth_need_email'),'err');return;}
+  authMsg(t('auth_sending'),'ok');
+  try{await recover(email);authMsg(tf('auth_reset_sent',{email}),'ok');}
   catch(e){authMsg('⚠️ '+e.message,'err');}
 }
 async function submitAuth(e){
@@ -1073,7 +1315,7 @@ async function submitAuth(e){
   try{
     if(authMode==='reset'){
       const s=getSession();
-      if(!s?.access_token)throw new Error('Lien expiré. Refais une demande de réinitialisation.');
+      if(!s?.access_token)throw new Error(t('auth_reset_expired'));
       await updatePassword(s.access_token,password);
       const u=await fetchUser(s.access_token);
       setSession({...s,email:u?.email,id:u?.id});
@@ -1081,7 +1323,7 @@ async function submitAuth(e){
     }else if(authMode==='signup'){
       const d=await authSignup(email,password);
       if(d.access_token){ setSession(sessionFrom(d)); await demarrerApp(getSession()); }
-      else { setAuthMode('login'); authMsg('✅ Compte créé ! Un email de confirmation a été envoyé à '+email+'. Clique le lien reçu, puis connecte-toi.','ok'); }
+      else { setAuthMode('login'); authMsg(tf('auth_signup_ok',{email}),'ok'); }
     }else{
       const d=await authLogin(email,password);
       setSession(sessionFrom(d)); await demarrerApp(getSession());
@@ -1282,8 +1524,8 @@ function setErr(){const p=document.getElementById('api-pill');p.textContent='❌
 function today(){return new Date().toISOString().split('T')[0];}
 function fdate(){return new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});}
 // Horodatage dans le fuseau LOCAL du visiteur (repli sur l'heure pré-formatée du serveur si gameDate absent)
-function fmtHeureLoc(iso){try{const d=new Date(iso);return isNaN(d)?null:d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}catch(e){return null;}}
-function fmtDateLoc(iso){try{const d=new Date(iso);return isNaN(d)?null:d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'});}catch(e){return null;}}
+function fmtHeureLoc(iso){try{const d=new Date(iso);return isNaN(d)?null:d.toLocaleTimeString(dtLoc(),{hour:'2-digit',minute:'2-digit'});}catch(e){return null;}}
+function fmtDateLoc(iso){try{const d=new Date(iso);return isNaN(d)?null:d.toLocaleDateString(dtLoc(),{weekday:'short',day:'2-digit',month:'2-digit'});}catch(e){return null;}}
 function heureProno(p){return (p.gameDate&&fmtHeureLoc(p.gameDate))||p.heure||'—';}
 function dateProno(p){return (p.gameDate&&fmtDateLoc(p.gameDate))||p.dateCourt||'';}
 function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().split('T')[0];}
@@ -1301,9 +1543,9 @@ function goTo(page){
   // Onglets réservés au Premium (gratuit = 1 pick/jour dans ⚡ Pronostics)
   if(!isPremium()&&(page==='tendances'||page==='bankroll'||page==='historique')){
     const LK={
-      tendances:['Les Tendances & séries','Bilans 10 derniers matchs, séries en cours, Over X/10, couverture du handicap… sur tous les matchs.'],
-      bankroll:['La Bankroll & le suivi','Mise automatique selon ton capital (Kelly), courbe de gains, ROI et suivi de tes paris.'],
-      historique:['L\'historique des pronostics','Le suivi de tous les pronostics du jour, leurs résultats et la fiabilité du modèle — réservé aux membres Premium.']
+      tendances:[t('lk_tend_t'),t('lk_tend_d')],
+      bankroll:[t('lk_bank_t'),t('lk_bank_d')],
+      historique:[t('lk_hist_t'),t('lk_hist_d')]
     };
     document.getElementById('page-'+page).innerHTML=pageLockHTML(LK[page][0],LK[page][1]);
     loaded[page]=true;return;
@@ -1339,8 +1581,8 @@ function askConfirm(title,bodyHTML,onYes,okLabel){
     <div class="modal-head">${title}</div>
     <div class="modal-body">${bodyHTML}</div>
     <div class="modal-actions">
-      <button class="modal-btn cancel">Annuler</button>
-      <button class="modal-btn ok">${okLabel||'Confirmer'}</button>
+      <button class="modal-btn cancel">${t('dlg_cancel')}</button>
+      <button class="modal-btn ok">${okLabel||t('dlg_confirm')}</button>
     </div>
   </div>`;
   const close=()=>ov.remove();
@@ -1406,9 +1648,9 @@ function importerHistorique(input){
       sauverHistorique(Object.values(byId));
       if(data.bankroll)setBankrollLS(data.bankroll);
       if(data.bankrollActuel)lsSet('db_bankroll_actuel',data.bankrollActuel);
-      toast(`✅ Import réussi : ${incoming.length} pronostics fusionnés.`);
+      toast(tf('ts_import_ok',{n:incoming.length}));
       loadHistorique();
-    }catch(err){toast('Fichier invalide : '+err.message,'err');}
+    }catch(err){toast(t('ts_file_invalid')+err.message,'err');}
   };
   reader.readAsText(file);
 }
@@ -1867,7 +2109,7 @@ function etoiles(n){
   return Array.from({length:5},(_,i)=>`<span style="color:${i<n?'var(--amber)':'var(--muted2)'};font-size:11px">${i<n?'★':'☆'}</span>`).join('');
 }
 // Série en cours → texte ("4 victoires de suite", "3 défaites de suite", null si 0)
-function fmtSerie(n){if(!n)return null;return n>0?`${n} victoire${n>1?'s':''} de suite`:`${-n} défaite${-n<-1?'s':''} de suite`;}
+function fmtSerie(n){if(!n)return null;return n>0?tf('serie_win',{n,s:n>1?'s':''}):tf('serie_loss',{n:-n,s:-n>1?'s':''});}
 
 // Score de confiance composite /100 = données×0.4 + écart entre équipes×0.4 + qualité données×0.2
 function confScore100(dataDispos,ecart,qualite){
@@ -1877,7 +2119,7 @@ function confScore100(dataDispos,ecart,qualite){
   return Math.round(dataC*0.4+ecartC*0.4+qualC*0.2);
 }
 function confColor(s){return s>=70?'var(--green)':s>=50?'var(--amber)':'var(--red)';}
-function confLabel(s){return s>=78?'TRÈS FIABLE':s>=62?'FIABLE':s>=45?'MODÉRÉ':'INCERTAIN';}
+function confLabel(s){return s>=78?t('conf_tres'):s>=62?t('conf_fiable'):s>=45?t('conf_modere'):t('conf_incertain');}
 // Score de confiance /100 d'une entrée d'historique (convertit les vieilles entrées en étoiles : ×20)
 function scoreConf(h){return h.confScore!=null?h.confScore:(h.confiance!=null?h.confiance*20:50);}
 
@@ -2313,7 +2555,7 @@ function raisonPick(p){
 }
 
 // ─── SCORES EN DIRECT (statut + score de chaque match, rafraîchi en continu) ───
-let liveGames={};
+let liveGames={},_startedKey='';
 async function fetchJSONlive(path){ // comme api() mais SANS cache (données live)
   const url=(typeof MLB!=='undefined'?MLB:'https://statsapi.mlb.com/api/v1')+path;
   for(const proxy of [u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,u=>u]){
@@ -2332,9 +2574,9 @@ function liveWon(gp,info){
 function liveStatus(gp,info){
   const g=liveGames[gp];if(!g)return {cls:'lv-pre',text:''};
   const sc=`${g.aAbbr} <b>${g.aScore}</b>–<b>${g.hScore}</b> ${g.hAbbr}`;
-  if(g.state==='Final'){const w=liveWon(gp,info);if(w==='W')return {cls:'lv-win',text:`✅ Gagné · ${sc}`};if(w==='L')return {cls:'lv-loss',text:`❌ Perdu · ${sc}`};return {cls:'lv-fin',text:`Terminé · ${sc}`};}
-  if(g.state==='Live'){const half=g.inningState==='Top'?'début':g.inningState==='Bottom'?'fin':'';return {cls:'lv-live',text:`🔴 EN DIRECT · ${sc}${g.inning?` · ${half} ${g.inning}ᵉ`:''}`};}
-  return {cls:'lv-pre',text:'🕐 À venir'};
+  if(g.state==='Final'){const w=liveWon(gp,info);if(w==='W')return {cls:'lv-win',text:`${t('live_won')} · ${sc}`};if(w==='L')return {cls:'lv-loss',text:`${t('live_lost')} · ${sc}`};return {cls:'lv-fin',text:`${t('live_fin')} · ${sc}`};}
+  if(g.state==='Live'){const half=g.inningState==='Top'?t('live_top'):g.inningState==='Bottom'?t('live_bot'):'';return {cls:'lv-live',text:`${t('live_now')} · ${sc}${g.inning?` · ${half} ${g.inning}${t('inning_suf')}`:''}`};}
+  return {cls:'lv-pre',text:t('live_soon')};
 }
 // p = prono / jambe (type, pick, matchLabel, ou/rl) OU {gamePk,type,homePickExplicit} pour un outsider
 function liveBadge(p){
@@ -2360,6 +2602,9 @@ async function fetchLive(){
     games.forEach(g=>{const ls=g.linescore||{};map[g.gamePk]={state:g.status?.abstractGameState||'Preview',aScore:g.teams?.away?.score??0,hScore:g.teams?.home?.score??0,inning:ls.currentInning??null,inningState:ls.inningState||'',aAbbr:g.teams?.away?.team?.abbreviation||'',hAbbr:g.teams?.home?.team?.abbreviation||''};});
     liveGames=map;refreshLiveBadges();
     const ml=document.getElementById('matchs-list');if(ml&&ml.offsetParent!==null)loadMatchs(); // maj liste Matchs si visible
+    // Si des matchs viennent de commencer/finir → re-render pour fermer leurs boutons de pari
+    const sk=Object.keys(map).filter(gp=>map[gp].state==='Live'||map[gp].state==='Final').sort().join(',');
+    if(sk!==_startedKey){_startedKey=sk;const pp=document.getElementById('page-pronos');if(pp&&pp.classList.contains('active')&&tousLesPronos.length){renderSelection(tousLesPronos);renderFunSection();afficherPronos(pronosFiltres());refreshLiveBadges();}}
   }catch(e){}
 }
 let _liveTimer=null;
@@ -2372,9 +2617,9 @@ function renderTrackRecord(){
   if(!tr||!tr.n||tr.n<10){el.innerHTML='';return;}
   const rc=tr.roiPct;
   el.innerHTML=`<div class="track-rec">
-    <div class="tr-head"><span class="tr-ic">📊</span><div><div class="tr-t">Track record vérifié</div><div class="tr-s">Tous les pronostics, résultats réels — sur <strong>${tr.n}</strong> réglés</div></div></div>
+    <div class="tr-head"><span class="tr-ic">📊</span><div><div class="tr-t">${t('tr_t')}</div><div class="tr-s">${tf('tr_s',{n:tr.n})}</div></div></div>
     <div class="tr-stats">
-      <div class="tr-stat"><div class="tr-v" style="color:var(--green)">${tr.winRate}%</div><div class="tr-l">réussite</div></div>
+      <div class="tr-stat"><div class="tr-v" style="color:var(--green)">${tr.winRate}%</div><div class="tr-l">${t('tr_win')}</div></div>
       <div class="tr-stat"><div class="tr-v" style="color:${rc>=0?'var(--green)':'var(--red)'}">${rc>=0?'+':''}${rc}%</div><div class="tr-l">ROI</div></div>
     </div>
   </div>`;
@@ -2388,25 +2633,25 @@ function renderSelection(pronos){
   if(!top.length){el.innerHTML='';return;}
   const col=n=>n>=72?'var(--green)':n>=58?'var(--amber)':'var(--muted)';
   let figeTxt='';
-  try{if(SNAP&&SNAP.generatedAt){const d=new Date(SNAP.generatedAt);figeTxt=` · 🔒 établie le ${d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})} à ${d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}, figée pour la journée`;}}catch(e){}
+  try{if(SNAP&&SNAP.generatedAt){const d=new Date(SNAP.generatedAt);figeTxt=tf('sel_fige',{d:d.toLocaleDateString(dtLoc(),{day:'2-digit',month:'2-digit'}),h:d.toLocaleTimeString(dtLoc(),{hour:'2-digit',minute:'2-digit'})});}}catch(e){}
   const nMatch=new Set(pronos.map(p=>p.gamePk)).size;
   const subTxt=isPremium()
-    ? `Les ${top.length} meilleurs coups parmi les ${nMatch} matchs, notés sur 100 (chance de gagner × cote × fiabilité). Cliquez pour parier.${figeTxt}`
-    : `🎁 <strong style="color:var(--green)">1 pronostic offert aujourd'hui</strong> — le n°1, 100% complet. Les ${Math.max(0,top.length-1)} autres coups du jour sont réservés aux membres <strong style="color:var(--amber)">Premium</strong>.${figeTxt}`;
+    ? tf('sel_sub_premium',{n:top.length,m:nMatch})+figeTxt
+    : tf('sel_sub_free',{x:Math.max(0,top.length-1)})+figeTxt;
   el.innerHTML=`<div class="selection">
-    <div class="selection-h">⭐ SÉLECTION DU JOUR</div>
+    <div class="selection-h">${t('sel_h')}</div>
     <div class="selection-sub">${subTxt}</div>
     ${top.map((x,i)=>{
       const p=x.p,edge=p.fairProba!=null?((p.proba/100-p.fairProba)*100):null;
       const locked=!isPremium()&&p.id!==FREE_PICK_ID;
       const free=!isPremium()&&p.id===FREE_PICK_ID;
       const noteBox=`<div class="sel-note" style="background:${col(x.note)}22;border:1px solid ${col(x.note)}55"><span class="sel-note-v" style="color:${col(x.note)}">${x.note}</span><span class="sel-note-l" style="color:${col(x.note)}">/100</span></div>`;
-      const coteBox=`<div class="sel-right"><div class="sel-cote">${p.coteVegas.toFixed(2)}</div><div class="sel-cote-l">cote</div></div>`;
+      const coteBox=`<div class="sel-right"><div class="sel-cote">${p.coteVegas.toFixed(2)}</div><div class="sel-cote-l">${t('odds_lbl')}</div></div>`;
       if(locked){
         return `<div class="sel-pick locked" onclick="ouvrirPremium()">
           <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span><span class="sel-lock-tag">🔒 PREMIUM</span>${liveBadge(p)}</div>
           <div class="sel-row">${noteBox}
-            <div class="sel-body"><div class="sel-match">${p.matchLabel}</div><div class="sel-pickname">${p.pick}</div><div class="sel-meta">Débloque ce pick et toute la sélection</div></div>
+            <div class="sel-body"><div class="sel-match">${p.matchLabel}</div><div class="sel-pickname">${p.pick}</div><div class="sel-meta">${t('sel_unlock_meta')}</div></div>
             ${coteBox}
           </div>
         </div>`;
@@ -2417,7 +2662,7 @@ function renderSelection(pronos){
           <div class="sel-body">
             <div class="sel-match">${p.matchLabel}</div>
             <div class="sel-pickname">${p.pick}</div>
-            <div class="sel-meta">${p.proba.toFixed(0)}% de réussite${edge!=null&&edge>=1?` · <span style="color:var(--green)">valeur +${edge.toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
+            <div class="sel-meta">${p.proba.toFixed(0)}% ${t('sel_success')}${edge!=null&&edge>=1?` · <span style="color:var(--green)">${t('bet_value')} +${edge.toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
           </div>
           ${coteBox}
         </div>
@@ -2461,7 +2706,7 @@ function pronoEdge(p){return p.coteVegas?(p.proba/100-1/p.coteVegas):null;}
 function regionsBox(p){
   if(!p.coteUS&&!p.coteEU)return '';
   const box=(flag,lbl,cote,bk,col)=>`<div class="odds-reg"><span class="r-flag">${flag}</span><div class="r-body"><div class="r-lbl">${lbl}</div>${bk?`<div class="r-bk">${bk}</div>`:''}</div><span class="r-cote" style="color:${col}">${cote.toFixed(2)}</span></div>`;
-  return `<div class="odds-regions">${p.coteUS?box('🇺🇸','Meilleure cote US',p.coteUS,p.bkUS,'var(--blue)'):''}${p.coteEU?box('🇪🇺','Meilleure cote EU',p.coteEU,p.bkEU,'var(--green)'):''}</div>`;
+  return `<div class="odds-regions">${p.coteUS?box('🇺🇸',t('odds_us'),p.coteUS,p.bkUS,'var(--blue)'):''}${p.coteEU?box('🇪🇺',t('odds_eu'),p.coteEU,p.bkEU,'var(--green)'):''}</div>`;
 }
 // Liste filtrée selon le mode courant
 function pronosFiltres(){
@@ -2484,7 +2729,7 @@ function trierPar(mode){
 
 function afficherPronos(pronos){
   if(!pronos.length){
-    const msg=filtreMode==='value'?'Aucun pari de valeur aujourd\'hui — le marché est efficace sur ces matchs. C\'est normal : les vrais value bets sont rares.':'Aucun pronostic pour ce filtre';
+    const msg=filtreMode==='value'?t('pr_empty_value'):t('pr_empty_filter');
     document.getElementById('pronos-list').innerHTML=`<div class="empty">${msg}</div>`;return;
   }
   // En mode Value, on trie par edge décroissant ; sinon par confiance/proba
@@ -2529,7 +2774,7 @@ function mkProno(p){
     const icon=f.sense==='pos'?'✅':f.sense==='neg'?'⚠️':f.sense==='warn'?'🔄':'ℹ️';
     return `<div class="raison ${f.sense}" onclick="this.querySelector('.crit-info').classList.toggle('open')">
       <span class="raison-icon">${icon}</span>
-      <div style="flex:1"><div class="raison-main">${f.nom} — <strong>${f.valeur}</strong><span class="raison-q">ⓘ c'est quoi ?</span></div>${f.detail?`<div class="raison-detail">${f.detail}</div>`:''}<div class="crit-info">${critereInfo(f.nom)}</div></div>
+      <div style="flex:1"><div class="raison-main">${f.nom} — <strong>${f.valeur}</strong><span class="raison-q">${t('prono_q')}</span></div>${f.detail?`<div class="raison-detail">${f.detail}</div>`:''}<div class="crit-info">${critereInfo(f.nom)}</div></div>
     </div>`;
   }).join('');
 
@@ -2561,8 +2806,8 @@ function mkProno(p){
     const ec=edge>=0?'edge-pos':'edge-neg';
     const regions=regionsBox(p);
     oddsBar=`<div class="odds-bar">
-      <div class="odds-main"><span class="odds-lbl">Meilleure cote</span><span class="odds-cote">${p.coteVegas.toFixed(2)}</span>${p.bookmaker?`<span class="odds-bk">${p.bookmaker}</span>`:''}</div>
-      <div class="odds-edge"><div class="odds-edge-v ${ec}">Edge ${edge>=0?'+':''}${edge.toFixed(1)}%</div><div class="odds-edge-sub">notre proba ${p.proba.toFixed(1)}% · marché ${(100/p.coteVegas).toFixed(1)}%</div></div>
+      <div class="odds-main"><span class="odds-lbl">${t('odds_best')}</span><span class="odds-cote">${p.coteVegas.toFixed(2)}</span>${p.bookmaker?`<span class="odds-bk">${p.bookmaker}</span>`:''}</div>
+      <div class="odds-edge"><div class="odds-edge-v ${ec}">Edge ${edge>=0?'+':''}${edge.toFixed(1)}%</div><div class="odds-edge-sub">${t('prono_ourproba')} ${p.proba.toFixed(1)}% · ${t('prono_market')} ${(100/p.coteVegas).toFixed(1)}%</div></div>
     </div>${regions}`;
   }
 
@@ -2572,7 +2817,7 @@ function mkProno(p){
         <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}
         <span style="font-size:10px;color:var(--muted)">${p.matchLabel}</span>
         <span class="tag ${tagClass}">${p.typeLabel}</span>
-        ${isFort?'<span class="pill pg">🔥 FORTE CONFIANCE</span>':isMoyen?'<span class="pill py">✅ BONNE CONFIANCE</span>':''}
+        ${isFort?`<span class="pill pg">${t('prono_hi')}</span>`:isMoyen?`<span class="pill py">${t('prono_good')}</span>`:''}
         ${p.fatigueBadge||''}
       </div>
       ${p.compoHTML||''}
@@ -2583,7 +2828,7 @@ function mkProno(p){
       <div class="prono-body">
         <div class="ring-wrap">
           <div class="ring">${ring(p.proba,col)}</div>
-          <div class="ring-lbl">PROBABILITÉ</div>
+          <div class="ring-lbl">${t('prono_probability')}</div>
           ${ciHTML}
           ${conf100HTML}
         </div>
@@ -2591,10 +2836,10 @@ function mkProno(p){
           <div class="prono-pick">🎯 ${p.pick}</div>
           ${oddsBar}
           <div class="prono-exp">${p.explication}</div>
-          ${p.formeDots?`<div style="font-size:10px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px">Forme (récent → ancien) : ${p.formeDots}</div>`:''}
+          ${p.formeDots?`<div style="font-size:10px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px">${t('prono_form')} ${p.formeDots}</div>`:''}
           <div class="raisons">${raisons}</div>
           ${chartCols?`<div style="margin-top:12px;border-top:1px solid var(--b1);padding-top:10px">
-            <div style="font-size:10px;color:var(--white);font-weight:700;letter-spacing:.5px;margin-bottom:8px">⚖️ POIDS DE CHAQUE CRITÈRE</div>
+            <div style="font-size:10px;color:var(--white);font-weight:700;letter-spacing:.5px;margin-bottom:8px">${t('prono_weights')}</div>
             <div class="poids-rows">${chartCols}</div>
           </div>`:''}
         </div>
@@ -2620,29 +2865,33 @@ function mkProno(p){
 }
 
 // ── Bouton de pari sur chaque prono ──
+// Un match commencé (En direct) ou terminé n'est plus pariable (cote pré-match)
+function matchStarted(gp){const g=liveGames[gp];return !!(g&&(g.state==='Live'||g.state==='Final'));}
+function matchFermeBtn(gp){const g=liveGames[gp];return `<button class="bet-btn bet-btn-off" disabled>${g&&g.state==='Final'?t('match_fin_closed'):t('match_live_closed')}</button>`;}
 function betButtonHTML(p){
   const bet=parieExistante(p.id);
   if(bet&&bet.parie){
     const res=bet.resultat;
-    const statut=res==='W'?`<span style="color:var(--green);font-weight:700">✅ Gagné +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`
-      :res==='L'?`<span style="color:var(--red);font-weight:700">❌ Perdu −${bet.mise.toFixed(2)}€</span>`
-      :`<span style="color:var(--amber);font-weight:700">⏳ En attente</span>`;
+    const statut=res==='W'?`<span style="color:var(--green);font-weight:700">${t('bet_won')} +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`
+      :res==='L'?`<span style="color:var(--red);font-weight:700">${t('bet_lost')} −${bet.mise.toFixed(2)}€</span>`
+      :`<span style="color:var(--amber);font-weight:700">${t('bet_pending')}</span>`;
     return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card2);border:1px solid var(--b2);border-radius:7px;padding:7px 11px">
-      <div style="font-size:11px">🎟️ Parié <strong>${bet.mise.toFixed(2)}€</strong> · cote ${bet.cote.toFixed(2)} · ${statut}</div>
-      ${res==='P'?`<button onclick="annulerPari('${p.id}')" style="background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer;text-decoration:underline">annuler</button>`:''}
+      <div style="font-size:11px">${t('bet_placed')} <strong>${bet.mise.toFixed(2)}€</strong> · ${t('odds_lbl')} ${bet.cote.toFixed(2)} · ${statut}</div>
+      ${res==='P'?`<button onclick="annulerPari('${p.id}')" style="background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer;text-decoration:underline">${t('bet_cancel')}</button>`:''}
     </div>`;
   }
   // On ne PROPOSE un pari que si une vraie cote bookmaker existe (sinon : analyse seule)
   if(!p.coteVegas){
-    return `<div style="font-size:10px;color:var(--muted);text-align:center;padding:6px;background:rgba(255,255,255,.02);border-radius:7px">📊 Analyse seule — aucune cote bookmaker pour ce type de pari</div>`;
+    return `<div style="font-size:10px;color:var(--muted);text-align:center;padding:6px;background:rgba(255,255,255,.02);border-radius:7px">${t('bet_analyse')}</div>`;
   }
+  if(matchStarted(p.gamePk))return matchFermeBtn(p.gamePk); // match commencé/fini → pari fermé
   const cap=getBankrollActuel();
   if(!cap||cap<=0){
-    return `<button class="bet-btn bet-btn-off" onclick="goTo('bankroll')">💰 Définir ma bankroll pour parier</button>`;
+    return `<button class="bet-btn bet-btn-off" onclick="goTo('bankroll')">${t('bet_setbk')}</button>`;
   }
   const {mise,edge,value}=miseEffective(p.proba/100,p.coteVegas,cap);
-  const tag=value?`<span style="opacity:.8;font-weight:400">· valeur +${(edge*100).toFixed(1)}%</span>`:`<span style="opacity:.75;font-weight:400">· suivi (pas de valeur)</span>`;
-  return `<button class="bet-btn${value?'':' bet-btn-soft'}" onclick="placerPari('${p.id}',this)">🎯 Parier ${mise.toFixed(2)}€ @ ${p.coteVegas.toFixed(2)} ${tag}</button>`;
+  const tag=value?`<span style="opacity:.8;font-weight:400">· ${t('bet_value')} +${(edge*100).toFixed(1)}%</span>`:`<span style="opacity:.75;font-weight:400">· ${t('bet_suivi')}</span>`;
+  return `<button class="bet-btn${value?'':' bet-btn-soft'}" onclick="placerPari('${p.id}',this)">${t('bet_action')} ${mise.toFixed(2)}€ @ ${p.coteVegas.toFixed(2)} ${tag}</button>`;
 }
 // Mise : quart de Kelly si valeur ; sinon mise de SUIVI réduite (l'utilisateur reste libre de parier ce qu'il veut)
 function miseEffective(prob,cote,cap){
@@ -2692,36 +2941,36 @@ async function loadMatchs(){
   try{
     const snap=await loadSnapshot();
     const games=snap?.matchs??[];
-    if(!games.length){document.getElementById('matchs-list').innerHTML='<div class="empty">Aucun match aujourd\'hui</div>';return;}
+    if(!games.length){document.getElementById('matchs-list').innerHTML=`<div class="empty">${t('m_none')}</div>`;return;}
     document.getElementById('matchs-list').innerHTML=games.map(g=>{
       const lv=liveGames[g.gamePk];                       // statut + score EN DIRECT (sinon repli snapshot)
       const st=lv?lv.state:g.state;
       const as=lv?lv.aScore:(g.awayScore??'—'),hs=lv?lv.hScore:(g.homeScore??'—');
       const dt=g.gameDate?new Date(g.gameDate):null;
-      const date=dt?dt.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'}):'';
-      const t=dt?dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
-      const awP=g.awayP??'Partant non annoncé',hmP=g.homeP??'Partant non annoncé';
-      const inn=(st==='Live'&&lv&&lv.inning)?` · ${lv.inningState==='Top'?'début':lv.inningState==='Bottom'?'fin':''} ${lv.inning}ᵉ`:'';
-      const stBadge=st==='Live'?`<span class="pill pr">🔴 EN DIRECT${inn}</span>`:st==='Final'?'<span class="pill pg">✅ TERMINÉ</span>':'<span class="pill py">🕐 À VENIR</span>';
+      const date=dt?dt.toLocaleDateString(dtLoc(),{weekday:'short',day:'2-digit',month:'2-digit'}):'';
+      const hr=dt?dt.toLocaleTimeString(dtLoc(),{hour:'2-digit',minute:'2-digit'}):'—';
+      const awP=g.awayP??t('m_nostarter'),hmP=g.homeP??t('m_nostarter');
+      const inn=(st==='Live'&&lv&&lv.inning)?` · ${lv.inningState==='Top'?t('live_top'):lv.inningState==='Bottom'?t('live_bot'):''} ${lv.inning}${t('inning_suf')}`:'';
+      const stBadge=st==='Live'?`<span class="pill pr">${t('m_live')}${inn}</span>`:st==='Final'?`<span class="pill pg">${t('m_fin')}</span>`:`<span class="pill py">${t('m_soon')}</span>`;
       return `<div class="card mb12" style="cursor:pointer" onclick="ouvrirMatch(${g.gamePk})">
         <div style="padding:14px 16px">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:7px">📅 ${date} · ⏱ ${t} · ${stBadge}</div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:7px">📅 ${date} · ⏱ ${hr} · ${stBadge}</div>
           <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px">
-            <div><div style="font-size:13px;font-weight:700">${g.away.name}</div><div style="font-size:10px;color:var(--muted)">${g.awayRec?.wins??'—'}V - ${g.awayRec?.losses??'—'}D</div></div>
+            <div><div style="font-size:13px;font-weight:700">${g.away.name}</div><div style="font-size:10px;color:var(--muted)">${g.awayRec?.wins??'—'}${t('rec_w')} - ${g.awayRec?.losses??'—'}${t('rec_l')}</div></div>
             <div style="text-align:center">
               ${st!=='Preview'?`<div style="font-family:var(--display);font-size:24px">${as} - ${hs}</div>`:'<div style="color:var(--muted);font-weight:700;font-size:13px">@</div>'}
             </div>
-            <div style="text-align:right"><div style="font-size:13px;font-weight:700">${g.home.name}</div><div style="font-size:10px;color:var(--muted)">${g.homeRec?.wins??'—'}V - ${g.homeRec?.losses??'—'}D</div></div>
+            <div style="text-align:right"><div style="font-size:13px;font-weight:700">${g.home.name}</div><div style="font-size:10px;color:var(--muted)">${g.homeRec?.wins??'—'}${t('rec_w')} - ${g.homeRec?.losses??'—'}${t('rec_l')}</div></div>
           </div>
           <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);border-top:1px solid var(--b1);padding-top:8px">
             <span>⚾ ${awP}</span><span>${hmP} ⚾</span>
           </div>
         </div>
-        <div style="padding:7px 16px;background:var(--card2);border-top:1px solid var(--b1);font-size:10px;color:var(--red);font-weight:600">Voir l'analyse complète avec tous les pronostics →</div>
+        <div style="padding:7px 16px;background:var(--card2);border-top:1px solid var(--b1);font-size:10px;color:var(--red);font-weight:600">${t('m_seefull')}</div>
       </div>`;
     }).join('');
     startLive(); // assure des scores frais à l'ouverture de l'onglet (+ rafraîchissement auto)
-  }catch(e){document.getElementById('matchs-list').innerHTML='<div class="empty">⚠️ Données indisponibles</div>';}
+  }catch(e){document.getElementById('matchs-list').innerHTML=`<div class="empty">${t('m_unavail')}</div>`;}
 }
 
 async function ouvrirMatch(gamePk){
@@ -2729,29 +2978,29 @@ async function ouvrirMatch(gamePk){
   document.getElementById('match-detail').style.display='block';
   // Gratuit : seul le match du pronostic offert est consultable en détail
   if(!isPremium()&&gamePk!==FREE_PICK_GAME){
-    document.getElementById('match-detail').innerHTML=`<button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">← Retour aux matchs</button>`+pageLockHTML('L\'analyse de ce match',"Pronostics, meilleures cotes et données complètes de ce match sont réservés aux membres Premium.");
+    document.getElementById('match-detail').innerHTML=`<button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">${t('pl_back')}</button>`+pageLockHTML(t('lk_match_t'),t('lk_match_d'));
     window.scrollTo(0,0);return;
   }
   const matchPronos=tousLesPronos.filter(p=>p.gamePk===gamePk);
   const vProno=matchPronos.find(p=>p.type==='victoire');
   if(!vProno){
-    document.getElementById('match-detail').innerHTML=`<button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">← Retour</button><div class="empty">Chargez d'abord les pronostics (onglet ⚡)</div>`;
+    document.getElementById('match-detail').innerHTML=`<button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">${t('pl_back')}</button><div class="empty">${t('md_load_first')}</div>`;
     return;
   }
   document.getElementById('match-detail').innerHTML=`
-    <button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">← Retour aux matchs</button>
+    <button onclick="fermerMatch()" style="background:var(--card);border:1px solid var(--b1);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:14px">${t('pl_back')}</button>
     <div class="card mb12" style="padding:18px">
       <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:12px">
         <div style="text-align:center">
           <div style="font-family:var(--display);font-size:22px;margin-bottom:4px">${vProno.awayTeam.name}</div>
           <div style="font-family:var(--display);font-size:28px;color:var(--blue)">${vProno.probaAway.toFixed(1)}%</div>
-          <div style="font-size:10px;color:var(--muted)">chances de gagner</div>
+          <div style="font-size:10px;color:var(--muted)">${t('md_winchance')}</div>
         </div>
         <div style="font-family:var(--display);font-size:18px;color:var(--muted);text-align:center">@</div>
         <div style="text-align:center">
           <div style="font-family:var(--display);font-size:22px;margin-bottom:4px">${vProno.homeTeam.name}</div>
           <div style="font-family:var(--display);font-size:28px;color:var(--red)">${vProno.probaHome.toFixed(1)}%</div>
-          <div style="font-size:10px;color:var(--muted)">chances de gagner</div>
+          <div style="font-size:10px;color:var(--muted)">${t('md_winchance')}</div>
         </div>
       </div>
       <div style="height:8px;background:var(--b2);border-radius:4px;overflow:hidden;display:flex">
@@ -2764,8 +3013,8 @@ async function ouvrirMatch(gamePk){
       </div>
     </div>
     <div class="match-tabs">
-      <button class="tab-btn active" onclick="switchMatchTab('pronos',this)">⚡ Pronostics (${matchPronos.length})</button>
-      <button class="tab-btn" onclick="switchMatchTab('data',this)">📋 Données complètes</button>
+      <button class="tab-btn active" onclick="switchMatchTab('pronos',this)">${tf('md_tab_pronos',{n:matchPronos.length})}</button>
+      <button class="tab-btn" onclick="switchMatchTab('data',this)">${t('md_tab_data')}</button>
     </div>
     <div id="md-pronos">${matchPronos.map(mkProno).join('')}</div>
     <div id="md-data" style="display:none"><div class="card">${renderMatchData(gamePk)}</div></div>`;
@@ -2781,7 +3030,7 @@ function switchMatchTab(t,btn){
 // Tableau comparatif de TOUTES les données récoltées pour un match
 function renderMatchData(gamePk){
   const m=matchDataMap[gamePk];
-  if(!m)return '<div class="empty" style="padding:24px">Données non disponibles. Ouvrez d\'abord l\'onglet ⚡ Pronostics pour les charger.</div>';
+  if(!m)return `<div class="empty" style="padding:24px">${t('md_data_na')}</div>`;
   const a=m.aData,h=m.hData,as=m.aStand,hs=m.hStand,af=m.aForme,hf=m.hForme;
   const num=(v,d=2)=>v!=null&&!isNaN(v)?(+v).toFixed(d):'—';
   const pct=v=>v!=null&&!isNaN(v)?Math.round(v*100)+'%':'—';
@@ -2791,29 +3040,29 @@ function renderMatchData(gamePk){
     if(aN!=null&&hN!=null&&aN!==hN){const aBetter=lo?aN<hN:aN>hN;aBetter?aw='win':hw='win';}
     return `<div class="data-row"><span class="data-cell a ${aw}">${av}</span><span class="data-mid">${label}${hint?`<div class="data-hint">${hint}</div>`:''}</span><span class="data-cell h ${hw}">${hv}</span></div>`;
   };
-  const formeStr=f=>f&&f.total?`${f.wins}V-${f.total-f.wins}D`:'—';
-  const meteoBlock=m.meteo?`<div class="data-row" style="grid-template-columns:1fr"><div style="text-align:center;font-size:11px">🌡️ <strong>${num(m.meteo.temp,0)}°C</strong> · 💧 ${m.meteo.humidity!=null?m.meteo.humidity+'%':'—'} · 💨 ${num(m.meteo.wind,0)} km/h → <strong style="color:${m.meteoIdx?.score>0?'var(--red)':m.meteoIdx?.score<0?'var(--blue)':'var(--muted)'}">net ${m.meteoIdx?.score>0?'+':''}${m.meteoIdx?.score||0} pts Over</strong><div class="data-hint">${m.meteoIdx?.breakdown||''}</div></div></div>`:'';
-  const vegasBlock=m.vegas?row('Cotes Vegas (marché)',`${m.vegas.probaA.toFixed(1)}% @${m.vegas.coteA.toFixed(2)}`,`${m.vegas.probaH.toFixed(1)}% @${m.vegas.coteH.toFixed(2)}`,null,null,false,'Probabilités implicites du marché'):'';
+  const formeStr=f=>f&&f.total?`${f.wins}${t('rec_w')}-${f.total-f.wins}${t('rec_l')}`:'—';
+  const meteoBlock=m.meteo?`<div class="data-row" style="grid-template-columns:1fr"><div style="text-align:center;font-size:11px">🌡️ <strong>${num(m.meteo.temp,0)}°C</strong> · 💧 ${m.meteo.humidity!=null?m.meteo.humidity+'%':'—'} · 💨 ${num(m.meteo.wind,0)} km/h → <strong style="color:${m.meteoIdx?.score>0?'var(--red)':m.meteoIdx?.score<0?'var(--blue)':'var(--muted)'}">${tf('md_net_over',{v:(m.meteoIdx?.score>0?'+':'')+(m.meteoIdx?.score||0)})}</strong><div class="data-hint">${m.meteoIdx?.breakdown||''}</div></div></div>`:'';
+  const vegasBlock=m.vegas?row(t('md_vegas'),`${m.vegas.probaA.toFixed(1)}% @${m.vegas.coteA.toFixed(2)}`,`${m.vegas.probaH.toFixed(1)}% @${m.vegas.coteH.toFixed(2)}`,null,null,false,t('md_vegas_hint')):'';
   return `
-    <div class="data-head"><span>${m.away.name}</span><span>visiteur / domicile</span><span>${m.home.name}</span></div>
-    ${row('🏆 Score composite du modèle',m.scoreA+'/100',m.scoreH+'/100',m.scoreA,m.scoreH,false,'Note globale sur tous les critères croisés')}
-    ${row('Probabilité de victoire',m.probaAway.toFixed(1)+'%',m.probaHome.toFixed(1)+'%',m.probaAway,m.probaHome,false)}
-    ${row('Bilan saison',as.wins!=null?`${as.wins}V-${as.losses}D`:'—',hs.wins!=null?`${hs.wins}V-${hs.losses}D`:'—',as.winPct,hs.winPct,false)}
-    ${row('% victoires théorique',pct(a.pythWinPct),pct(h.pythWinPct),a.pythWinPct,h.pythWinPct,false,'Formule pythagoricienne (runs réels)')}
-    ${row('Forme (10 derniers réels)',formeStr(af),formeStr(hf),af?.formePct,hf?.formePct,false,'Vrais résultats via API MLB')}
-    ${row('Repos sur 7 jours',af?af.reposSemaine+' j ('+af.matchs7j+' matchs)':'—',hf?hf.reposSemaine+' j ('+hf.matchs7j+' matchs)':'—',af?.reposSemaine,hf?.reposSemaine,false,'Plus de repos = plus frais')}
-    ${row('💪 Force offensive (OPS)',num(a.ops,3),num(h.ops,3),a.ops,h.ops,false,a.opsSplit||h.opsSplit?'Split domicile/extérieur réel':'Saison complète')}
-    ${row('🛡️ ERA équipe (défense)',num(a.eraEquipe),num(h.eraEquipe),a.eraEquipe,h.eraEquipe,true,'Points encaissés/9 manches, tous lanceurs')}
-    ${row('⚾ Lanceur partant',m.nomPartantA||'Non annoncé',m.nomPartantH||'Non annoncé',null,null,false)}
-    ${row('FIP partant',num(a.fipPartant),num(h.fipPartant),a.fipPartant,h.fipPartant,true,'Vraie qualité du lanceur, isolée de sa défense (plus prédictif que l\'ERA)')}
-    ${row('ERA partant',num(a.eraPartant),num(h.eraPartant),a.eraPartant,h.eraPartant,true,'Points encaissés / 9 manches')}
-    ${row('WHIP partant',num(a.whipPartant),num(h.whipPartant),a.whipPartant,h.whipPartant,true,'Coureurs concédés/manche')}
-    ${row('K/9 partant',num(a.k9Partant,1),num(h.k9Partant,1),a.k9Partant,h.k9Partant,false,'Éliminations directes/9 manches')}
-    ${m.sim?row('📊 Runs estimés',m.sim.expRunsA.toFixed(2),m.sim.expRunsH.toFixed(2),m.sim.expRunsA,m.sim.expRunsH,false,'Estimés sur données réelles (offense, FIP, bullpen, park factor)'):''}
-    ${m.parkPct?row('🏟️ Park factor',m.parkPct+'/100',m.parkPct+'/100',null,null,false,'Impact du stade sur les points (100 = neutre, >104 = offensif)'):''}
+    <div class="data-head"><span>${m.away.name}</span><span>${t('md_visitor_home')}</span><span>${m.home.name}</span></div>
+    ${row(t('md_r_score'),m.scoreA+'/100',m.scoreH+'/100',m.scoreA,m.scoreH,false,t('md_r_score_h'))}
+    ${row(t('md_r_proba'),m.probaAway.toFixed(1)+'%',m.probaHome.toFixed(1)+'%',m.probaAway,m.probaHome,false)}
+    ${row(t('md_r_season'),as.wins!=null?`${as.wins}${t('rec_w')}-${as.losses}${t('rec_l')}`:'—',hs.wins!=null?`${hs.wins}${t('rec_w')}-${hs.losses}${t('rec_l')}`:'—',as.winPct,hs.winPct,false)}
+    ${row(t('md_r_pyth'),pct(a.pythWinPct),pct(h.pythWinPct),a.pythWinPct,h.pythWinPct,false,t('md_r_pyth_h'))}
+    ${row(t('md_r_form'),formeStr(af),formeStr(hf),af?.formePct,hf?.formePct,false,t('md_r_form_h'))}
+    ${row(t('md_r_rest'),af?tf('md_rest_val',{d:af.reposSemaine,m:af.matchs7j}):'—',hf?tf('md_rest_val',{d:hf.reposSemaine,m:hf.matchs7j}):'—',af?.reposSemaine,hf?.reposSemaine,false,t('md_r_rest_h'))}
+    ${row(t('md_r_ops'),num(a.ops,3),num(h.ops,3),a.ops,h.ops,false,a.opsSplit||h.opsSplit?t('md_r_ops_h1'):t('md_r_ops_h2'))}
+    ${row(t('md_r_era'),num(a.eraEquipe),num(h.eraEquipe),a.eraEquipe,h.eraEquipe,true,t('md_r_era_h'))}
+    ${row(t('md_r_starter'),m.nomPartantA||t('md_tba'),m.nomPartantH||t('md_tba'),null,null,false)}
+    ${row(t('md_r_fip'),num(a.fipPartant),num(h.fipPartant),a.fipPartant,h.fipPartant,true,t('md_r_fip_h'))}
+    ${row(t('md_r_erap'),num(a.eraPartant),num(h.eraPartant),a.eraPartant,h.eraPartant,true,t('md_r_erap_h'))}
+    ${row(t('md_r_whip'),num(a.whipPartant),num(h.whipPartant),a.whipPartant,h.whipPartant,true,t('md_r_whip_h'))}
+    ${row(t('md_r_k9'),num(a.k9Partant,1),num(h.k9Partant,1),a.k9Partant,h.k9Partant,false,t('md_r_k9_h'))}
+    ${m.sim?row(t('md_r_runs'),m.sim.expRunsA.toFixed(2),m.sim.expRunsH.toFixed(2),m.sim.expRunsA,m.sim.expRunsH,false,t('md_r_runs_h')):''}
+    ${m.parkPct?row(t('md_r_park'),m.parkPct+'/100',m.parkPct+'/100',null,null,false,t('md_r_park_h')):''}
     ${vegasBlock}
     ${meteoBlock}
-    <div style="padding:10px 14px;font-size:9px;color:var(--muted);border-top:1px solid var(--b1)">✅ = meilleure valeur. Toutes ces données proviennent en temps réel de l'API officielle MLB${m.meteo?' et d\'Open-Meteo':''}.</div>`;
+    <div style="padding:10px 14px;font-size:9px;color:var(--muted);border-top:1px solid var(--b1)">${tf('md_foot',{meteo:m.meteo?t('md_foot_meteo'):''})}</div>`;
 }
 
 function fermerMatch(){
@@ -2832,7 +3081,7 @@ function trierTendances(mode,btn){
 }
 function renderTendances(){
   const el=document.getElementById('tendances-list');if(!el)return;
-  if(!tendancesJour.length){el.innerHTML='<div class="empty">Chargez d\'abord les pronostics (onglet ⚡) pour calculer les tendances.</div>';return;}
+  if(!tendancesJour.length){el.innerHTML=`<div class="empty">${t('tend_empty')}</div>`;return;}
   const T=x=>x.forme.tendances;
   const arr=[...tendancesJour].sort((a,b)=>{
     if(tendTri==='over')return T(b).over85-T(a).over85;
@@ -2840,28 +3089,28 @@ function renderTendances(){
     if(tendTri==='cover')return T(b).cover15-T(a).cover15;
     return (b.forme.formePct||0)-(a.forme.formePct||0);
   });
-  const intro=`<div class="tend-intro">Tendances des équipes qui jouent aujourd'hui, sur leurs <b>10 derniers vrais matchs</b>. &nbsp;<b>🔥</b> en forme · <b>❄️</b> en difficulté · <b>Over 8.5</b> = matchs avec 9 points ou + au total · <b>Gagne par 2+</b> = l'équipe l'emporte par au moins 2 points (couvre le handicap −1.5).</div>`;
+  const intro=`<div class="tend-intro">${t('tend_intro')}</div>`;
   const bar=(lbl,num,den,cls)=>{const p=den?Math.round(num/den*100):0;return `<div class="tc2-bar-row"><div class="tc2-bl"><span>${lbl}</span><span class="v">${num}/${den||0} · ${p}%</span></div><div class="tc2-track"><div class="tc2-fill" style="width:${p}%;background:${cls}"></div></div></div>`;};
   el.innerHTML=intro+arr.map(x=>{
-    const t=T(x),f=x.forme;
+    const td=T(x),f=x.forme;
     const pct=Math.round((f.formePct||0)*100);
     const pctCls=pct>=60?'hot':pct<=40?'cold':'';
-    const dots=f.last10.map(g=>`<span class="forme-dot ${g.w?'forme-w':'forme-l'}">${g.w?'V':'D'}</span>`).join('');
-    const serieTxt=fmtSerie(t.serieW);
-    const streak=serieTxt?`<span class="tc2-streak ${t.serieW>0?'hot':'cold'}">${t.serieW>0?'🔥':'❄️'} ${serieTxt}</span>`:'';
-    const overC=t.over85n&&t.over85/t.over85n>=0.6?'var(--amber)':'var(--blue)';
-    const covC=t.over85n&&t.cover15/t.over85n>=0.5?'var(--green)':'var(--muted)';
+    const dots=f.last10.map(g=>`<span class="forme-dot ${g.w?'forme-w':'forme-l'}">${g.w?t('rec_w'):t('rec_l')}</span>`).join('');
+    const serieTxt=fmtSerie(td.serieW);
+    const streak=serieTxt?`<span class="tc2-streak ${td.serieW>0?'hot':'cold'}">${td.serieW>0?'🔥':'❄️'} ${serieTxt}</span>`:'';
+    const overC=td.over85n&&td.over85/td.over85n>=0.6?'var(--amber)':'var(--blue)';
+    const covC=td.over85n&&td.cover15/td.over85n>=0.5?'var(--green)':'var(--muted)';
     return `<div class="tc2">
       <div class="tc2-head">
         <div class="tc2-team"><span class="sdot" style="background:${TCOLORS[x.team.abbreviation]||'#888'}"></span>${x.team.name}</div>
-        <div class="tc2-badges"><span class="tc2-pct ${pctCls}" title="% de victoires sur les 10 derniers">${pct}%</span>${streak}</div>
+        <div class="tc2-badges"><span class="tc2-pct ${pctCls}">${pct}%</span>${streak}</div>
       </div>
-      <div class="tc2-dots">10 derniers : ${dots} &nbsp;<strong style="color:var(--white)">${t.bilan10.w}V-${t.bilan10.l}D</strong></div>
+      <div class="tc2-dots">${t('tend_last10')} ${dots} &nbsp;<strong style="color:var(--white)">${td.bilan10.w}${t('rec_w')}-${td.bilan10.l}${t('rec_l')}</strong></div>
       <div class="tc2-grid">
-        <div class="tc2-hv"><span>🏠 À domicile</span><b>${t.domicile.n?`${t.domicile.w}-${t.domicile.l}`:'—'}</b></div>
-        <div class="tc2-hv"><span>✈️ À l'extérieur</span><b>${t.exterieur.n?`${t.exterieur.w}-${t.exterieur.l}`:'—'}</b></div>
-        ${bar('📊 Matchs Over 8.5 pts',t.over85,t.over85n,overC)}
-        ${bar('📐 Gagne par 2+ points',t.cover15,t.over85n,covC)}
+        <div class="tc2-hv"><span>${t('tend_home')}</span><b>${td.domicile.n?`${td.domicile.w}-${td.domicile.l}`:'—'}</b></div>
+        <div class="tc2-hv"><span>${t('tend_away')}</span><b>${td.exterieur.n?`${td.exterieur.w}-${td.exterieur.l}`:'—'}</b></div>
+        ${bar(t('tend_over_bar'),td.over85,td.over85n,overC)}
+        ${bar(t('tend_cover_bar'),td.cover15,td.over85n,covC)}
       </div>
     </div>`;
   }).join('');
@@ -2870,7 +3119,7 @@ function renderTendances(){
 // ═══════════════════════════════════════════════════
 // COMBINÉS & OUTSIDERS « FUN » (intégrés dans l'onglet Pronostics, façon Sélection)
 // ═══════════════════════════════════════════════════
-const TYP={victoire:['🏆 Victoire','tag-v'],ou:['📊 Total','tag-ou'],runline:['📐 Run line','tag-marge']};
+const TYP={victoire:['typ_victoire','tag-v'],ou:['typ_ou','tag-ou'],runline:['typ_runline','tag-marge']};
 function legEdge(p){return p.proba-100/p.coteVegas;} // edge d'une jambe, en points de %
 function eligibleLegs(){return tousLesPronos.filter(p=>p.coteVegas&&p.proba>=53&&(p.dataDispos==null||p.dataDispos>=60));}
 // 1 jambe par match (matchs distincts), choisie par les MATHS selon un critère (proba ou edge).
@@ -2898,48 +3147,46 @@ function comboBetBtn(c){
   const bet=getHistorique().find(h=>h.id===c.id&&h.parie);
   if(bet){
     const res=bet.resultat;
-    const st=res==='W'?`<span style="color:var(--green);font-weight:700">✅ Gagné +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`:res==='L'?`<span style="color:var(--red);font-weight:700">❌ Perdu −${bet.mise.toFixed(2)}€</span>`:`<span style="color:var(--amber);font-weight:700">⏳ En attente</span>`;
-    return `<div class="combo-bet"><span>🎟️ Parié <strong>${bet.mise.toFixed(2)}€</strong> · cote ${bet.cote.toFixed(2)} · ${st}</span>${res==='P'?`<button class="combo-cancel" onclick="annulerPari('${c.id}')">annuler</button>`:''}</div>`;
+    const st=res==='W'?`<span style="color:var(--green);font-weight:700">${t('bet_won')} +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`:res==='L'?`<span style="color:var(--red);font-weight:700">${t('bet_lost')} −${bet.mise.toFixed(2)}€</span>`:`<span style="color:var(--amber);font-weight:700">${t('bet_pending')}</span>`;
+    return `<div class="combo-bet"><span>${t('bet_placed')} <strong>${bet.mise.toFixed(2)}€</strong> · ${t('odds_lbl')} ${bet.cote.toFixed(2)} · ${st}</span>${res==='P'?`<button class="combo-cancel" onclick="annulerPari('${c.id}')">${t('bet_cancel')}</button>`:''}</div>`;
   }
-  return `<button class="combo-bet-btn" onclick="placerCombo('${c.id}')">🎟️ Parier ce combiné (mise auto)</button>`;
+  if((c.legs||[]).some(l=>matchStarted(l.gamePk)))return `<button class="bet-btn bet-btn-off" disabled>${t('match_live_closed')}</button>`;
+  return `<button class="combo-bet-btn" onclick="placerCombo('${c.id}')">${t('combo_bet')}</button>`;
 }
 function mkComboHTML(c){
   if(!c)return '';
   const legsHTML=c.legs.map(p=>{const ty=TYP[p.type]||TYP.victoire,le=p.proba-100/p.coteVegas;return `<div class="combo-leg" onclick="ouvrirMatchDepuis(${p.gamePk})">
-    <div style="flex:1;min-width:0"><div><span class="combo-leg-type ${ty[1]}">${ty[0]}</span> <strong>${p.pick}</strong></div>
+    <div style="flex:1;min-width:0"><div><span class="combo-leg-type ${ty[1]}">${t(ty[0])}</span> <strong>${p.pick}</strong></div>
     <div class="combo-leg-math">${p.matchLabel} · proba ${p.proba.toFixed(0)}% · edge ${le>=0?'+':''}${le.toFixed(1)}% ${liveBadge(p)}</div></div>
     <span class="combo-leg-cote">${p.coteVegas.toFixed(2)}</span></div>`;}).join('');
   return `<div class="combo ${c.cls}">
     <div class="combo-head">
-      <div><div class="combo-name">${c.emoji} ${c.nom}</div><div style="font-size:10px;color:var(--muted)">${c.legs.length} sélections · ${c.crit||'choisies par le modèle'} · clique une ligne pour l'analyse</div></div>
-      <div><div class="combo-cote">${c.odds.toFixed(2)}</div><div class="combo-cote-l">cote totale</div></div>
+      <div><div class="combo-name">${c.emoji} ${c.nom}</div><div style="font-size:10px;color:var(--muted)">${tf('combo_subline',{n:c.legs.length,crit:c.crit||t('combo_default_crit')})}</div></div>
+      <div><div class="combo-cote">${c.odds.toFixed(2)}</div><div class="combo-cote-l">${t('combo_total_odds')}</div></div>
     </div>
     ${legsHTML}
     <div class="combo-math">
-      <span>Proba réelle <b style="color:var(--white)">${c.proba.toFixed(1)}%</b></span>
-      <span>Marché <b style="color:var(--white)">${c.marketP.toFixed(1)}%</b></span>
+      <span>${t('combo_realproba')} <b style="color:var(--white)">${c.proba.toFixed(1)}%</b></span>
+      <span>${t('combo_market')} <b style="color:var(--white)">${c.marketP.toFixed(1)}%</b></span>
       <span class="${c.edge>=0?'cm-pos':'cm-neg'}">Edge ${c.edge>=0?'+':''}${c.edge.toFixed(1)}%</span>
       <span class="combo-gain">10€ → ${(10*c.odds).toFixed(2)}€</span>
     </div>
     ${comboBetBtn(c)}
-    <div class="combo-warn">⚠️ Un combiné ne gagne que si <strong>TOUTES</strong> les sélections passent. Plus la cote est grosse, plus la probabilité réelle est faible : pour le fun, petites mises.</div>
+    <div class="combo-warn">${t('combo_warn')}</div>
   </div>`;
 }
 // Parier un combiné (mise quart de Kelly sur la cote combinée, suivi dans l'historique/bankroll)
 function placerCombo(cid){
   const c=COMBOS[cid];if(!c)return;
-  if(getHistorique().find(h=>h.id===cid&&h.parie)){toast('Ce combiné est déjà suivi.','info');return;}
+  if(getHistorique().find(h=>h.id===cid&&h.parie)){toast(t('ts_combo_dup'),'info');return;}
+  if((c.legs||[]).some(l=>matchStarted(l.gamePk))){toast(t('ts_combo_started'),'err');return;}
   const cap=getBankrollActuel();
-  if(!cap||cap<=0){toast('💰 Définissez d\'abord votre capital dans l\'onglet Bankroll','info');goTo('bankroll');return;}
+  if(!cap||cap<=0){toast(t('ts_setcap'),'info');goTo('bankroll');return;}
   const {mise,edge}=miseKelly(c.proba/100,c.odds,cap);
-  if(mise<0.5){toast('Mise nulle : pas de valeur sur ce combiné à cette cote.','err');return;}
+  if(mise<0.5){toast(t('ts_combo_novalue'),'err');return;}
   const gain=(mise*(c.odds-1)).toFixed(2);
-  askConfirm('🎯 Parier ce combiné ?',
-    `<strong>${c.emoji} ${c.nom}</strong> · ${c.legs.length} sélections<br><span style="font-size:12px">${c.legs.map(l=>'• '+l.pick).join('<br>')}</span><br><br>
-     Mise : <strong>${mise.toFixed(2)}€</strong> · Cote totale : <strong>${c.odds.toFixed(2)}</strong><br>
-     Gain potentiel : <strong style="color:var(--green)">+${gain}€</strong><br>
-     Probabilité réelle : <strong>${c.proba.toFixed(1)}%</strong> · edge <strong>${edge>=0?'+':''}${(edge*100).toFixed(1)}%</strong><br>
-     <span style="font-size:11px">⚠️ Gagne uniquement si les ${c.legs.length} sélections passent. Mise = quart de Kelly, plafond 5%.</span>`,
+  askConfirm(t('dc_combo_t'),
+    tf('dc_combo_b',{emoji:c.emoji,nom:c.nom,n:c.legs.length,legs:c.legs.map(l=>'• '+l.pick).join('<br>'),m:mise.toFixed(2),c:c.odds.toFixed(2),g:gain,p:c.proba.toFixed(1),e:(edge>=0?'+':'')+(edge*100).toFixed(1)+'%'}),
     ()=>{
       const hist=getHistorique();
       let entry=hist.find(h=>h.id===c.id);
@@ -2948,8 +3195,8 @@ function placerCombo(cid){
       sauverHistorique(hist);
       renderFunSection();renderHistFun();
       if(document.getElementById('bk-curve'))renderBankroll();
-      toast(`✅ Combiné placé : <strong>${mise.toFixed(2)}€</strong> · cote ${c.odds.toFixed(2)}`);
-    },'Parier');
+      toast(tf('ts_combo_placed',{m:mise.toFixed(2),c:c.odds.toFixed(2)}));
+    },t('dlg_bet_ok'));
 }
 let FUN={combos:[],outs:[]};
 // Calcule les pronos fun du jour (combinés + outsiders) — c'est le modèle qui choisit (proba / edge)
@@ -2959,9 +3206,9 @@ function computeFun(){
   const parEdge=bestPerGame(p=>legEdge(p)).sort((a,b)=>legEdge(b)-legEdge(a));
   COMBOS={};
   const combos=[];const add=c=>{if(c)combos.push(c);};
-  add(buildCombo(parProba.slice(0,2),'prudent','Combiné Prudent','🛡️','les 2 paris les plus probables'));
-  if(parEdge.length>=3)add(buildCombo(parEdge.slice(0,3),'equilibre','Combiné Équilibré','⚖️','les 3 meilleures valeurs (edge)'));
-  if(parEdge.length>=4)add(buildCombo(parEdge.slice(0,4),'gros','Combiné Gros coup','🚀','les 4 meilleures valeurs empilées'));
+  add(buildCombo(parProba.slice(0,2),'prudent',t('combo_prudent_n'),'🛡️',t('combo_prudent_c')));
+  if(parEdge.length>=3)add(buildCombo(parEdge.slice(0,3),'equilibre',t('combo_equil_n'),'⚖️',t('combo_equil_c')));
+  if(parEdge.length>=4)add(buildCombo(parEdge.slice(0,4),'gros',t('combo_gros_n'),'🚀',t('combo_gros_c')));
   const outs=[];
   Object.keys(matchDataMap||{}).forEach(gp=>{
     const m=matchDataMap[gp];if(!m||!m.vegas)return;
@@ -2991,8 +3238,8 @@ function computeFun(){
 function outsiderHTML(o){return `<div class="outsider" onclick="ouvrirMatchDepuis(${o.gp})">
     <div class="outsider-cote">${o.odds.toFixed(2)}</div>
     <div class="outsider-body">
-      <div class="outsider-pick">${o.team.name} gagne <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span></div>
-      <div class="outsider-meta">${o.label} · modèle <strong>${o.mp.toFixed(0)}%</strong> vs marché ${o.marketP!=null?o.marketP.toFixed(0)+'%':'—'} · ${o.bk||''}</div>
+      <div class="outsider-pick">${o.team.name} ${t('win_verb')} <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span></div>
+      <div class="outsider-meta">${o.label} · ${t('out_model')} <strong>${o.mp.toFixed(0)}%</strong> vs ${t('prono_market')} ${o.marketP!=null?o.marketP.toFixed(0)+'%':'—'} · ${o.bk||''}</div>
       <div style="margin-top:5px">${liveBadge({gamePk:o.gp,type:'victoire',homePickExplicit:o.homeDog})}</div>
       ${o.stats.length?`<div class="outsider-data">${o.stats.join(' · ')}</div>`:''}
       ${o.cle?`<div class="outsider-cle">${o.cle}</div>`:''}
@@ -3001,19 +3248,19 @@ function outsiderHTML(o){return `<div class="outsider" onclick="ouvrirMatchDepui
   </div>`;}
 function outsiderBetBtn(o){
   const bet=getHistorique().find(h=>h.id==='O|'+o.gp&&h.parie);
-  if(bet){const res=bet.resultat;const st=res==='W'?`<span style="color:var(--green);font-weight:700">✅ Gagné +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`:res==='L'?`<span style="color:var(--red);font-weight:700">❌ Perdu −${bet.mise.toFixed(2)}€</span>`:`<span style="color:var(--amber);font-weight:700">⏳ En attente</span>`;
-    return `<div class="combo-bet"><span>🎟️ Parié <strong>${bet.mise.toFixed(2)}€</strong> · cote ${bet.cote.toFixed(2)} · ${st}</span>${res==='P'?`<button class="combo-cancel" onclick="annulerPari('O|${o.gp}')">annuler</button>`:''}</div>`;}
-  return `<button class="combo-bet-btn" onclick="placerOutsider(${o.gp})">🎟️ Parier cet outsider</button>`;
+  if(bet){const res=bet.resultat;const st=res==='W'?`<span style="color:var(--green);font-weight:700">${t('bet_won')} +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`:res==='L'?`<span style="color:var(--red);font-weight:700">${t('bet_lost')} −${bet.mise.toFixed(2)}€</span>`:`<span style="color:var(--amber);font-weight:700">${t('bet_pending')}</span>`;
+    return `<div class="combo-bet"><span>${t('bet_placed')} <strong>${bet.mise.toFixed(2)}€</strong> · ${t('odds_lbl')} ${bet.cote.toFixed(2)} · ${st}</span>${res==='P'?`<button class="combo-cancel" onclick="annulerPari('O|${o.gp}')">${t('bet_cancel')}</button>`:''}</div>`;}
+  if(matchStarted(o.gp))return matchFermeBtn(o.gp);
+  return `<button class="combo-bet-btn" onclick="placerOutsider(${o.gp})">${t('out_bet')}</button>`;
 }
 function placerOutsider(gp){
   const o=(FUN.outs||[]).find(x=>x.gp===gp);if(!o)return;
+  if(matchStarted(gp)){toast(t('ts_match_started'),'err');return;}
   const cap=getBankrollActuel();
-  if(!cap||cap<=0){toast('💰 Définis d\'abord ton capital dans l\'onglet Bankroll','info');goTo('bankroll');return;}
+  if(!cap||cap<=0){toast(t('ts_setcap'),'info');goTo('bankroll');return;}
   const {mise,edge,value}=miseEffective(o.mp/100,o.odds,cap);
-  askConfirm('🎯 Parier cet outsider ?',
-    `<strong>${o.team.name} gagne</strong> @ <strong>${o.odds.toFixed(2)}</strong><br>${o.label}<br><br>
-     Mise : <strong>${mise.toFixed(2)}€</strong> · Gain potentiel : <strong style="color:var(--green)">+${(mise*(o.odds-1)).toFixed(2)}€</strong><br>
-     ${value?`Valeur : <strong style="color:var(--green)">+${(edge*100).toFixed(1)}%</strong> vs marché`:`<strong style="color:var(--amber)">⚠️ Gros coup risqué</strong> — mise de suivi réduite.`}`,
+  askConfirm(t('dc_out_t'),
+    tf('dc_out_b',{teamwins:o.team.name+' '+t('win_verb'),c:o.odds.toFixed(2),label:o.label,m:mise.toFixed(2),g:(mise*(o.odds-1)).toFixed(2),valline:value?tf('dc_out_val',{e:(edge*100).toFixed(1)}):t('dc_out_risk')}),
     ()=>{
       const hist=getHistorique();const id='O|'+gp;
       let entry=hist.find(h=>h.id===id);
@@ -3021,30 +3268,30 @@ function placerOutsider(gp){
       entry.parie=true;entry.mise=mise;entry.cote=o.odds;entry.datePari=today();
       sauverHistorique(hist);renderFunSection();renderHistFun();
       if(document.getElementById('bk-curve'))renderBankroll();
-      toast(`✅ Pari placé : <strong>${mise.toFixed(2)}€</strong> sur ${o.team.name}`);
-    },'Parier');
+      toast(tf('ts_bet_placed',{m:mise.toFixed(2),x:o.team.name}));
+    },t('dlg_bet_ok'));
 }
 function renderFunSection(){
   const el=document.getElementById('fun-section');if(!el)return;
   if(!tousLesPronos.length){el.innerHTML='';return;}
   if(!isPremium()){
     el.innerHTML=`<div class="fun-wrap locked" onclick="ouvrirPremium()" style="cursor:pointer">
-      <div class="fun-h">🎲 COMBINÉS & GROS COUPS</div>
-      <div class="fun-sub">Combinés (du prudent au gros coup) à cotes multipliées + outsiders à grosse cote, avec toutes les maths réelles.</div>
-      <div style="text-align:center;padding:14px 0"><div class="lock-ic">🔒</div><div class="lock-t">Réservé aux membres Premium</div>
-      <button class="lock-btn" onclick="ouvrirPremium()">⭐ Débloquer les gros coups</button></div>
+      <div class="fun-h">${t('fun_h')}</div>
+      <div class="fun-sub">${t('fun_sub_locked')}</div>
+      <div style="text-align:center;padding:14px 0"><div class="lock-ic">🔒</div><div class="lock-t">${t('fun_locked_t')}</div>
+      <button class="lock-btn" onclick="ouvrirPremium()">${t('fun_unlock')}</button></div>
     </div>`;
     return;
   }
   if(!FUN.combos.length&&!FUN.outs.length)FUN=computeFun(); // sécurité si appelé seul
-  const combos=FUN.combos.length?FUN.combos.map(mkComboHTML).join(''):'<div class="empty">Pas assez de pronostics fiables aujourd\'hui pour un combiné.</div>';
-  const outsHTML=!FUN.outs.length?'<div class="empty">Aucun outsider à grosse cote aujourd\'hui.</div>':FUN.outs.map(outsiderHTML).join('');
+  const combos=FUN.combos.length?FUN.combos.map(mkComboHTML).join(''):`<div class="empty">${t('fun_no_combo')}</div>`;
+  const outsHTML=!FUN.outs.length?`<div class="empty">${t('fun_no_outs')}</div>`:FUN.outs.map(outsiderHTML).join('');
   el.innerHTML=`<div class="fun-wrap">
-    <div class="fun-h">🎲 COMBINÉS & GROS COUPS</div>
-    <div class="fun-sub"><strong>C'est le modèle qui choisit les sélections</strong> (probabilité ou edge), pas nous — tous types de paris confondus. Plus de jambes = plus grosse cote, plus faible probabilité. Cotes et probabilités 100% réelles, edge affiché.</div>
+    <div class="fun-h">${t('fun_h')}</div>
+    <div class="fun-sub">${t('fun_sub')}</div>
     ${combos}
-    <div class="fun-h" style="font-size:15px;margin-top:16px">🐶 Outsiders à grosse cote</div>
-    <div class="fun-sub">Victoires surprises (cote ≥ 2). <strong>💎</strong> = le modèle bat le marché. Clique pour l'analyse complète.</div>
+    <div class="fun-h" style="font-size:15px;margin-top:16px">${t('fun_outs_h')}</div>
+    <div class="fun-sub">${t('fun_outs_sub')}</div>
     ${outsHTML}
   </div>`;
 }
@@ -3096,14 +3343,14 @@ function renderHistFun(){
   set('hf-taux',taux!=null?taux+'%':'—');
   const roiEl=document.getElementById('hf-roi');if(roiEl){roiEl.textContent=(pl>=0?'+':'')+pl.toFixed(2)+'€';roiEl.style.color=pl>=0?'var(--green)':'var(--red)';}
   set('hf-jeu',enJeu.toFixed(2)+'€');
-  if(!fun.length){el.innerHTML='<div class="empty" style="padding:22px;font-size:12px">Aucun prono fun pour l\'instant.<br>Ils s\'enregistrent <strong>automatiquement chaque jour</strong> (combinés + outsiders), même sans parier.</div>';return;}
+  if(!fun.length){el.innerHTML=`<div class="empty" style="padding:22px;font-size:12px">${t('hf_empty')}</div>`;return;}
   const sorted=[...fun].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.parie?1:0)-(a.parie?1:0));
   el.innerHTML=sorted.map(h=>{
     const res=h.resultat;
-    const resTxt=res==='W'?`<span style="color:var(--green);font-weight:800">✅ Gagné${h.parie?' +'+((h.mise||0)*((h.cote||1)-1)).toFixed(2)+'€':''}</span>`:res==='L'?`<span style="color:var(--red);font-weight:800">❌ Perdu${h.parie?' −'+(h.mise||0).toFixed(2)+'€':''}</span>`:`<span style="color:var(--amber);font-weight:800">⏳ En attente</span>`;
-    const meta=h.parie?`mise <strong style="color:var(--white)">${(+h.mise||0).toFixed(2)}€</strong>`:`<span style="color:var(--muted)">suggéré (non parié)</span>`;
+    const resTxt=res==='W'?`<span style="color:var(--green);font-weight:800">${t('bet_won')}${h.parie?' +'+((h.mise||0)*((h.cote||1)-1)).toFixed(2)+'€':''}</span>`:res==='L'?`<span style="color:var(--red);font-weight:800">${t('bet_lost')}${h.parie?' −'+(h.mise||0).toFixed(2)+'€':''}</span>`:`<span style="color:var(--amber);font-weight:800">${t('bet_pending')}</span>`;
+    const meta=h.parie?`${t('hf_stake')} <strong style="color:var(--white)">${(+h.mise||0).toFixed(2)}€</strong>`:`<span style="color:var(--muted)">${t('hf_suggested')}</span>`;
     if(h.type==='combo'){
-      const legs=(h.legs||[]).map(l=>`<div class="hf-leg">${(TYP[l.type]||TYP.victoire)[0]} <strong>${l.pick}</strong> <span style="color:var(--muted)">· ${l.matchLabel} · @${(+l.coteVegas||0).toFixed(2)}</span></div>`).join('');
+      const legs=(h.legs||[]).map(l=>`<div class="hf-leg">${t((TYP[l.type]||TYP.victoire)[0])} <strong>${l.pick}</strong> <span style="color:var(--muted)">· ${l.matchLabel} · @${(+l.coteVegas||0).toFixed(2)}</span></div>`).join('');
       return `<div class="hf-item">
         <div class="hf-top"><span class="hf-name">🎯 ${(h.pick||'Combiné').split(' : ')[0]}</span><span class="hf-cote">${(+h.cote||0).toFixed(2)}</span></div>
         <div class="hf-legs">${legs}</div>
@@ -3132,7 +3379,7 @@ function renderHistStats(hist){
   document.getElementById('h-attente').textContent=hist.filter(h=>h.resultat==='P').length;
 
   // Par niveau de confiance — tranches de score /100 (les anciennes entrées en étoiles sont converties ×20)
-  const byConf=[[75,101,'75-100 · très fiable'],[62,75,'62-74 · fiable'],[50,62,'50-61 · modéré'],[0,50,'< 50 · incertain']].map(([lo,hi,lbl])=>{
+  const byConf=[[75,101,t('hc_b1')],[62,75,t('hc_b2')],[50,62,t('hc_b3')],[0,50,t('hc_b4')]].map(([lo,hi,lbl])=>{
     const items=finis.filter(h=>{const s=scoreConf(h);return s>=lo&&s<hi;});
     const w=items.filter(h=>h.resultat==='W').length;
     const pct=items.length?Math.round(w/items.length*100):null;
@@ -3149,7 +3396,7 @@ function renderHistStats(hist){
 
   // Par type
   const types=['victoire','ou','runline'];
-  const typeLabels={victoire:'Victoire',ou:'Total O/U',runline:'Run line'};
+  const typeLabels={victoire:t('tl_victoire'),ou:t('tl_ou'),runline:t('tl_runline')};
   document.getElementById('hist-by-type').innerHTML=types.map(tp=>{
     const items=finis.filter(h=>h.type===tp);
     const w=items.filter(h=>h.resultat==='W').length;
@@ -3186,11 +3433,11 @@ function renderHistList(hist,filtre){
   const filtered=filtre==='tous'?base:base.filter(h=>h.resultat===filtre);
   const sorted=[...filtered].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(scoreConf(b)-scoreConf(a)));
   const el=document.getElementById('hist-list');
-  if(!sorted.length){el.innerHTML='<div class="empty" style="padding:20px">Aucun pronostic pour ce filtre.</div>';return;}
+  if(!sorted.length){el.innerHTML=`<div class="empty" style="padding:20px">${t('pr_empty_filter')}</div>`;return;}
   const tagCls={victoire:'tag-v',ou:'tag-ou',runline:'tag-marge'};
   el.innerHTML=sorted.map(h=>{
     const cs=scoreConf(h), cote=h.coteVegas??h.cote, res=h.resultat;
-    const resBadge=res==='W'?'<span class="histc-res w">✅ Gagné</span>':res==='L'?'<span class="histc-res l">❌ Perdu</span>':'<span class="histc-res p">⏳ En attente</span>';
+    const resBadge=res==='W'?`<span class="histc-res w">${t('bet_won')}</span>`:res==='L'?`<span class="histc-res l">${t('bet_lost')}</span>`:`<span class="histc-res p">${t('bet_pending')}</span>`;
     return `<div class="histc">
       <div class="histc-top">
         <span class="histc-date">📅 ${(h.date||'').slice(5)}</span>
@@ -3199,11 +3446,11 @@ function renderHistList(hist,filtre){
       </div>
       <div class="histc-pick">${h.pick||''}</div>
       <div class="histc-stats">
-        <span>📊 proba <b>${h.proba!=null?h.proba.toFixed(0)+'%':'—'}</b></span>
-        <span>🎯 confiance <b style="color:${confColor(cs)}">${cs}/100</b></span>
-        ${cote?`<span>💰 cote <b>${(+cote).toFixed(2)}</b></span>`:''}
-        ${h.scoreReel?`<span>📋 score <b>${h.scoreReel}</b></span>`:''}
-        ${h.parie?`<span style="color:var(--amber)">🎟️ misé ${(+h.mise||0).toFixed(2)}€</span>`:''}
+        <span>📊 ${t('hl_proba')} <b>${h.proba!=null?h.proba.toFixed(0)+'%':'—'}</b></span>
+        <span>🎯 ${t('hl_conf')} <b style="color:${confColor(cs)}">${cs}/100</b></span>
+        ${cote?`<span>💰 ${t('hl_cote')} <b>${(+cote).toFixed(2)}</b></span>`:''}
+        ${h.scoreReel?`<span>📋 ${t('hl_score')} <b>${h.scoreReel}</b></span>`:''}
+        ${h.parie?`<span style="color:var(--amber)">🎟️ ${t('hl_stake')} ${(+h.mise||0).toFixed(2)}€</span>`:''}
       </div>
     </div>`;
   }).join('');
@@ -3216,27 +3463,27 @@ function filtrerHist(filtre,btn){
 }
 
 function viderHistorique(){
-  askConfirm('Effacer tout l\'historique ?','Cette action est <strong>irréversible</strong>. Pensez à exporter avant si besoin.',()=>{
+  askConfirm(t('dc_clear_t'),t('dc_clear_b'),()=>{
     lsRemove('db_pronos');
     loadHistorique();
-    toast('Historique effacé','info');
+    toast(t('ts_hist_cleared'),'info');
   },'Tout effacer');
 }
 
 // Réinitialise les statistiques : supprime les pronos TERMINÉS (gagnés/perdus), garde les EN ATTENTE
 function reinitialiserStats(){
-  if(!isAdmin()){toast('Action réservée à l\'administrateur.','info');return;}
+  if(!isAdmin()){toast(t('ts_admin_only'),'info');return;}
   const hist=getHistorique();
   const enAttente=hist.filter(h=>h.resultat==='P');
   const termines=hist.length-enAttente.length;
-  if(!termines){toast('Aucune statistique à réinitialiser (rien de terminé).','info');return;}
-  askConfirm('Réinitialiser les statistiques ?',
-    `Les <strong>${termines}</strong> pronostic(s) terminé(s) (gagnés/perdus) seront effacés → taux de réussite, ROI, calibration remis à zéro.<br><br>Les <strong>${enAttente.length}</strong> pari(s)/prono(s) <strong>en attente</strong> sont conservés.`,
+  if(!termines){toast(t('ts_nostats'),'info');return;}
+  askConfirm(t('dc_reinit_t'),
+    tf('dc_reinit_b',{tt:termines,a:enAttente.length}),
     ()=>{
       sauverHistorique(enAttente);
       loadHistorique();
-      toast(`Stats réinitialisées · ${enAttente.length} en attente conservé(s)`,'info');
-    },'Réinitialiser');
+      toast(tf('ts_stats_reset',{n:enAttente.length}),'info');
+    },t('dc_reinit_ok'));
 }
 
 // ═══════════════════════════════════════════════════
@@ -3255,17 +3502,15 @@ function parieExistante(id){return getHistorique().find(h=>h.id===id&&h.parie);}
 
 function placerPari(id,btn){
   const p=tousLesPronos.find(x=>x.id===id);if(!p)return;
-  if(!p.coteVegas){toast('Aucune cote bookmaker pour ce pari.','err');return;}
+  if(!p.coteVegas){toast(t('ts_no_odds'),'err');return;}
+  if(matchStarted(p.gamePk)){toast(t('ts_match_started'),'err');return;}
   const cap=getBankrollActuel();
-  if(!cap||cap<=0){toast('💰 Définissez d\'abord votre capital dans l\'onglet Bankroll','info');goTo('bankroll');return;}
+  if(!cap||cap<=0){toast(t('ts_setcap'),'info');goTo('bankroll');return;}
   const cote=p.coteVegas;
   const {mise,edge,value}=miseEffective(p.proba/100,cote,cap);
   const gain=(mise*(cote-1)).toFixed(2);
-  askConfirm('🎯 Placer ce pari ?',
-    `<strong>${p.pick}</strong><br>${p.matchLabel}<br><br>
-     Mise : <strong>${mise.toFixed(2)}€</strong> · Cote : <strong>${cote.toFixed(2)}</strong><br>
-     Gain potentiel : <strong style="color:var(--green)">+${gain}€</strong><br>
-     ${value?`Valeur (edge) : <strong style="color:var(--green)">+${(edge*100).toFixed(1)}%</strong> vs marché<br><span style="font-size:11px">Mise = quart de Kelly (plafond 5% du capital).</span>`:`<strong style="color:var(--amber)">⚠️ Pas de valeur selon le modèle</strong> (le marché paie moins).<br><span style="font-size:11px">Tu restes libre de suivre ce pari — mise de suivi réduite (~0,5% du capital).</span>`}`,
+  askConfirm(t('dc_pari_t'),
+    tf('dc_pari_b',{pick:p.pick,match:p.matchLabel,m:mise.toFixed(2),c:cote.toFixed(2),g:gain,valline:value?tf('dc_pari_val',{e:(edge*100).toFixed(1)}):t('dc_pari_risk')}),
     ()=>{
       const hist=getHistorique();
       let entry=hist.find(h=>h.id===id);
@@ -3278,12 +3523,12 @@ function placerPari(id,btn){
       if(btn)btn.outerHTML=betButtonHTML(p);
       if(document.getElementById('best-bet'))renderSelection(tousLesPronos); // garde la sélection en phase
       if(document.getElementById('bk-curve'))renderBankroll();
-      toast(`✅ Pari placé : <strong>${mise.toFixed(2)}€</strong> sur ${p.pick}`);
-    },'Parier');
+      toast(tf('ts_bet_placed',{m:mise.toFixed(2),x:p.pick}));
+    },t('dlg_bet_ok'));
 }
 
 function annulerPari(id){
-  askConfirm('Annuler ce pari ?','Le pari sera retiré de votre suivi.',()=>{
+  askConfirm(t('dc_cancelbet_t'),t('dc_cancelbet_b'),()=>{
     const hist=getHistorique();
     const entry=hist.find(h=>h.id===id);
     if(entry&&entry.resultat==='P'){
@@ -3295,23 +3540,23 @@ function annulerPari(id){
     if(document.getElementById('fun-section'))renderFunSection();
     renderHistFun();
     if(document.getElementById('bk-curve'))renderBankroll();
-    toast('Pari annulé','info');
-  },'Oui, annuler');
+    toast(t('ts_bet_cancelled'),'info');
+  },t('dlg_yes_cancel'));
 }
 
 function sauverBankroll(){
   const v=parseFloat(document.getElementById('bk-input').value);
-  if(!v||v<=0){toast('Entrez un montant valide.','err');return;}
+  if(!v||v<=0){toast(t('ts_amount_invalid'),'err');return;}
   setBankrollLS(v);
   renderBankroll();
   // Réaffiche les pronos pour débloquer/mettre à jour les boutons « Parier »
   if(loaded['pronos']&&tousLesPronos.length)afficherPronos(pronosFiltres());
-  toast('Bankroll enregistrée ✅ Vous pouvez maintenant parier depuis l\'onglet ⚡ Pronostics.');
+  toast(t('ts_bankroll_saved'));
 }
 
 // Courbe d'évolution du capital (SVG) à partir des paris terminés
 function drawCurve(init,settled){
-  if(settled.length<1)return '<div class="empty" style="padding:30px;font-size:11px">La courbe apparaîtra dès qu\'un pari sera terminé (gagné ou perdu).</div>';
+  if(settled.length<1)return `<div class="empty" style="padding:30px;font-size:11px">${t('bk_curve_empty')}</div>`;
   const pts=[init];let run=init;
   settled.forEach(h=>{run+=h.resultat==='W'?h.mise*(h.cote-1):-h.mise;pts.push(Math.round(run*100)/100);});
   const W=300,H=140,pad=10;
@@ -3344,7 +3589,7 @@ function renderBankroll(){
   const roi=init>0?delta/init*100:0;
   const enJeu=pending.reduce((a,h)=>a+(h.mise||0),0);
 
-  document.getElementById('bk-actuel').textContent=init?actuel.toFixed(2)+'€':'Non défini';
+  document.getElementById('bk-actuel').textContent=init?actuel.toFixed(2)+'€':t('bk_undefined');
   const delEl=document.getElementById('bk-delta');
   delEl.textContent=(delta>=0?'+':'')+delta.toFixed(2)+'€';delEl.style.color=delta>=0?'var(--green)':'var(--red)';
   const roiEl=document.getElementById('bk-roi');
@@ -3355,10 +3600,10 @@ function renderBankroll(){
   document.getElementById('bk-curve').innerHTML=drawCurve(init||0,settled);
 
   const el=document.getElementById('paris-list');
-  if(!paris.length){el.innerHTML='<div class="empty" style="padding:24px">Aucun pari placé pour l\'instant.<br>Allez dans ⚡ Pronostics et cliquez sur <strong>🎯 Parier</strong> sous un pronostic.</div>';return;}
+  if(!paris.length){el.innerHTML=`<div class="empty" style="padding:24px">${t('bk_empty')}</div>`;return;}
   el.innerHTML=[...paris].reverse().map(h=>{
     const res=h.resultat;
-    const pnl=res==='W'?`+${(h.mise*(h.cote-1)).toFixed(2)}€`:res==='L'?`−${h.mise.toFixed(2)}€`:'en attente';
+    const pnl=res==='W'?`+${(h.mise*(h.cote-1)).toFixed(2)}€`:res==='L'?`−${h.mise.toFixed(2)}€`:t('bk_pending');
     const col=res==='W'?'var(--green)':res==='L'?'var(--red)':'var(--amber)';
     return`<div class="pari-row">
       <span class="hist-date">${(h.datePari||h.date).slice(5)}</span>
@@ -3380,37 +3625,37 @@ async function loadClassements(){
     const snap=await loadSnapshot();
     pythMap=snap?.pythMap||{};
     const recs=snap?.standings??[];
-    if(!recs.length){document.getElementById('stand-al').innerHTML='<div class="empty">Classements indisponibles</div>';return;}
+    if(!recs.length){document.getElementById('stand-al').innerHTML=`<div class="empty">${t('st_unavail')}</div>`;return;}
     const al=recs.filter(r=>[200,201,202].includes(r.division?.id));
     const nl=recs.filter(r=>[203,204,205].includes(r.division?.id));
     renderStands('stand-al',al.length?al:recs.slice(0,3));
     renderStands('stand-nl',nl.length?nl:recs.slice(3));
-  }catch(e){document.getElementById('stand-al').innerHTML='<div class="empty">⚠️ Données indisponibles</div>';}
+  }catch(e){document.getElementById('stand-al').innerHTML=`<div class="empty">${t('m_unavail')}</div>`;}
 }
 
 function renderStands(id,recs){
   document.getElementById(id).innerHTML=recs.map(div=>{
-    const rows=div.teamRecords.map((t,i)=>{
-      const abbr=t.team.abbreviation;
+    const rows=div.teamRecords.map((r,i)=>{
+      const abbr=r.team.abbreviation;
       const col=TCOLORS[abbr]??'#C8102E';
-      const pctN=parseFloat(t.winningPercentage)||0;
+      const pctN=parseFloat(r.winningPercentage)||0;
       const pctCol=pctN>=.580?'var(--green)':pctN>=.480?'var(--white)':'var(--red)';
-      const gb=!t.gamesBack||t.gamesBack==='0'?'<span class="pill pr">1er</span>':t.gamesBack;
-      const streak=t.streak?.streakCode??'—';
+      const gb=!r.gamesBack||r.gamesBack==='0'?`<span class="pill pr">${t('st_first')}</span>`:r.gamesBack;
+      const streak=r.streak?.streakCode??'—';
       const sc=streak.startsWith('W')?'pg':streak.startsWith('L')?'pr':'pm';
       // Win% pythagoricien (depuis les runs réels récupérés dans loadClassements)
-      const pyth=pythMap[t.team.id]?.pyth??null;
-      const pythHtml=pyth?`<span style="font-family:var(--mono);font-size:9px;color:var(--muted)">(${Math.round(pyth*100)}% théo.)</span>`:'';
+      const pyth=pythMap[r.team.id]?.pyth??null;
+      const pythHtml=pyth?`<span style="font-family:var(--mono);font-size:9px;color:var(--muted)">(${Math.round(pyth*100)}% ${t('st_theo')})</span>`:'';
       return`<div class="stand-row">
         <span class="srank">${i+1}</span>
-        <span class="sname"><span class="sdot" style="background:${col}"></span>${t.team.name}</span>
-        <span class="swl">${t.wins}V-${t.losses}D</span>
+        <span class="sname"><span class="sdot" style="background:${col}"></span>${r.team.name}</span>
+        <span class="swl">${r.wins}${t('rec_w')}-${r.losses}${t('rec_l')}</span>
         <span class="sgb">${gb}</span>
-        <span class="spct" style="color:${pctCol}">${t.winningPercentage} ${pythHtml}</span>
+        <span class="spct" style="color:${pctCol}">${r.winningPercentage} ${pythHtml}</span>
         <span class="sstreak"><span class="pill ${sc}">${streak}</span></span>
       </div>`;
     }).join('');
-    return`<div class="div-block"><div class="div-title">${div.division?.name??'Division'}</div>${rows}</div>`;
+    return`<div class="div-block"><div class="div-title">${div.division?.name??t('st_division')}</div>${rows}</div>`;
   }).join('');
 }
 
@@ -3436,7 +3681,7 @@ async function loadJoueurs(){
         <div class="lr-info"><div class="lr-name">${l.name??'—'}</div><div class="lr-team">${l.team??''}</div></div>
         <span class="lr-val" style="color:var(--${col})">${l.value??'—'}</span>
       </div>`).join('')
-    :'<div class="empty" style="padding:16px">Données indisponibles</div>';
+    :`<div class="empty" style="padding:16px">${t('m_unavail')}</div>`;
   }
 }
 
@@ -3449,16 +3694,18 @@ const pages={pronos:loadPronos,matchs:loadMatchs,tendances:loadTendances,histori
 if(!STORAGE_OK){
   const b=document.createElement('div');
   b.style.cssText='background:var(--amber-d);border-bottom:1px solid var(--amber-b);color:var(--amber);font-size:11px;padding:8px 14px;text-align:center;line-height:1.4';
-  b.innerHTML='⚠️ Stockage du navigateur bloqué (fichier local) — vos paris et historique <strong>ne seront pas conservés après fermeture</strong>. Exportez en JSON (onglet Historique) ou hébergez l\'app sur GitHub Pages.';
+  b.setAttribute('data-i18n-html','storage_warn'); // traduit par applyI18n au démarrage
+  b.innerHTML=I18N.fr.storage_warn;
   document.body.insertBefore(b,document.body.firstChild);
 }
 
 // Démarrage : compte obligatoire.
 // 1) retour d'un lien email (confirmation/réinitialisation) ? 2) sinon session existante ? 3) sinon écran de connexion.
 (async()=>{
+  LANG=detectLang();applyI18n(); // langue : préférence sauvegardée, sinon langue du navigateur (FR/EN/ES)
   const hash=parseAuthHash();
   if(hash){
-    if(hash.error){ showAuthScreen(); setAuthMode('login'); authMsg('⚠️ '+hash.error+' Le lien a peut-être expiré.','err'); return; }
+    if(hash.error){ showAuthScreen(); setAuthMode('login'); authMsg('⚠️ '+hash.error+' '+t('auth_link_expired'),'err'); return; }
     if(hash.access_token){
       const sess={access_token:hash.access_token,refresh_token:hash.refresh_token,expires_at:hash.expires_at?+hash.expires_at:undefined,email:null};
       setSession(sess);
