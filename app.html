@@ -613,7 +613,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v52 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v54 · 28/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -925,6 +925,7 @@ const I18N={
   fun_h:'🎲 COMBINÉS & GROS COUPS',fun_sub_locked:'Combinés (du prudent au gros coup) à cotes multipliées + outsiders à grosse cote, avec toutes les maths réelles.',fun_locked_t:'Réservé aux membres Premium',fun_unlock:'⭐ Débloquer les gros coups',fun_sub:`<strong>C'est le modèle qui choisit les sélections</strong> (probabilité ou edge), pas nous — tous types de paris confondus. Plus de jambes = plus grosse cote, plus faible probabilité. Cotes et probabilités 100% réelles, edge affiché.`,fun_no_combo:"Pas assez de pronostics fiables aujourd'hui pour un combiné.",fun_outs_h:'🐶 Outsiders à grosse cote',fun_outs_sub:`Victoires surprises (cote ≥ 2). <strong>💎</strong> = le modèle bat le marché. Clique pour l'analyse complète.`,fun_no_outs:"Aucun outsider à grosse cote aujourd'hui.",
   combo_prudent_n:'Combiné Prudent',combo_prudent_c:'les 2 paris les plus probables',combo_equil_n:'Combiné Équilibré',combo_equil_c:'les 3 meilleures valeurs (edge)',combo_gros_n:'Combiné Gros coup',combo_gros_c:'les 4 meilleures valeurs empilées',combo_subline:"{n} sélections · {crit} · clique une ligne pour l'analyse",combo_total_odds:'cote totale',combo_realproba:'Proba réelle',combo_market:'Marché',combo_default_crit:'choisies par le modèle',combo_warn:'⚠️ Un combiné ne gagne que si <strong>TOUTES</strong> les sélections passent. Plus la cote est grosse, plus la probabilité réelle est faible : pour le fun, petites mises.',out_model:'modèle',
   md_winchance:'chances de gagner',md_tab_pronos:'⚡ Pronostics ({n})',md_tab_data:'📋 Données complètes',md_load_first:'Chargez d\'abord les pronostics (onglet ⚡)',md_data_na:"Données non disponibles. Ouvrez d'abord l'onglet ⚡ Pronostics pour les charger.",md_visitor_home:'visiteur / domicile',md_net_over:'net {v} pts Over',md_vegas:'Cotes Vegas (marché)',md_vegas_hint:'Probabilités implicites du marché',md_r_score:'🏆 Score composite du modèle',md_r_score_h:'Note globale sur tous les critères croisés',md_r_proba:'Probabilité de victoire',md_r_season:'Bilan saison',md_r_pyth:'% victoires théorique',md_r_pyth_h:'Formule pythagoricienne (runs réels)',md_r_form:'Forme (10 derniers réels)',md_r_form_h:'Vrais résultats via API MLB',md_r_rest:'Repos sur 7 jours',md_r_rest_h:'Plus de repos = plus frais',md_rest_val:'{d} j ({m} matchs)',md_r_ops:'💪 Force offensive (OPS)',md_r_ops_h1:'Split domicile/extérieur réel',md_r_ops_h2:'Saison complète',md_r_era:'🛡️ ERA équipe (défense)',md_r_era_h:'Points encaissés/9 manches, tous lanceurs',md_r_starter:'⚾ Lanceur partant',md_r_fip:'FIP partant',md_r_fip_h:"Vraie qualité du lanceur, isolée de sa défense (plus prédictif que l'ERA)",md_r_erap:'ERA partant',md_r_erap_h:'Points encaissés / 9 manches',md_r_whip:'WHIP partant',md_r_whip_h:'Coureurs concédés/manche',md_r_k9:'K/9 partant',md_r_k9_h:'Éliminations directes/9 manches',md_r_runs:'📊 Runs estimés',md_r_runs_h:'Estimés sur données réelles (offense, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Impact du stade sur les points (100 = neutre, >104 = offensif)',md_tba:'Non annoncé',md_foot:"✅ = meilleure valeur. Toutes ces données proviennent en temps réel de l'API officielle MLB{meteo}.",md_foot_meteo:" et d'Open-Meteo",
+  tlbl_victoire:'Victoire du match',tlbl_ou:'Total points (O/U)',tlbl_runline:'Run line (handicap)',pk_win:'{team} remporte le match',pk_over:'OVER {line} points au total',pk_under:'UNDER {line} points au total',pk_rl:'{team} {point}',expl_win:'Modèle sur données réelles (stats MLB + cotes du marché) : {team} a {proba}% de chances de gagner (intervalle {lo}–{hi}%). Runs estimés : {ra} − {rh}.',expl_ou:'Estimation sur données réelles : total attendu {total} points ({ra} − {rh}) vs ligne {line}. Probabilité {side} : {proba}%.',expl_rl:'Run line : {cond}. Couverture estimée : {proba}%.',expl_rl_neg:'{team} doit gagner par 2 points ou plus',expl_rl_pos:'{team} peut perdre par 1 point max (ou gagner)',
   prono_q:"ⓘ c'est quoi ?",odds_best:'Meilleure cote',prono_ourproba:'notre proba',prono_market:'marché',prono_hi:'🔥 FORTE CONFIANCE',prono_good:'✅ BONNE CONFIANCE',prono_probability:'PROBABILITÉ',prono_form:'Forme (récent → ancien) :',prono_weights:'⚖️ POIDS DE CHAQUE CRITÈRE',odds_us:'Meilleure cote US',odds_eu:'Meilleure cote EU',
   tr_t:'Track record vérifié',tr_s:'Tous les pronostics, résultats réels — sur <strong>{n}</strong> réglés',tr_win:'réussite',pr_empty_value:"Aucun pari de valeur aujourd'hui — le marché est efficace sur ces matchs. C'est normal : les vrais value bets sont rares.",pr_empty_filter:'Aucun pronostic pour ce filtre',
   dlg_cancel:'Annuler',dlg_confirm:'Confirmer',dlg_bet_ok:'Parier',win_verb:'gagne',
@@ -993,6 +994,7 @@ const I18N={
   fun_h:'🎲 PARLAYS & LONG SHOTS',fun_sub_locked:'Parlays (from safe to long shot) with multiplied odds + big-odds underdogs, with all the real math.',fun_locked_t:'Reserved for Premium members',fun_unlock:'⭐ Unlock the long shots',fun_sub:`<strong>The model picks the selections</strong> (probability or edge), not us — across all bet types. More legs = bigger odds, lower probability. 100% real odds and probabilities, edge shown.`,fun_no_combo:'Not enough reliable predictions today for a parlay.',fun_outs_h:'🐶 Big-odds underdogs',fun_outs_sub:`Surprise wins (odds ≥ 2). <strong>💎</strong> = the model beats the market. Click for the full analysis.`,fun_no_outs:'No big-odds underdog today.',
   combo_prudent_n:'Safe parlay',combo_prudent_c:'the 2 most likely bets',combo_equil_n:'Balanced parlay',combo_equil_c:'the 3 best values (edge)',combo_gros_n:'Long-shot parlay',combo_gros_c:'the 4 best values stacked',combo_subline:'{n} picks · {crit} · click a row for the analysis',combo_total_odds:'total odds',combo_realproba:'Real prob.',combo_market:'Market',combo_default_crit:'picked by the model',combo_warn:'⚠️ A parlay only wins if <strong>ALL</strong> picks hit. The bigger the odds, the lower the real probability: for fun, small stakes.',out_model:'model',
   md_winchance:'win chance',md_tab_pronos:'⚡ Predictions ({n})',md_tab_data:'📋 Full data',md_load_first:'Load the predictions first (⚡ tab)',md_data_na:'Data unavailable. Open the ⚡ Predictions tab first to load it.',md_visitor_home:'away / home',md_net_over:'net {v} pts Over',md_vegas:'Vegas odds (market)',md_vegas_hint:'Market implied probabilities',md_r_score:'🏆 Model composite score',md_r_score_h:'Overall score across all cross-referenced criteria',md_r_proba:'Win probability',md_r_season:'Season record',md_r_pyth:'Theoretical win %',md_r_pyth_h:'Pythagorean formula (real runs)',md_r_form:'Form (last 10 real)',md_r_form_h:'Real results via MLB API',md_r_rest:'Rest over 7 days',md_r_rest_h:'More rest = fresher',md_rest_val:'{d}d ({m} games)',md_r_ops:'💪 Offensive power (OPS)',md_r_ops_h1:'Real home/away split',md_r_ops_h2:'Full season',md_r_era:'🛡️ Team ERA (defense)',md_r_era_h:'Runs allowed/9 innings, all pitchers',md_r_starter:'⚾ Starting pitcher',md_r_fip:'Starter FIP',md_r_fip_h:'True pitcher quality, isolated from defense (more predictive than ERA)',md_r_erap:'Starter ERA',md_r_erap_h:'Runs allowed / 9 innings',md_r_whip:'Starter WHIP',md_r_whip_h:'Runners allowed/inning',md_r_k9:'Starter K/9',md_r_k9_h:'Strikeouts/9 innings',md_r_runs:'📊 Estimated runs',md_r_runs_h:'Estimated on real data (offense, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Stadium impact on runs (100 = neutral, >104 = hitter-friendly)',md_tba:'Not announced',md_foot:'✅ = best value. All this data comes in real time from the official MLB API{meteo}.',md_foot_meteo:' and Open-Meteo',
+  tlbl_victoire:'Game winner',tlbl_ou:'Total runs (O/U)',tlbl_runline:'Run line (handicap)',pk_win:'{team} wins the game',pk_over:'OVER {line} total runs',pk_under:'UNDER {line} total runs',pk_rl:'{team} {point}',expl_win:'Model on real data (MLB stats + market odds): {team} has a {proba}% chance to win (range {lo}–{hi}%). Estimated runs: {ra} − {rh}.',expl_ou:'Estimate on real data: expected total {total} runs ({ra} − {rh}) vs line {line}. {side} probability: {proba}%.',expl_rl:'Run line: {cond}. Estimated coverage: {proba}%.',expl_rl_neg:'{team} must win by 2 runs or more',expl_rl_pos:'{team} can lose by 1 run max (or win)',
   prono_q:"ⓘ what's this?",odds_best:'Best odds',prono_ourproba:'our prob.',prono_market:'market',prono_hi:'🔥 HIGH CONFIDENCE',prono_good:'✅ GOOD CONFIDENCE',prono_probability:'PROBABILITY',prono_form:'Form (recent → old):',prono_weights:'⚖️ WEIGHT OF EACH CRITERION',odds_us:'Best US odds',odds_eu:'Best EU odds',
   tr_t:'Verified track record',tr_s:'All predictions, real results — over <strong>{n}</strong> settled',tr_win:'win rate',pr_empty_value:"No value bet today — the market is efficient on these games. That's normal: true value bets are rare.",pr_empty_filter:'No prediction for this filter',
   dlg_cancel:'Cancel',dlg_confirm:'Confirm',dlg_bet_ok:'Bet',win_verb:'wins',
@@ -1061,6 +1063,7 @@ const I18N={
   fun_h:'🎲 COMBINADAS Y GRANDES JUGADAS',fun_sub_locked:'Combinadas (de la prudente a la gran jugada) con cuotas multiplicadas + outsiders de cuota alta, con todas las matemáticas reales.',fun_locked_t:'Reservado a los miembros Premium',fun_unlock:'⭐ Desbloquear las grandes jugadas',fun_sub:`<strong>Es el modelo quien elige las selecciones</strong> (probabilidad o edge), no nosotros — todos los tipos de apuesta. Más patas = cuota mayor, menor probabilidad. Cuotas y probabilidades 100% reales, edge mostrado.`,fun_no_combo:'No hay suficientes pronósticos fiables hoy para una combinada.',fun_outs_h:'🐶 Outsiders de cuota alta',fun_outs_sub:`Victorias sorpresa (cuota ≥ 2). <strong>💎</strong> = el modelo supera al mercado. Haz clic para el análisis completo.`,fun_no_outs:'Hoy no hay outsider de cuota alta.',
   combo_prudent_n:'Combinada prudente',combo_prudent_c:'las 2 apuestas más probables',combo_equil_n:'Combinada equilibrada',combo_equil_c:'los 3 mejores valores (edge)',combo_gros_n:'Combinada gran jugada',combo_gros_c:'los 4 mejores valores apilados',combo_subline:'{n} selecciones · {crit} · haz clic en una línea para el análisis',combo_total_odds:'cuota total',combo_realproba:'Prob. real',combo_market:'Mercado',combo_default_crit:'elegidas por el modelo',combo_warn:'⚠️ Una combinada solo gana si entran <strong>TODAS</strong> las selecciones. Cuanto mayor la cuota, menor la probabilidad real: para diversión, apuestas pequeñas.',out_model:'modelo',
   md_winchance:'probabilidad de ganar',md_tab_pronos:'⚡ Pronósticos ({n})',md_tab_data:'📋 Datos completos',md_load_first:'Carga primero los pronósticos (pestaña ⚡)',md_data_na:'Datos no disponibles. Abre primero la pestaña ⚡ Pronósticos para cargarlos.',md_visitor_home:'visitante / local',md_net_over:'neto {v} pts Over',md_vegas:'Cuotas Vegas (mercado)',md_vegas_hint:'Probabilidades implícitas del mercado',md_r_score:'🏆 Puntuación compuesta del modelo',md_r_score_h:'Nota global sobre todos los criterios cruzados',md_r_proba:'Probabilidad de victoria',md_r_season:'Balance temporada',md_r_pyth:'% victorias teórico',md_r_pyth_h:'Fórmula pitagórica (carreras reales)',md_r_form:'Forma (últimos 10 reales)',md_r_form_h:'Resultados reales vía API MLB',md_r_rest:'Descanso en 7 días',md_r_rest_h:'Más descanso = más fresco',md_rest_val:'{d} d ({m} partidos)',md_r_ops:'💪 Poder ofensivo (OPS)',md_r_ops_h1:'Split local/visitante real',md_r_ops_h2:'Temporada completa',md_r_era:'🛡️ ERA del equipo (defensa)',md_r_era_h:'Carreras permitidas/9 entradas, todos los lanzadores',md_r_starter:'⚾ Lanzador abridor',md_r_fip:'FIP abridor',md_r_fip_h:'Calidad real del lanzador, aislada de su defensa (más predictivo que el ERA)',md_r_erap:'ERA abridor',md_r_erap_h:'Carreras permitidas / 9 entradas',md_r_whip:'WHIP abridor',md_r_whip_h:'Corredores permitidos/entrada',md_r_k9:'K/9 abridor',md_r_k9_h:'Ponches/9 entradas',md_r_runs:'📊 Carreras estimadas',md_r_runs_h:'Estimadas sobre datos reales (ofensiva, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Impacto del estadio en las carreras (100 = neutro, >104 = ofensivo)',md_tba:'Sin anunciar',md_foot:'✅ = mejor valor. Todos estos datos provienen en tiempo real de la API oficial MLB{meteo}.',md_foot_meteo:' y de Open-Meteo',
+  tlbl_victoire:'Ganador del partido',tlbl_ou:'Total carreras (O/U)',tlbl_runline:'Run line (hándicap)',pk_win:'{team} gana el partido',pk_over:'OVER {line} carreras en total',pk_under:'UNDER {line} carreras en total',pk_rl:'{team} {point}',expl_win:'Modelo sobre datos reales (stats MLB + cuotas del mercado): {team} tiene un {proba}% de probabilidad de ganar (rango {lo}–{hi}%). Carreras estimadas: {ra} − {rh}.',expl_ou:'Estimación sobre datos reales: total esperado {total} carreras ({ra} − {rh}) vs línea {line}. Probabilidad {side}: {proba}%.',expl_rl:'Run line: {cond}. Cobertura estimada: {proba}%.',expl_rl_neg:'{team} debe ganar por 2 carreras o más',expl_rl_pos:'{team} puede perder por 1 carrera máx (o ganar)',
   prono_q:"ⓘ ¿qué es?",odds_best:'Mejor cuota',prono_ourproba:'nuestra prob.',prono_market:'mercado',prono_hi:'🔥 ALTA CONFIANZA',prono_good:'✅ BUENA CONFIANZA',prono_probability:'PROBABILIDAD',prono_form:'Forma (reciente → antiguo):',prono_weights:'⚖️ PESO DE CADA CRITERIO',odds_us:'Mejor cuota US',odds_eu:'Mejor cuota EU',
   tr_t:'Track record verificado',tr_s:'Todos los pronósticos, resultados reales — sobre <strong>{n}</strong> resueltos',tr_win:'acierto',pr_empty_value:'No hay apuesta de valor hoy — el mercado es eficiente en estos partidos. Es normal: los value bets reales son raros.',pr_empty_filter:'Sin pronóstico para este filtro',
   dlg_cancel:'Cancelar',dlg_confirm:'Confirmar',dlg_bet_ok:'Apostar',win_verb:'gana',
@@ -1076,7 +1079,14 @@ const I18N={
 let LANG='fr';
 function t(k){const v=I18N[LANG]&&I18N[LANG][k];return v!=null?v:(I18N.fr[k]!=null?I18N.fr[k]:k);}
 function dtLoc(){return LANG==='en'?'en-US':LANG==='es'?'es-ES':'fr-FR';} // locale pour les dates/heures
+// Heure affichée = fuseau de l'APPAREIL (pas celui d'un VPN). On l'étiquette pour lever l'ambiguïté.
+function tzCity(){try{const z=Intl.DateTimeFormat().resolvedOptions().timeZone;return z?z.split('/').pop().replace(/_/g,' '):'';}catch(e){return '';}}
+function tzSuffix(){const c=tzCity();return c?` (${c})`:'';}
 function tf(k,vars){let s=t(k);for(const x in vars)s=s.split('{'+x+'}').join(vars[x]);return s;} // t() avec variables {x}
+// Lot 4 : le serveur émet des CLÉS+données (pickKey/explKey…). Si absentes → repli sur le texte FR du snapshot.
+function typeLabelOf(p){return p.type&&I18N[LANG]['tlbl_'+p.type]!=null?t('tlbl_'+p.type):(p.typeLabel||p.type||'');}
+function displayPick(p){return p.pickKey?tf(p.pickKey,p.pickVars||{}):(p.pick||'');}
+function displayExpl(p){if(!p.explKey)return p.explication||'';const v=Object.assign({},p.explVars||{});if(v.condKey)v.cond=tf(v.condKey,{team:v.team});return tf(p.explKey,v);}
 function detectLang(){try{const s=lsGet('db_lang');if(s&&I18N[s])return s;}catch(e){}const n=(navigator.language||'fr').slice(0,2).toLowerCase();return I18N[n]?n:'fr';}
 function applyI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.getAttribute('data-i18n'));});
@@ -1104,7 +1114,7 @@ function setLang(l){
 }
 async function loadSnapshot(){
   if(SNAP)return SNAP;
-  const r=await fetch(`${SUPA_URL}/rest/v1/snapshots?select=data&order=date.desc&limit=1`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON}});
+  const r=await fetch(`${SUPA_URL}/rest/v1/snapshots?select=data&order=date.desc&limit=1`,{cache:'no-store',headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON}});
   if(!r.ok)throw new Error('Base indisponible (HTTP '+r.status+')');
   const rows=await r.json();
   SNAP=rows?.[0]?.data||null;
@@ -1157,10 +1167,10 @@ function mkPronoLocked(p){
   return `<div class="prono lock-card">
     <div class="prono-meta" style="justify-content:center;margin-bottom:6px">
       <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}
-      <span class="tag">${p.typeLabel}</span>
+      <span class="tag">${typeLabelOf(p)}</span>
     </div>
     <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${p.matchLabel}</div>
-    <div class="lk-blur" style="font-size:17px;font-weight:800;margin-bottom:8px">${p.pick}</div>
+    <div class="lk-blur" style="font-size:17px;font-weight:800;margin-bottom:8px">${displayPick(p)}</div>
     <div class="lock-ic">🔒</div>
     <div class="lock-t">${t('lock_t')}</div>
     <div class="lock-s">${t('lock_s_pre')} <strong style="color:${confColor(cs)}">${cs}/100</strong> ${t('lock_s_post')}</div>
@@ -1526,7 +1536,7 @@ function fdate(){return new Date().toLocaleDateString('fr-FR',{weekday:'long',da
 // Horodatage dans le fuseau LOCAL du visiteur (repli sur l'heure pré-formatée du serveur si gameDate absent)
 function fmtHeureLoc(iso){try{const d=new Date(iso);return isNaN(d)?null:d.toLocaleTimeString(dtLoc(),{hour:'2-digit',minute:'2-digit'});}catch(e){return null;}}
 function fmtDateLoc(iso){try{const d=new Date(iso);return isNaN(d)?null:d.toLocaleDateString(dtLoc(),{weekday:'short',day:'2-digit',month:'2-digit'});}catch(e){return null;}}
-function heureProno(p){return (p.gameDate&&fmtHeureLoc(p.gameDate))||p.heure||'—';}
+function heureProno(p){const h=(p.gameDate&&fmtHeureLoc(p.gameDate))||p.heure;return h?h+tzSuffix():'—';}
 function dateProno(p){return (p.gameDate&&fmtDateLoc(p.gameDate))||p.dateCourt||'';}
 function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().split('T')[0];}
 function pt(n,dec=1){return Math.round(n*(10**dec))/(10**dec);}
@@ -2649,19 +2659,19 @@ function renderSelection(pronos){
       const coteBox=`<div class="sel-right"><div class="sel-cote">${p.coteVegas.toFixed(2)}</div><div class="sel-cote-l">${t('odds_lbl')}</div></div>`;
       if(locked){
         return `<div class="sel-pick locked" onclick="ouvrirPremium()">
-          <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span><span class="sel-lock-tag">🔒 PREMIUM</span>${liveBadge(p)}</div>
+          <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${typeLabelOf(p)}</span><span class="sel-lock-tag">🔒 PREMIUM</span>${liveBadge(p)}</div>
           <div class="sel-row">${noteBox}
-            <div class="sel-body"><div class="sel-match">${p.matchLabel}</div><div class="sel-pickname">${p.pick}</div><div class="sel-meta">${t('sel_unlock_meta')}</div></div>
+            <div class="sel-body"><div class="sel-match">${p.matchLabel}</div><div class="sel-pickname">${displayPick(p)}</div><div class="sel-meta">${t('sel_unlock_meta')}</div></div>
             ${coteBox}
           </div>
         </div>`;
       }
       return `<div class="sel-pick" onclick="ouvrirMatchDepuis(${p.gamePk})">
-        <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span>${free?'<span class="free-badge">🎁 GRATUIT</span>':''}<span class="sel-time">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}</div>
+        <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${typeLabelOf(p)}</span>${free?'<span class="free-badge">🎁 GRATUIT</span>':''}<span class="sel-time">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}</div>
         <div class="sel-row">${noteBox}
           <div class="sel-body">
             <div class="sel-match">${p.matchLabel}</div>
-            <div class="sel-pickname">${p.pick}</div>
+            <div class="sel-pickname">${displayPick(p)}</div>
             <div class="sel-meta">${p.proba.toFixed(0)}% ${t('sel_success')}${edge!=null&&edge>=1?` · <span style="color:var(--green)">${t('bet_value')} +${edge.toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
           </div>
           ${coteBox}
@@ -2816,7 +2826,7 @@ function mkProno(p){
       <div class="prono-meta">
         <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}
         <span style="font-size:10px;color:var(--muted)">${p.matchLabel}</span>
-        <span class="tag ${tagClass}">${p.typeLabel}</span>
+        <span class="tag ${tagClass}">${typeLabelOf(p)}</span>
         ${isFort?`<span class="pill pg">${t('prono_hi')}</span>`:isMoyen?`<span class="pill py">${t('prono_good')}</span>`:''}
         ${p.fatigueBadge||''}
       </div>
@@ -2833,9 +2843,9 @@ function mkProno(p){
           ${conf100HTML}
         </div>
         <div class="prono-cnt">
-          <div class="prono-pick">🎯 ${p.pick}</div>
+          <div class="prono-pick">🎯 ${displayPick(p)}</div>
           ${oddsBar}
-          <div class="prono-exp">${p.explication}</div>
+          <div class="prono-exp">${displayExpl(p)}</div>
           ${p.formeDots?`<div style="font-size:10px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px">${t('prono_form')} ${p.formeDots}</div>`:''}
           <div class="raisons">${raisons}</div>
           ${chartCols?`<div style="margin-top:12px;border-top:1px solid var(--b1);padding-top:10px">
@@ -2948,7 +2958,7 @@ async function loadMatchs(){
       const as=lv?lv.aScore:(g.awayScore??'—'),hs=lv?lv.hScore:(g.homeScore??'—');
       const dt=g.gameDate?new Date(g.gameDate):null;
       const date=dt?dt.toLocaleDateString(dtLoc(),{weekday:'short',day:'2-digit',month:'2-digit'}):'';
-      const hr=dt?dt.toLocaleTimeString(dtLoc(),{hour:'2-digit',minute:'2-digit'}):'—';
+      const hr=dt?dt.toLocaleTimeString(dtLoc(),{hour:'2-digit',minute:'2-digit'})+tzSuffix():'—';
       const awP=g.awayP??t('m_nostarter'),hmP=g.homeP??t('m_nostarter');
       const inn=(st==='Live'&&lv&&lv.inning)?` · ${lv.inningState==='Top'?t('live_top'):lv.inningState==='Bottom'?t('live_bot'):''} ${lv.inning}${t('inning_suf')}`:'';
       const stBadge=st==='Live'?`<span class="pill pr">${t('m_live')}${inn}</span>`:st==='Final'?`<span class="pill pg">${t('m_fin')}</span>`:`<span class="pill py">${t('m_soon')}</span>`;
