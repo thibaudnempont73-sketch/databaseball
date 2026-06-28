@@ -608,7 +608,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v43 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v44 · 28/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -2357,6 +2357,7 @@ async function fetchLive(){
     const map={};
     games.forEach(g=>{const ls=g.linescore||{};map[g.gamePk]={state:g.status?.abstractGameState||'Preview',aScore:g.teams?.away?.score??0,hScore:g.teams?.home?.score??0,inning:ls.currentInning??null,inningState:ls.inningState||'',aAbbr:g.teams?.away?.team?.abbreviation||'',hAbbr:g.teams?.home?.team?.abbreviation||''};});
     liveGames=map;refreshLiveBadges();
+    const ml=document.getElementById('matchs-list');if(ml&&ml.offsetParent!==null)loadMatchs(); // maj liste Matchs si visible
   }catch(e){}
 }
 let _liveTimer=null;
@@ -2686,14 +2687,18 @@ async function loadMatchs(){
     const games=snap?.matchs??[];
     if(!games.length){document.getElementById('matchs-list').innerHTML='<div class="empty">Aucun match aujourd\'hui</div>';return;}
     document.getElementById('matchs-list').innerHTML=games.map(g=>{
-      const st=g.state;
-      const as=g.awayScore??'—',hs=g.homeScore??'—';
-      const t=g.gameDate?new Date(g.gameDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
+      const lv=liveGames[g.gamePk];                       // statut + score EN DIRECT (sinon repli snapshot)
+      const st=lv?lv.state:g.state;
+      const as=lv?lv.aScore:(g.awayScore??'—'),hs=lv?lv.hScore:(g.homeScore??'—');
+      const dt=g.gameDate?new Date(g.gameDate):null;
+      const date=dt?dt.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'}):'';
+      const t=dt?dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
       const awP=g.awayP??'Partant non annoncé',hmP=g.homeP??'Partant non annoncé';
-      const stBadge=st==='Live'?'<span class="pill pr">EN COURS</span>':st==='Final'?'<span class="pill pm">TERMINÉ</span>':'<span class="pill py">À VENIR</span>';
+      const inn=(st==='Live'&&lv&&lv.inning)?` · ${lv.inningState==='Top'?'début':lv.inningState==='Bottom'?'fin':''} ${lv.inning}ᵉ`:'';
+      const stBadge=st==='Live'?`<span class="pill pr">🔴 EN DIRECT${inn}</span>`:st==='Final'?'<span class="pill pg">✅ TERMINÉ</span>':'<span class="pill py">🕐 À VENIR</span>';
       return `<div class="card mb12" style="cursor:pointer" onclick="ouvrirMatch(${g.gamePk})">
         <div style="padding:14px 16px">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:7px">${t} · ${stBadge}</div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:7px">📅 ${date} · ⏱ ${t} · ${stBadge}</div>
           <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px">
             <div><div style="font-size:13px;font-weight:700">${g.away.name}</div><div style="font-size:10px;color:var(--muted)">${g.awayRec?.wins??'—'}V - ${g.awayRec?.losses??'—'}D</div></div>
             <div style="text-align:center">
@@ -2708,6 +2713,7 @@ async function loadMatchs(){
         <div style="padding:7px 16px;background:var(--card2);border-top:1px solid var(--b1);font-size:10px;color:var(--red);font-weight:600">Voir l'analyse complète avec tous les pronostics →</div>
       </div>`;
     }).join('');
+    startLive(); // assure des scores frais à l'ouverture de l'onglet (+ rafraîchissement auto)
   }catch(e){document.getElementById('matchs-list').innerHTML='<div class="empty">⚠️ Données indisponibles</div>';}
 }
 
