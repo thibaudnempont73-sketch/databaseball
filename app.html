@@ -184,6 +184,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .hf-legs{margin:8px 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:7px 0}
 .hf-leg{font-size:12px;padding:2px 0;line-height:1.4}
 .hf-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)}
+.hf-sub2{font-size:11px;color:var(--muted);margin:7px 0;border-top:1px solid var(--b1);padding-top:7px}
 .topbar{position:sticky;top:0;z-index:200;background:rgba(6,10,18,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
 .logo{font-family:var(--display);font-size:20px;letter-spacing:2px;display:flex;align-items:center;gap:8px;flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap}
 .logo span{color:var(--red)}
@@ -248,7 +249,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .ring-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--display);font-size:16px;line-height:1;text-align:center}
 .ring-lbl{font-size:9px;color:var(--muted);text-align:center;font-weight:600;letter-spacing:.3px}
 .prono-cnt{flex:1;min-width:0}
-.prono-pick{font-size:14px;font-weight:800;margin-bottom:5px;line-height:1.3}
+.prono-pick{font-size:16px;font-weight:800;line-height:1.3;color:#fff;background:linear-gradient(90deg,rgba(0,200,150,.16),rgba(0,200,150,.02));border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:9px}
 .prono-exp{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:8px}
 .raisons{display:flex;flex-direction:column;gap:4px}
 .raison{display:flex;align-items:flex-start;gap:6px;font-size:11px;line-height:1.4;padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.02)}
@@ -607,7 +608,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v42 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v43 · 28/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -754,13 +755,13 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 
   <div id="hist-view-fun" style="display:none">
     <div class="g4 mb16">
-      <div class="kpi"><div class="kpi-l">Combinés joués</div><div class="kpi-v" style="color:var(--purple)" id="hf-nb">—</div><div class="kpi-m">au total</div></div>
-      <div class="kpi"><div class="kpi-l">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="hf-taux">—</div><div class="kpi-m">combinés terminés</div></div>
-      <div class="kpi"><div class="kpi-l">Gain / Perte</div><div class="kpi-v" id="hf-roi">—</div><div class="kpi-m">sur combinés réglés</div></div>
-      <div class="kpi"><div class="kpi-l">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="hf-jeu">—</div><div class="kpi-m">combinés en attente</div></div>
+      <div class="kpi"><div class="kpi-l">Pronos fun suivis</div><div class="kpi-v" style="color:var(--purple)" id="hf-nb">—</div><div class="kpi-m">combinés + outsiders</div></div>
+      <div class="kpi"><div class="kpi-l">Taux de réussite</div><div class="kpi-v" style="color:var(--green)" id="hf-taux">—</div><div class="kpi-m">pronos fun terminés</div></div>
+      <div class="kpi"><div class="kpi-l">Gain / Perte</div><div class="kpi-v" id="hf-roi">—</div><div class="kpi-m">sur tes paris fun</div></div>
+      <div class="kpi"><div class="kpi-l">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="hf-jeu">—</div><div class="kpi-m">paris fun en attente</div></div>
     </div>
     <div class="card">
-      <div class="card-h"><div class="card-ht">🎲 Mes combinés</div><div class="card-hs">Suivi de tes paris combinés — un combiné gagne seulement si TOUTES ses sélections passent.</div></div>
+      <div class="card-h"><div class="card-ht">🎲 Tous les pronos fun</div><div class="card-hs">Suivi de TOUS les combinés & outsiders suggérés chaque jour (pariés ou non) et leur résultat. 🎟️ = pari placé.</div></div>
       <div id="hist-fun-list"></div>
     </div>
   </div>
@@ -1438,7 +1439,7 @@ function settleLeg(leg,games){
   const game=games.find(g=>g.gamePk===leg.gamePk);
   if(!game||game.status.abstractGameState!=='Final')return null;
   const aScore=game.teams.away.score??0,hScore=game.teams.home.score??0,homeName=game.teams.home.team.name;
-  if(leg.type==='victoire'){const favHome=leg.pick.includes(homeName);return (favHome?hScore>aScore:aScore>hScore)?'W':'L';}
+  if(leg.type==='victoire'||leg.type==='outsider'){const teamHome=leg.homeDog!=null?leg.homeDog:leg.pick.includes(homeName);return (teamHome?hScore>aScore:aScore>hScore)?'W':'L';}
   if(leg.type==='ou'){const total=aScore+hScore,line=leg.ouLine??8.5;return (leg.ouSide==='over'?total>line:total<line)?'W':'L';}
   if(leg.type==='runline'){const my=leg.rlIsHome?hScore:aScore,opp=leg.rlIsHome?aScore:hScore;return (my+(leg.rlPoint??0))>opp?'W':'L';}
   return 'L';
@@ -1927,6 +1928,7 @@ async function loadPronos(){
     renderKPIs(tousLesPronos);
     renderTrackRecord();
     renderSelection(tousLesPronos);
+    FUN=computeFun();ajouterFun(FUN); // calcule + archive tous les pronos fun du jour
     renderFunSection();
     afficherPronos(pronosFiltres());
     startLive(); // scores en direct + statut des matchs
@@ -2582,7 +2584,8 @@ function mkProno(p){
           ${conf100HTML}
         </div>
         <div class="prono-cnt">
-          <div class="prono-pick">${p.pick}</div>
+          <div class="prono-pick">🎯 ${p.pick}</div>
+          ${oddsBar}
           <div class="prono-exp">${p.explication}</div>
           ${p.formeDots?`<div style="font-size:10px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px">Forme (récent → ancien) : ${p.formeDots}</div>`:''}
           <div class="raisons">${raisons}</div>
@@ -2590,7 +2593,6 @@ function mkProno(p){
             <div style="font-size:10px;color:var(--white);font-weight:700;letter-spacing:.5px;margin-bottom:8px">⚖️ POIDS DE CHAQUE CRITÈRE</div>
             <div class="poids-rows">${chartCols}</div>
           </div>`:''}
-          ${oddsBar}
         </div>
       </div>
     </div>
@@ -2927,47 +2929,34 @@ function placerCombo(cid){
      <span style="font-size:11px">⚠️ Gagne uniquement si les ${c.legs.length} sélections passent. Mise = quart de Kelly, plafond 5%.</span>`,
     ()=>{
       const hist=getHistorique();
-      hist.push({id:c.id,date:today(),type:'combo',typeLabel:'Combiné',matchLabel:`${c.legs.length} sélections`,pick:`${c.nom} : ${c.legs.map(l=>l.pick).join(' + ')}`,proba:Math.round(c.proba),confScore:Math.round(c.proba),marge:null,resultat:'P',scoreReel:null,parie:true,mise,cote:c.odds,datePari:today(),legs:c.legs});
+      let entry=hist.find(h=>h.id===c.id);
+      if(!entry){entry={id:c.id,date:today(),type:'combo',typeLabel:'Combiné',matchLabel:`${c.legs.length} sélections`,pick:`${c.nom} : ${c.legs.map(l=>l.pick).join(' + ')}`,proba:Math.round(c.proba),resultat:'P',scoreReel:null,legs:c.legs};hist.push(entry);}
+      entry.parie=true;entry.mise=mise;entry.cote=c.odds;entry.coteVegas=c.odds;entry.datePari=today();
       sauverHistorique(hist);
       renderFunSection();renderHistFun();
       if(document.getElementById('bk-curve'))renderBankroll();
       toast(`✅ Combiné placé : <strong>${mise.toFixed(2)}€</strong> · cote ${c.odds.toFixed(2)}`);
     },'Parier');
 }
-function renderFunSection(){
-  const el=document.getElementById('fun-section');if(!el)return;
-  if(!tousLesPronos.length){el.innerHTML='';return;}
-  // Verrou Premium (comme la Sélection : un aperçu donne envie)
-  if(!isPremium()){
-    el.innerHTML=`<div class="fun-wrap locked" onclick="ouvrirPremium()" style="cursor:pointer">
-      <div class="fun-h">🎲 COMBINÉS & GROS COUPS</div>
-      <div class="fun-sub">Combinés (du prudent au gros coup) à cotes multipliées + outsiders à grosse cote, avec toutes les maths réelles.</div>
-      <div style="text-align:center;padding:14px 0"><div class="lock-ic">🔒</div><div class="lock-t">Réservé aux membres Premium</div>
-      <button class="lock-btn" onclick="ouvrirPremium()">⭐ Débloquer les gros coups</button></div>
-    </div>`;
-    return;
-  }
-  // Combinés diversifiés : Prudent (plus sûr) · Équilibré (meilleure valeur) · Gros coup (plus grosses cotes)
-  // Les maths choisissent les jambes : « probable » = plus haute probabilité, « valeur » = meilleur edge.
-  // Plus de jambes = cote plus grosse + probabilité plus faible (le risque vient du nombre, pas d'un choix de type).
+let FUN={combos:[],outs:[]};
+// Calcule les pronos fun du jour (combinés + outsiders) — c'est le modèle qui choisit (proba / edge)
+function computeFun(){
+  if(!tousLesPronos.length)return {combos:[],outs:[]};
   const parProba=bestPerGame(p=>p.proba).sort((a,b)=>b.proba-a.proba);
   const parEdge=bestPerGame(p=>legEdge(p)).sort((a,b)=>legEdge(b)-legEdge(a));
   COMBOS={};
-  let combos='';
-  combos+=mkComboHTML(buildCombo(parProba.slice(0,2),'prudent','Combiné Prudent','🛡️','les 2 paris les plus probables'));
-  if(parEdge.length>=3)combos+=mkComboHTML(buildCombo(parEdge.slice(0,3),'equilibre','Combiné Équilibré','⚖️','les 3 meilleures valeurs (edge)'));
-  if(parEdge.length>=4)combos+=mkComboHTML(buildCombo(parEdge.slice(0,4),'gros','Combiné Gros coup','🚀','les 4 meilleures valeurs empilées'));
-  if(!combos.trim())combos='<div class="empty">Pas assez de pronostics fiables aujourd\'hui pour un combiné.</div>';
-  // Outsiders (victoires surprises à grosse cote) avec maths : modèle vs marché
+  const combos=[];const add=c=>{if(c)combos.push(c);};
+  add(buildCombo(parProba.slice(0,2),'prudent','Combiné Prudent','🛡️','les 2 paris les plus probables'));
+  if(parEdge.length>=3)add(buildCombo(parEdge.slice(0,3),'equilibre','Combiné Équilibré','⚖️','les 3 meilleures valeurs (edge)'));
+  if(parEdge.length>=4)add(buildCombo(parEdge.slice(0,4),'gros','Combiné Gros coup','🚀','les 4 meilleures valeurs empilées'));
   const outs=[];
   Object.keys(matchDataMap||{}).forEach(gp=>{
     const m=matchDataMap[gp];if(!m||!m.vegas)return;
     const homeDog=(m.probaHome??50)<(m.probaAway??50);
     const odds=homeDog?m.vegas.coteH:m.vegas.coteA;if(!odds||odds<2)return;
     const team=homeDog?m.home:m.away,mp=homeDog?m.probaHome:m.probaAway,bk=homeDog?m.vegas.bkH:m.vegas.bkA;
-    const marketP=homeDog?m.vegas.probaH:m.vegas.probaA; // proba de marché dé-viggée
+    const marketP=homeDog?m.vegas.probaH:m.vegas.probaA;
     if(!team)return;
-    // Données réelles de l'outsider (pour montrer le « pourquoi »)
     const d=homeDog?m.hData:m.aData, dForme=homeDog?m.hForme:m.aForme, fav=homeDog?m.aData:m.hData;
     const stats=[];
     if(d){
@@ -2978,14 +2967,15 @@ function renderFunSection(){
       if(homeDog)stats.push('🏠 à domicile');
     }
     if(dForme&&dForme.total)stats.push(`📈 ${dForme.wins}-${dForme.total-dForme.wins} sur 10`);
-    // Atout-clé : lanceur de l'outsider meilleur (FIP plus bas) que celui du favori
     let cle=null;
     if(d&&fav&&d.fipPartant!=null&&fav.fipPartant!=null&&d.fipPartant<fav.fipPartant-0.2)cle=`💡 Lanceur supérieur (FIP ${(+d.fipPartant).toFixed(2)} vs ${(+fav.fipPartant).toFixed(2)})`;
     else if(d&&fav&&d.pythWinPct!=null&&fav.pythWinPct!=null&&d.pythWinPct>fav.pythWinPct)cle=`💡 Meilleure équipe sur la saison, sous-cotée par le marché`;
     outs.push({gp:+gp,team,odds,mp,marketP,bk,edge:mp-(marketP??100/odds),label:`${m.away?.abbreviation||''} @ ${m.home?.abbreviation||''}`,stats,cle,homeDog});
   });
   outs.sort((a,b)=>b.edge-a.edge);
-  const outsHTML=!outs.length?'<div class="empty">Aucun outsider à grosse cote aujourd\'hui.</div>':outs.slice(0,6).map(o=>`<div class="outsider" onclick="ouvrirMatchDepuis(${o.gp})">
+  return {combos,outs:outs.slice(0,6)};
+}
+function outsiderHTML(o){return `<div class="outsider" onclick="ouvrirMatchDepuis(${o.gp})">
     <div class="outsider-cote">${o.odds.toFixed(2)}</div>
     <div class="outsider-body">
       <div class="outsider-pick">${o.team.name} gagne <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span></div>
@@ -2994,7 +2984,22 @@ function renderFunSection(){
       ${o.stats.length?`<div class="outsider-data">${o.stats.join(' · ')}</div>`:''}
       ${o.cle?`<div class="outsider-cle">${o.cle}</div>`:''}
     </div>
-  </div>`).join('');
+  </div>`;}
+function renderFunSection(){
+  const el=document.getElementById('fun-section');if(!el)return;
+  if(!tousLesPronos.length){el.innerHTML='';return;}
+  if(!isPremium()){
+    el.innerHTML=`<div class="fun-wrap locked" onclick="ouvrirPremium()" style="cursor:pointer">
+      <div class="fun-h">🎲 COMBINÉS & GROS COUPS</div>
+      <div class="fun-sub">Combinés (du prudent au gros coup) à cotes multipliées + outsiders à grosse cote, avec toutes les maths réelles.</div>
+      <div style="text-align:center;padding:14px 0"><div class="lock-ic">🔒</div><div class="lock-t">Réservé aux membres Premium</div>
+      <button class="lock-btn" onclick="ouvrirPremium()">⭐ Débloquer les gros coups</button></div>
+    </div>`;
+    return;
+  }
+  if(!FUN.combos.length&&!FUN.outs.length)FUN=computeFun(); // sécurité si appelé seul
+  const combos=FUN.combos.length?FUN.combos.map(mkComboHTML).join(''):'<div class="empty">Pas assez de pronostics fiables aujourd\'hui pour un combiné.</div>';
+  const outsHTML=!FUN.outs.length?'<div class="empty">Aucun outsider à grosse cote aujourd\'hui.</div>':FUN.outs.map(outsiderHTML).join('');
   el.innerHTML=`<div class="fun-wrap">
     <div class="fun-h">🎲 COMBINÉS & GROS COUPS</div>
     <div class="fun-sub"><strong>C'est le modèle qui choisit les sélections</strong> (probabilité ou edge), pas nous — tous types de paris confondus. Plus de jambes = plus grosse cote, plus faible probabilité. Cotes et probabilités 100% réelles, edge affiché.</div>
@@ -3003,6 +3008,20 @@ function renderFunSection(){
     <div class="fun-sub">Victoires surprises (cote ≥ 2). <strong>💎</strong> = le modèle bat le marché. Clique pour l'analyse complète.</div>
     ${outsHTML}
   </div>`;
+}
+// Enregistre les pronos fun du jour dans l'historique (suivi de TOUTES les suggestions, pas que les pariées)
+function ajouterFun(fun){
+  if(!fun)return;const hist=getHistorique();const td=today();let changed=false;
+  (fun.combos||[]).forEach(c=>{
+    if(hist.find(h=>h.id===c.id))return;
+    hist.push({id:c.id,date:td,type:'combo',typeLabel:'Combiné',matchLabel:`${c.legs.length} sélections`,pick:`${c.nom} : ${c.legs.map(l=>l.pick).join(' + ')}`,proba:Math.round(c.proba),coteVegas:c.odds,cote:c.odds,resultat:'P',scoreReel:null,legs:c.legs,suggere:true});changed=true;
+  });
+  (fun.outs||[]).forEach(o=>{
+    const id='O|'+o.gp;
+    if(hist.find(h=>h.id===id))return;
+    hist.push({id,date:td,type:'outsider',typeLabel:'Outsider',matchLabel:o.label,pick:`${o.team.name} gagne`,proba:Math.round(o.mp),coteVegas:o.odds,cote:o.odds,gamePk:o.gp,homeDog:o.homeDog,resultat:'P',scoreReel:null,suggere:true});changed=true;
+  });
+  if(changed)sauverHistorique(hist);
 }
 
 // ═══════════════════════════════════════════════════
@@ -3026,28 +3045,36 @@ function switchHistView(v,btn){
 // Suivi dédié des paris combinés (Fun)
 function renderHistFun(){
   const el=document.getElementById('hist-fun-list');if(!el)return;
-  const combos=getHistorique().filter(h=>h.type==='combo'&&h.parie);
-  const settled=combos.filter(h=>h.resultat==='W'||h.resultat==='L');
+  const fun=getHistorique().filter(h=>h.type==='combo'||h.type==='outsider'); // TOUS les pronos fun (suggérés + pariés)
+  const settled=fun.filter(h=>h.resultat==='W'||h.resultat==='L');
   const wins=settled.filter(h=>h.resultat==='W').length;
-  const pending=combos.filter(h=>h.resultat==='P');
   const taux=settled.length?Math.round(wins/settled.length*100):null;
-  let pl=0;settled.forEach(h=>{pl+=h.resultat==='W'?((h.mise||0)*((h.cote||1)-1)):-(h.mise||0);});
-  const enJeu=pending.reduce((a,h)=>a+(h.mise||0),0);
+  const paris=fun.filter(h=>h.parie);
+  let pl=0;paris.filter(h=>h.resultat==='W'||h.resultat==='L').forEach(h=>{pl+=h.resultat==='W'?((h.mise||0)*((h.cote||1)-1)):-(h.mise||0);});
+  const enJeu=paris.filter(h=>h.resultat==='P').reduce((a,h)=>a+(h.mise||0),0);
   const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  set('hf-nb',combos.length);
+  set('hf-nb',fun.length);
   set('hf-taux',taux!=null?taux+'%':'—');
   const roiEl=document.getElementById('hf-roi');if(roiEl){roiEl.textContent=(pl>=0?'+':'')+pl.toFixed(2)+'€';roiEl.style.color=pl>=0?'var(--green)':'var(--red)';}
   set('hf-jeu',enJeu.toFixed(2)+'€');
-  if(!combos.length){el.innerHTML='<div class="empty" style="padding:22px;font-size:12px">Aucun pari combiné pour l\'instant.<br>Va dans ⚡ Pronostics → section <strong>🎲 Combinés & gros coups</strong> pour en placer un.</div>';return;}
-  const sorted=[...combos].sort((a,b)=>(b.datePari||b.date||'').localeCompare(a.datePari||a.date||''));
+  if(!fun.length){el.innerHTML='<div class="empty" style="padding:22px;font-size:12px">Aucun prono fun pour l\'instant.<br>Ils s\'enregistrent <strong>automatiquement chaque jour</strong> (combinés + outsiders), même sans parier.</div>';return;}
+  const sorted=[...fun].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.parie?1:0)-(a.parie?1:0));
   el.innerHTML=sorted.map(h=>{
     const res=h.resultat;
-    const st=res==='W'?`<span style="color:var(--green);font-weight:800">✅ Gagné +${((h.mise||0)*((h.cote||1)-1)).toFixed(2)}€</span>`:res==='L'?`<span style="color:var(--red);font-weight:800">❌ Perdu −${(h.mise||0).toFixed(2)}€</span>`:`<span style="color:var(--amber);font-weight:800">⏳ En attente</span>`;
-    const legs=(h.legs||[]).map(l=>`<div class="hf-leg">${(TYP[l.type]||TYP.victoire)[0]} <strong>${l.pick}</strong> <span style="color:var(--muted)">· ${l.matchLabel} · @${(+l.coteVegas||0).toFixed(2)}</span></div>`).join('');
+    const resTxt=res==='W'?`<span style="color:var(--green);font-weight:800">✅ Gagné${h.parie?' +'+((h.mise||0)*((h.cote||1)-1)).toFixed(2)+'€':''}</span>`:res==='L'?`<span style="color:var(--red);font-weight:800">❌ Perdu${h.parie?' −'+(h.mise||0).toFixed(2)+'€':''}</span>`:`<span style="color:var(--amber);font-weight:800">⏳ En attente</span>`;
+    const meta=h.parie?`mise <strong style="color:var(--white)">${(+h.mise||0).toFixed(2)}€</strong>`:`<span style="color:var(--muted)">suggéré (non parié)</span>`;
+    if(h.type==='combo'){
+      const legs=(h.legs||[]).map(l=>`<div class="hf-leg">${(TYP[l.type]||TYP.victoire)[0]} <strong>${l.pick}</strong> <span style="color:var(--muted)">· ${l.matchLabel} · @${(+l.coteVegas||0).toFixed(2)}</span></div>`).join('');
+      return `<div class="hf-item">
+        <div class="hf-top"><span class="hf-name">🎯 ${(h.pick||'Combiné').split(' : ')[0]}</span><span class="hf-cote">${(+h.cote||0).toFixed(2)}</span></div>
+        <div class="hf-legs">${legs}</div>
+        <div class="hf-foot"><span>📅 ${(h.date||'').slice(5)} · ${meta}</span>${resTxt}</div>
+      </div>`;
+    }
     return `<div class="hf-item">
-      <div class="hf-top"><span class="hf-name">${(h.pick||'Combiné').split(' : ')[0]}</span><span class="hf-cote">${(+h.cote||0).toFixed(2)}</span></div>
-      <div class="hf-legs">${legs}</div>
-      <div class="hf-foot"><span>📅 ${(h.date||'').slice(5)} · mise <strong style="color:var(--white)">${(+h.mise||0).toFixed(2)}€</strong></span>${st}</div>
+      <div class="hf-top"><span class="hf-name">🐶 ${h.pick}</span><span class="hf-cote">${(+h.cote||0).toFixed(2)}</span></div>
+      <div class="hf-sub2">${h.matchLabel} · proba modèle ${h.proba}%</div>
+      <div class="hf-foot"><span>📅 ${(h.date||'').slice(5)} · ${meta}</span>${resTxt}</div>
     </div>`;
   }).join('');
 }
