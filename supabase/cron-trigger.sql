@@ -20,10 +20,17 @@ create extension if not exists pg_net;
 --      • Repository access : seulement ton dépôt DataBaseball
 --      • Permissions → Repository → "Actions" = Read and write
 --    Puis colle-le ci-dessous (commence par github_pat_...).
-select vault.create_secret(
-  'github_pat_XXXXXXXXXXXXXXXXXXXX',   -- ⬅️ À REMPLIR : ton token GitHub
-  'github_pat_databaseball'           -- nom interne (ne pas changer)
-);
+-- (idempotent : crée le secret s'il n'existe pas, sinon met à jour sa valeur → ré-exécutable sans erreur)
+do $$
+declare sid uuid;
+begin
+  select id into sid from vault.secrets where name = 'github_pat_databaseball';
+  if sid is null then
+    perform vault.create_secret('github_pat_XXXXXXXXXXXXXXXXXXXX', 'github_pat_databaseball');  -- ⬅️ À REMPLIR : ton token
+  else
+    perform vault.update_secret(sid, 'github_pat_XXXXXXXXXXXXXXXXXXXX');                         -- ⬅️ À REMPLIR : ton token
+  end if;
+end $$;
 
 -- 3) Programme le déclenchement quotidien
 --    13:10 UTC = 15h10 Paris (été) / 14h10 (hiver). pg_cron tourne en UTC.
