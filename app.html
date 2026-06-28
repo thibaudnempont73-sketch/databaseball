@@ -209,6 +209,8 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .ph-eye{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:4px}
 .ph-title{font-family:var(--display);font-size:28px;letter-spacing:.5px;line-height:1;margin-bottom:3px}
 .ph-sub{font-size:11px;color:var(--muted);line-height:1.5}
+.ph-note{font-size:11px;color:var(--blue);background:var(--blue-d);border:1px solid var(--blue-b);border-radius:8px;padding:8px 12px;margin-top:10px;line-height:1.5}
+.ph-note strong{color:var(--white)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
@@ -284,6 +286,23 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .hist-conf{min-width:56px;text-align:center}
 .hist-res{min-width:60px;text-align:right;font-weight:700;font-size:11px}
 .hist-res.w{color:var(--green)}.hist-res.l{color:var(--red)}.hist-res.p{color:var(--muted)}
+/* Historique en cartes (lisible mobile + PC) */
+.histc{background:var(--card2);border:1px solid var(--b1);border-radius:10px;padding:11px 13px;margin:8px 12px}
+.histc-top{display:flex;align-items:center;gap:8px}
+.histc-date{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.histc-res{margin-left:auto;font-weight:800;font-size:12px;white-space:nowrap}
+.histc-res.w{color:var(--green)}.histc-res.l{color:var(--red)}.histc-res.p{color:var(--amber)}
+.histc-pick{font-weight:700;font-size:13px;margin:7px 0;line-height:1.3}
+.histc-stats{display:flex;flex-wrap:wrap;gap:5px 14px;font-size:11px;color:var(--muted)}
+.histc-stats b{color:var(--white);font-weight:800}
+/* Badge score en direct / statut du match */
+.live-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;line-height:1.4}
+.live-badge b{font-weight:800}
+.live-badge.lv-pre{color:var(--muted);background:var(--card2);border:1px solid var(--b2)}
+.live-badge.lv-live{color:var(--red);background:var(--red-d);border:1px solid var(--red-b)}
+.live-badge.lv-fin{color:var(--muted);background:var(--card2);border:1px solid var(--b2)}
+.live-badge.lv-win{color:var(--green);background:var(--green-d);border:1px solid var(--green-b)}
+.live-badge.lv-loss{color:var(--red);background:var(--red-d);border:1px solid var(--red-b)}
 
 /* STANDINGS */
 .div-block{background:var(--card);border:1px solid var(--b1);border-radius:10px;overflow:hidden;margin-bottom:10px}
@@ -588,7 +607,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v38 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v41 · 28/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -615,6 +634,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     <div class="ph-eye">Aujourd'hui · <span id="date-txt">—</span></div>
     <div class="ph-title">PRONOSTICS DU JOUR</div>
     <div class="ph-sub">100% données réelles MLB · FIP des lanceurs · park factors · splits · forme réelle · cotes du marché · meilleure cote bookmaker · zéro simulation</div>
+    <div class="ph-note">🕐 Tous les pronostics du jour sont calculés <strong>automatiquement une fois par jour</strong> (vers 15h, heure de Paris) puis <strong>figés</strong> : ils ne changent plus en cours de journée.</div>
   </div>
   <div class="g5 mb16" id="kpi-row">
     <div class="kpi"><div class="kpi::before" style="background:var(--red)"></div><div class="kpi-l">Total pronos</div><div class="kpi-v" style="color:var(--red)" id="k-tot">—</div><div class="kpi-m">générés</div></div>
@@ -891,7 +911,7 @@ function mkPronoLocked(p){
   const cs=p.confScore??50;
   return `<div class="prono lock-card">
     <div class="prono-meta" style="justify-content:center;margin-bottom:6px">
-      <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>
+      <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}
       <span class="tag">${p.typeLabel}</span>
     </div>
     <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${p.matchLabel}</div>
@@ -1909,6 +1929,7 @@ async function loadPronos(){
     renderSelection(tousLesPronos);
     renderFunSection();
     afficherPronos(pronosFiltres());
+    startLive(); // scores en direct + statut des matchs
     if(loaded['bankroll'])renderBankroll();
     return;
   }catch(e){
@@ -2287,6 +2308,58 @@ function raisonPick(p){
   return s+'.';
 }
 
+// ─── SCORES EN DIRECT (statut + score de chaque match, rafraîchi en continu) ───
+let liveGames={};
+async function fetchJSONlive(path){ // comme api() mais SANS cache (données live)
+  const url=(typeof MLB!=='undefined'?MLB:'https://statsapi.mlb.com/api/v1')+path;
+  for(const proxy of [u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,u=>u]){
+    try{const r=await fetch(proxy(url),{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(10000)});if(!r.ok)continue;return await r.json();}catch(e){continue;}
+  }
+  return null;
+}
+// Le pari passe-t-il ? 'W'/'L'/null (info = {ty,ph,ol,os,rh,rp} encodés en data-attributs)
+function liveWon(gp,info){
+  const g=liveGames[gp];if(!g||g.state!=='Final')return null;
+  const a=g.aScore,h=g.hScore;
+  if(info.ty==='ou'){const tot=a+h,line=+info.ol||8.5;return ((info.os==='over')?tot>line:tot<line)?'W':'L';}
+  if(info.ty==='runline'){const my=info.rh==='1'?h:a,opp=info.rh==='1'?a:h;return (my+(+info.rp||0))>opp?'W':'L';}
+  return ((info.ph==='1')?h>a:a>h)?'W':'L'; // victoire / outsider
+}
+function liveStatus(gp,info){
+  const g=liveGames[gp];if(!g)return {cls:'lv-pre',text:''};
+  const sc=`${g.aAbbr} <b>${g.aScore}</b>–<b>${g.hScore}</b> ${g.hAbbr}`;
+  if(g.state==='Final'){const w=liveWon(gp,info);if(w==='W')return {cls:'lv-win',text:`✅ Gagné · ${sc}`};if(w==='L')return {cls:'lv-loss',text:`❌ Perdu · ${sc}`};return {cls:'lv-fin',text:`Terminé · ${sc}`};}
+  if(g.state==='Live'){const half=g.inningState==='Top'?'début':g.inningState==='Bottom'?'fin':'';return {cls:'lv-live',text:`🔴 EN DIRECT · ${sc}${g.inning?` · ${half} ${g.inning}ᵉ`:''}`};}
+  return {cls:'lv-pre',text:'🕐 À venir'};
+}
+// p = prono / jambe (type, pick, matchLabel, ou/rl) OU {gamePk,type,homePickExplicit} pour un outsider
+function liveBadge(p){
+  const gp=p.gamePk;
+  const homeName=(p.homeTeam&&p.homeTeam.name)||((p.matchLabel||'').split('@')[1]||'').trim();
+  const ph=p.homePickExplicit!=null?(p.homePickExplicit?'1':'0'):((p.type==='victoire'||!p.type)?((p.pick||'').includes(homeName)?'1':'0'):'');
+  const info={ty:p.type||'victoire',ph,ol:p.ouLine??'',os:p.ouSide||'',rh:p.rlIsHome?'1':'0',rp:p.rlPoint??''};
+  const st=liveStatus(gp,info);
+  return `<span class="live-badge ${st.cls}" data-gp="${gp}" data-ty="${info.ty}" data-ph="${ph}" data-ol="${info.ol}" data-os="${info.os}" data-rh="${info.rh}" data-rp="${info.rp}">${st.text}</span>`;
+}
+function refreshLiveBadges(){
+  document.querySelectorAll('.live-badge[data-gp]').forEach(el=>{
+    const d=el.dataset;const st=liveStatus(+d.gp,{ty:d.ty,ph:d.ph,ol:d.ol,os:d.os,rh:d.rh,rp:d.rp});
+    el.innerHTML=st.text;el.className='live-badge '+st.cls;el.style.display=st.text?'':'none';
+  });
+}
+async function fetchLive(){
+  try{
+    const date=(typeof SNAP!=='undefined'&&SNAP&&SNAP.date)||today();
+    const d=await fetchJSONlive(`/schedule?sportId=1&date=${date}&hydrate=team,linescore`);
+    const games=d?.dates?.[0]?.games||[];if(!games.length)return;
+    const map={};
+    games.forEach(g=>{const ls=g.linescore||{};map[g.gamePk]={state:g.status?.abstractGameState||'Preview',aScore:g.teams?.away?.score??0,hScore:g.teams?.home?.score??0,inning:ls.currentInning??null,inningState:ls.inningState||'',aAbbr:g.teams?.away?.team?.abbreviation||'',hAbbr:g.teams?.home?.team?.abbreviation||''};});
+    liveGames=map;refreshLiveBadges();
+  }catch(e){}
+}
+let _liveTimer=null;
+function startLive(){fetchLive();if(!_liveTimer)_liveTimer=setInterval(fetchLive,60000);} // rafraîchi chaque minute
+
 // Track record GLOBAL vérifié (serveur) — preuve publique, visible par tous
 function renderTrackRecord(){
   const el=document.getElementById('track-record');if(!el)return;
@@ -2326,7 +2399,7 @@ function renderSelection(pronos){
       const coteBox=`<div class="sel-right"><div class="sel-cote">${p.coteVegas.toFixed(2)}</div><div class="sel-cote-l">cote</div></div>`;
       if(locked){
         return `<div class="sel-pick locked" onclick="ouvrirPremium()">
-          <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span><span class="sel-lock-tag">🔒 PREMIUM</span></div>
+          <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span><span class="sel-lock-tag">🔒 PREMIUM</span>${liveBadge(p)}</div>
           <div class="sel-row">${noteBox}
             <div class="sel-body"><div class="sel-match">${p.matchLabel}</div><div class="sel-pickname">${p.pick}</div><div class="sel-meta">Débloque ce pick et toute la sélection</div></div>
             ${coteBox}
@@ -2334,7 +2407,7 @@ function renderSelection(pronos){
         </div>`;
       }
       return `<div class="sel-pick" onclick="ouvrirMatchDepuis(${p.gamePk})">
-        <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span>${free?'<span class="free-badge">🎁 GRATUIT</span>':''}<span class="sel-time">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span></div>
+        <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${p.typeLabel}</span>${free?'<span class="free-badge">🎁 GRATUIT</span>':''}<span class="sel-time">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}</div>
         <div class="sel-row">${noteBox}
           <div class="sel-body">
             <div class="sel-match">${p.matchLabel}</div>
@@ -2490,7 +2563,7 @@ function mkProno(p){
   return `<div class="prono ${isFort?'forte':isMoyen?'moyenne':''}">
     <div class="prono-top">
       <div class="prono-meta">
-        <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>
+        <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}
         <span style="font-size:10px;color:var(--muted)">${p.matchLabel}</span>
         <span class="tag ${tagClass}">${p.typeLabel}</span>
         ${isFort?'<span class="pill pg">🔥 FORTE CONFIANCE</span>':isMoyen?'<span class="pill py">✅ BONNE CONFIANCE</span>':''}
@@ -2819,7 +2892,7 @@ function mkComboHTML(c){
   if(!c)return '';
   const legsHTML=c.legs.map(p=>{const ty=TYP[p.type]||TYP.victoire,le=p.proba-100/p.coteVegas;return `<div class="combo-leg" onclick="ouvrirMatchDepuis(${p.gamePk})">
     <div style="flex:1;min-width:0"><div><span class="combo-leg-type ${ty[1]}">${ty[0]}</span> <strong>${p.pick}</strong></div>
-    <div class="combo-leg-math">${p.matchLabel} · proba ${p.proba.toFixed(0)}% · edge ${le>=0?'+':''}${le.toFixed(1)}%</div></div>
+    <div class="combo-leg-math">${p.matchLabel} · proba ${p.proba.toFixed(0)}% · edge ${le>=0?'+':''}${le.toFixed(1)}% ${liveBadge(p)}</div></div>
     <span class="combo-leg-cote">${p.coteVegas.toFixed(2)}</span></div>`;}).join('');
   return `<div class="combo ${c.cls}">
     <div class="combo-head">
@@ -2909,7 +2982,7 @@ function renderFunSection(){
     let cle=null;
     if(d&&fav&&d.fipPartant!=null&&fav.fipPartant!=null&&d.fipPartant<fav.fipPartant-0.2)cle=`💡 Lanceur supérieur (FIP ${(+d.fipPartant).toFixed(2)} vs ${(+fav.fipPartant).toFixed(2)})`;
     else if(d&&fav&&d.pythWinPct!=null&&fav.pythWinPct!=null&&d.pythWinPct>fav.pythWinPct)cle=`💡 Meilleure équipe sur la saison, sous-cotée par le marché`;
-    outs.push({gp:+gp,team,odds,mp,marketP,bk,edge:mp-(marketP??100/odds),label:`${m.away?.abbreviation||''} @ ${m.home?.abbreviation||''}`,stats,cle});
+    outs.push({gp:+gp,team,odds,mp,marketP,bk,edge:mp-(marketP??100/odds),label:`${m.away?.abbreviation||''} @ ${m.home?.abbreviation||''}`,stats,cle,homeDog});
   });
   outs.sort((a,b)=>b.edge-a.edge);
   const outsHTML=!outs.length?'<div class="empty">Aucun outsider à grosse cote aujourd\'hui.</div>':outs.slice(0,6).map(o=>`<div class="outsider" onclick="ouvrirMatchDepuis(${o.gp})">
@@ -2917,6 +2990,7 @@ function renderFunSection(){
     <div class="outsider-body">
       <div class="outsider-pick">${o.team.name} gagne <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span></div>
       <div class="outsider-meta">${o.label} · modèle <strong>${o.mp.toFixed(0)}%</strong> vs marché ${o.marketP!=null?o.marketP.toFixed(0)+'%':'—'} · ${o.bk||''}</div>
+      <div style="margin-top:5px">${liveBadge({gamePk:o.gp,type:'victoire',homePickExplicit:o.homeDog})}</div>
       ${o.stats.length?`<div class="outsider-data">${o.stats.join(' · ')}</div>`:''}
       ${o.cle?`<div class="outsider-cle">${o.cle}</div>`:''}
     </div>
@@ -2979,6 +3053,7 @@ function renderHistFun(){
 }
 
 function renderHistStats(hist){
+  hist=hist.filter(h=>h.type!=='combo'&&h.type!=='outsider'); // suivi global = pronos du modèle (le Fun a son onglet)
   const finis=hist.filter(h=>h.resultat!=='P');
   const wins=finis.filter(h=>h.resultat==='W').length;
   const taux=finis.length?Math.round(wins/finis.length*100):0;
@@ -3040,30 +3115,32 @@ function renderHistStats(hist){
 }
 
 function renderHistList(hist,filtre){
-  const filtered=filtre==='tous'?hist:hist.filter(h=>h.resultat===filtre);
-  const sorted=[...filtered].sort((a,b)=>b.date.localeCompare(a.date)||b.confiance-a.confiance);
-  if(!sorted.length){document.getElementById('hist-list').innerHTML='<div class="empty">Aucun pronostic dans l\'historique</div>';return;}
-  document.getElementById('hist-list').innerHTML=`
-    <div style="overflow-x:auto">
-    <div style="min-width:500px">
-    <div style="display:flex;padding:6px 14px;font-size:10px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--b1)">
-      <span style="min-width:54px">DATE</span>
-      <span style="min-width:70px">TYPE</span>
-      <span style="flex:1">PRONOSTIC</span>
-      <span style="min-width:36px;text-align:right">PROBA</span>
-      <span style="min-width:56px;text-align:center">CONFIANCE</span>
-      <span style="min-width:60px;text-align:right">RÉSULTAT</span>
-    </div>
-    ${sorted.map(h=>`
-    <div class="hist-item">
-      <span class="hist-date">${h.date.slice(5)}</span>
-      <span class="hist-type"><span class="pill pm">${h.typeLabel?.slice(0,8)||h.type}</span></span>
-      <span class="hist-pick">${h.pick}</span>
-      <span class="hist-proba">${h.proba.toFixed(0)}%</span>
-      <span class="hist-conf"><span style="font-family:var(--mono);font-size:11px;color:${confColor(scoreConf(h))}">${scoreConf(h)}/100</span></span>
-      <span class="hist-res ${h.resultat==='W'?'w':h.resultat==='L'?'l':'p'}">${h.resultat==='W'?'✅ Gagné':h.resultat==='L'?'❌ Perdu':'⏳ En attente'}</span>
-    </div>`).join('')}
-    </div></div>`;
+  // La liste « Tous les pronostics » = les pronos du modèle (les combinés/outsiders sont dans l'onglet Fun)
+  const base=hist.filter(h=>h.type!=='combo'&&h.type!=='outsider');
+  const filtered=filtre==='tous'?base:base.filter(h=>h.resultat===filtre);
+  const sorted=[...filtered].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(scoreConf(b)-scoreConf(a)));
+  const el=document.getElementById('hist-list');
+  if(!sorted.length){el.innerHTML='<div class="empty" style="padding:20px">Aucun pronostic pour ce filtre.</div>';return;}
+  const tagCls={victoire:'tag-v',ou:'tag-ou',runline:'tag-marge'};
+  el.innerHTML=sorted.map(h=>{
+    const cs=scoreConf(h), cote=h.coteVegas??h.cote, res=h.resultat;
+    const resBadge=res==='W'?'<span class="histc-res w">✅ Gagné</span>':res==='L'?'<span class="histc-res l">❌ Perdu</span>':'<span class="histc-res p">⏳ En attente</span>';
+    return `<div class="histc">
+      <div class="histc-top">
+        <span class="histc-date">📅 ${(h.date||'').slice(5)}</span>
+        <span class="tag ${tagCls[h.type]||'tag-v'}">${h.typeLabel||h.type||'—'}</span>
+        ${resBadge}
+      </div>
+      <div class="histc-pick">${h.pick||''}</div>
+      <div class="histc-stats">
+        <span>📊 proba <b>${h.proba!=null?h.proba.toFixed(0)+'%':'—'}</b></span>
+        <span>🎯 confiance <b style="color:${confColor(cs)}">${cs}/100</b></span>
+        ${cote?`<span>💰 cote <b>${(+cote).toFixed(2)}</b></span>`:''}
+        ${h.scoreReel?`<span>📋 score <b>${h.scoreReel}</b></span>`:''}
+        ${h.parie?`<span style="color:var(--amber)">🎟️ misé ${(+h.mise||0).toFixed(2)}€</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function filtrerHist(filtre,btn){
