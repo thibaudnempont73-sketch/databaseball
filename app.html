@@ -613,7 +613,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v64 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v65 · 28/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -1419,11 +1419,11 @@ function setAuthMode(m){
     title.textContent=t('auth_reset_title');
     sub.textContent=t('auth_reset_sub');
     submit.textContent=t('auth_reset_btn');
-    emailF.style.display='none';pass.style.display='';pass.value='';pass.placeholder=t('auth_reset_ph');pass.autocomplete='new-password';
+    emailF.style.display='none';emailF.required=false;pass.style.display='';pass.value='';pass.placeholder=t('auth_reset_ph');pass.autocomplete='new-password';
     toggle.style.display='none';if(forgot)forgot.style.display='none';
   }else{
     const login=m==='login';
-    emailF.style.display='';pass.style.display='';
+    emailF.style.display='';emailF.required=true;pass.style.display='';
     title.textContent=login?t('auth_login_title'):t('auth_signup_title');
     sub.textContent=login?t('auth_login_sub'):t('auth_signup_sub');
     submit.textContent=login?t('auth_login_btn'):t('auth_signup_btn');
