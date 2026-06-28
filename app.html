@@ -607,7 +607,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v41 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v42 · 28/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -871,9 +871,9 @@ async function loadSnapshot(){
 // AUTHENTIFICATION (Supabase) — compte obligatoire pour accéder à l'app
 // ═══════════════════════════════════════════════════
 let authMode='login'; // 'login' | 'signup' | 'reset'
-const ADMIN_EMAIL='thibaudnempont73@gmail.com'; // seul ce compte voit les outils admin (ex. réinitialiser les stats)
+const ADMIN_EMAILS=['thibaudnempont73@gmail.com','flo.38_gf38@hotmail.fr']; // comptes admin (outils de pilotage : calibration, réinitialiser, vue gratuite)
 let adminViewFree=false; // admin : simuler la vue d'un membre gratuit (debug). Lu depuis le stockage dans demarrerApp().
-function isAdmin(){const s=getSession();return !!(s&&s.email&&s.email.toLowerCase()===ADMIN_EMAIL);}
+function isAdmin(){const s=getSession();return !!(s&&s.email&&ADMIN_EMAILS.includes(s.email.toLowerCase()));}
 function applyAdminUI(){
   const real=isAdmin();
   const rb=document.getElementById('reinit-btn');if(rb)rb.style.display=(real&&!adminViewFree)?'':'none';
