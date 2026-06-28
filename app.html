@@ -613,7 +613,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v58 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v61 · 28/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -906,7 +906,7 @@ const I18N={
   lk_tend_t:'Les Tendances & séries',lk_tend_d:'Bilans 10 derniers matchs, séries en cours, Over X/10, couverture du handicap… sur tous les matchs.',lk_bank_t:'La Bankroll & le suivi',lk_bank_d:'Mise automatique selon ton capital (Kelly), courbe de gains, ROI et suivi de tes paris.',lk_hist_t:"L'historique des pronostics",lk_hist_d:'Le suivi de tous les pronostics du jour, leurs résultats et la fiabilité du modèle — réservé aux membres Premium.',lk_match_t:"L'analyse de ce match",lk_match_d:'Pronostics, meilleures cotes et données complètes de ce match sont réservés aux membres Premium.',
   combo_bet:'🎟️ Parier ce combiné (mise auto)',out_bet:'🎟️ Parier cet outsider',
   conf_tres:'TRÈS FIABLE',conf_fiable:'FIABLE',conf_modere:'MODÉRÉ',conf_incertain:'INCERTAIN',
-  sel_h:'⭐ SÉLECTION DU JOUR',sel_sub_premium:'Les {n} meilleurs coups parmi les {m} matchs, notés sur 100 (chance de gagner × cote × fiabilité). Cliquez pour parier.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 pronostic offert aujourd\'hui</strong> — le n°1, 100% complet. Les {x} autres coups du jour sont réservés aux membres <strong style="color:var(--amber)">Premium</strong>.',sel_fige:' · 🔒 établie le {d} à {h}, figée pour la journée',sel_unlock_meta:'Débloque ce pick et toute la sélection',sel_success:'de réussite',
+  sel_h:'⭐ SÉLECTION DU JOUR',sel_novalue:"Aucun pari à valeur positive aujourd'hui — le marché est efficace sur les matchs du jour. Mieux vaut ne rien parier que parier sans edge.",sel_sub_premium:'Les {n} meilleurs coups parmi les {m} matchs, notés sur 100 (chance de gagner × cote × fiabilité). Cliquez pour parier.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 pronostic offert aujourd\'hui</strong> — le n°1, 100% complet. Les {x} autres coups du jour sont réservés aux membres <strong style="color:var(--amber)">Premium</strong>.',sel_fige:' · 🔒 établie le {d} à {h}, figée pour la journée',sel_unlock_meta:'Débloque ce pick et toute la sélection',sel_success:'de réussite',
   help_1:`<strong>🟢 100% données réelles, zéro simulation.</strong> Tout vient des stats officielles MLB (FIP des lanceurs, OPS, splits domicile/extérieur, forme réelle, park factors) et des vraies cotes des bookmakers.`,
   help_2:`<strong>⭐ Sélection du jour</strong> — En haut : les meilleurs coups du jour, notés sur <strong>100</strong> (équilibre entre chance de gagner, cote et fiabilité). C'est ce qu'il faut regarder en premier. Cliquez une ligne pour ouvrir le match et parier.`,
   help_3:`<strong>3 types de paris</strong> (les seuls vraiment proposés par les bookmakers) : <strong>🏆 Victoire</strong> (qui gagne), <strong>📊 Total points</strong> (Over/Under = beaucoup ou peu de points), <strong>📐 Run line</strong> (handicap ±1.5 : le favori doit gagner par 2+, ou l'outsider peut perdre par 1).`,
@@ -1009,7 +1009,7 @@ const I18N={
   lk_tend_t:'Trends & streaks',lk_tend_d:'Last-10 records, current streaks, Over X/10, run-line coverage… on every game.',lk_bank_t:'Bankroll & tracking',lk_bank_d:'Automatic stake based on your capital (Kelly), profit curve, ROI and bet tracking.',lk_hist_t:'Predictions history',lk_hist_d:"Tracking of every daily prediction, its results and the model's reliability — reserved for Premium members.",lk_match_t:"This game's analysis",lk_match_d:'Predictions, best odds and full data for this game are reserved for Premium members.',
   combo_bet:'🎟️ Bet this parlay (auto stake)',out_bet:'🎟️ Bet this underdog',
   conf_tres:'VERY RELIABLE',conf_fiable:'RELIABLE',conf_modere:'MODERATE',conf_incertain:'UNCERTAIN',
-  sel_h:"⭐ TODAY'S SELECTION",sel_sub_premium:'The top {n} plays among {m} games, scored out of 100 (win chance × odds × reliability). Click to bet.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 free pick today</strong> — #1, fully detailed. The other {x} plays of the day are reserved for <strong style="color:var(--amber)">Premium</strong> members.',sel_fige:' · 🔒 set on {d} at {h}, locked for the day',sel_unlock_meta:'Unlock this pick and the whole selection',sel_success:'win chance',
+  sel_h:"⭐ TODAY'S SELECTION",sel_novalue:"No positive-value bet today — the market is efficient on today's games. Better not to bet than to bet without an edge.",sel_sub_premium:'The top {n} plays among {m} games, scored out of 100 (win chance × odds × reliability). Click to bet.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 free pick today</strong> — #1, fully detailed. The other {x} plays of the day are reserved for <strong style="color:var(--amber)">Premium</strong> members.',sel_fige:' · 🔒 set on {d} at {h}, locked for the day',sel_unlock_meta:'Unlock this pick and the whole selection',sel_success:'win chance',
   help_1:`<strong>🟢 100% real data, zero simulation.</strong> Everything comes from official MLB stats (pitcher FIP, OPS, home/away splits, real form, park factors) and real bookmaker odds.`,
   help_2:`<strong>⭐ Today's Selection</strong> — At the top: the best plays of the day, scored out of <strong>100</strong> (balance of win chance, odds and reliability). Look here first. Click a row to open the game and bet.`,
   help_3:`<strong>3 bet types</strong> (the only ones bookmakers really offer): <strong>🏆 Moneyline</strong> (who wins), <strong>📊 Total runs</strong> (Over/Under = many or few runs), <strong>📐 Run line</strong> (±1.5 handicap: the favorite must win by 2+, or the underdog may lose by 1).`,
@@ -1112,7 +1112,7 @@ const I18N={
   lk_tend_t:'Tendencias y rachas',lk_tend_d:'Balances de los últimos 10, rachas actuales, Over X/10, cobertura del hándicap… en todos los partidos.',lk_bank_t:'Bankroll y seguimiento',lk_bank_d:'Stake automático según tu capital (Kelly), curva de ganancias, ROI y seguimiento de tus apuestas.',lk_hist_t:'Historial de pronósticos',lk_hist_d:'Seguimiento de todos los pronósticos del día, sus resultados y la fiabilidad del modelo — reservado a los miembros Premium.',lk_match_t:'El análisis de este partido',lk_match_d:'Pronósticos, mejores cuotas y datos completos de este partido están reservados a los miembros Premium.',
   combo_bet:'🎟️ Apostar esta combinada (stake auto)',out_bet:'🎟️ Apostar este outsider',
   conf_tres:'MUY FIABLE',conf_fiable:'FIABLE',conf_modere:'MODERADO',conf_incertain:'INCIERTO',
-  sel_h:'⭐ SELECCIÓN DEL DÍA',sel_sub_premium:'Las {n} mejores jugadas entre {m} partidos, puntuadas sobre 100 (probabilidad × cuota × fiabilidad). Haz clic para apostar.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 pronóstico gratis hoy</strong> — el n.º1, 100% completo. Las otras {x} jugadas del día están reservadas a los miembros <strong style="color:var(--amber)">Premium</strong>.',sel_fige:' · 🔒 establecida el {d} a las {h}, fijada para el día',sel_unlock_meta:'Desbloquea este pick y toda la selección',sel_success:'de acierto',
+  sel_h:'⭐ SELECCIÓN DEL DÍA',sel_novalue:'Ninguna apuesta de valor positivo hoy — el mercado es eficiente en los partidos de hoy. Mejor no apostar que apostar sin edge.',sel_sub_premium:'Las {n} mejores jugadas entre {m} partidos, puntuadas sobre 100 (probabilidad × cuota × fiabilidad). Haz clic para apostar.',sel_sub_free:'🎁 <strong style="color:var(--green)">1 pronóstico gratis hoy</strong> — el n.º1, 100% completo. Las otras {x} jugadas del día están reservadas a los miembros <strong style="color:var(--amber)">Premium</strong>.',sel_fige:' · 🔒 establecida el {d} a las {h}, fijada para el día',sel_unlock_meta:'Desbloquea este pick y toda la selección',sel_success:'de acierto',
   help_1:`<strong>🟢 100% datos reales, cero simulación.</strong> Todo viene de estadísticas oficiales MLB (FIP de lanzadores, OPS, splits local/visitante, forma real, park factors) y de las cuotas reales de los bookmakers.`,
   help_2:`<strong>⭐ Selección del día</strong> — Arriba: las mejores jugadas del día, puntuadas sobre <strong>100</strong> (equilibrio entre probabilidad, cuota y fiabilidad). Es lo primero que hay que mirar. Haz clic en una línea para abrir el partido y apostar.`,
   help_3:`<strong>3 tipos de apuesta</strong> (los únicos que ofrecen realmente los bookmakers): <strong>🏆 Victoria</strong> (quién gana), <strong>📊 Total carreras</strong> (Over/Under = muchas o pocas carreras), <strong>📐 Run line</strong> (hándicap ±1.5: el favorito debe ganar por 2+, o el outsider puede perder por 1).`,
@@ -1194,7 +1194,7 @@ function facNom(f){const k=f.code&&'fac_'+f.code+'_n';return (LANG!=='fr'&&k&&I1
 function facDet(f){const k=f.detKey||(f.code&&'fac_'+f.code+'_d');return (LANG!=='fr'&&k&&I18N[LANG][k]!=null)?tf(k,f.valVars||{}):(f.detail||'');}
 function facVal(f){const k=f.code&&'fac_'+f.code+'_v';if(LANG==='fr'||!k||I18N[LANG][k]==null)return f.valeur||'';const v=Object.assign({},f.valVars||{});for(const x in v){if(x.endsWith('Key'))v[x.slice(0,-3)]=v[x]?t(v[x]):'';}return tf(k,v);}
 // Blocs serveur (météo/tendance/compo/fatigue/alertes) : FR garde le HTML serveur ; EN/ES reconstruits depuis les données.
-function mMeteo(p){const d=p.meteoData;if(LANG==='fr'||!d)return p.meteoHTML||'';return d.dome?`<div class="meteo-badge">🏟️ ${d.stade} — ${t('mt_dome')}<span class="meteo-impact neu">${t('mt_noeffect')}</span></div>`:`<div class="meteo-badge">🌡️ ${d.temp}°C${d.humidity!=null?` · 💧${d.humidity}%`:''} · 💨 ${d.wind}km/h<span class="meteo-impact ${d.impact}">${tf('md_net_over',{v:(d.score>0?'+':'')+d.score})}</span></div>`;}
+function mMeteo(p){const d=p.meteoData;if(LANG==='fr'||!d)return p.meteoHTML||'';return d.dome?`<div class="meteo-badge">🏟️ ${d.stade} — ${t('mt_dome')} <span class="meteo-impact neu">${t('mt_noeffect')}</span></div>`:`<div class="meteo-badge">🌡️ ${d.temp}°C${d.humidity!=null?` · 💧${d.humidity}%`:''} · 💨 ${d.wind}km/h <span class="meteo-impact ${d.impact}">${tf('md_net_over',{v:(d.score>0?'+':'')+d.score})}</span></div>`;}
 function mTend(p){const d=p.tendData;if(LANG==='fr'||!d)return p.tendance||'';if(d.kind==='win'){let s=`📈 ${d.team} : ${d.bw}-${d.bl} ${t('td_last10')}`;if(d.splitSide)s+=` · ${d.splitW}-${d.splitL} ${t(d.splitSide==='home'?'td_home':'td_away')}`;const ser=fmtSerie(d.serieW);if(ser)s+=` · ${ser}`;return s;}if(d.kind==='ou')return `📈 ${t('td_ou_pre')} ${d.aAbbr?`${d.aAbbr} ${d.aOver}/${d.aN}`:''}${d.aAbbr&&d.hAbbr?' · ':''}${d.hAbbr?`${d.hAbbr} ${d.hOver}/${d.hN}`:''}`;if(d.kind==='rl')return `📈 ${d.team} ${t('td_rl_pre')} ${t(d.coverKind==='win2'?'td_rl_win2':'td_rl_cover')} ${d.x}/${d.y}`;return p.tendance||'';}
 function mCompo(p){const d=p.compoData;if(LANG==='fr'||!d)return p.compoHTML||'';if(d.kind==='missing')return `<div class="compo-alert err">${t('co_missing')}</div>`;const delai=(d.h!=null&&d.h>0)?tf('co_in',{h:d.h<1?t('co_lt1h'):Math.round(d.h)+'h'}):'';return `<div class="compo-alert warn">${tf('co_unconfirmed',{delai})}</div>`;}
 function mFatigue(p){const d=p.fatigueData;if(LANG==='fr'||!d)return p.fatigueBadge||'';return `<span class="fatigue-badge">😴 ${d.m7} ${t('fb_games7')}${d.dh>0?` · ${d.dh} doubleheader`:` · ${t('fb_norest')}`}</span>`;}
@@ -1268,7 +1268,7 @@ function applyPremiumUI(){
 }
 // Le meilleur pronostic du jour (offert) = top de la Sélection, sinon meilleure confiance
 function computeFreePick(pronos){
-  const elig=pronos.filter(p=>p.coteVegas&&p.proba>=53&&p.coteVegas>=1.45&&p.coteVegas<=2.8&&p.dataDispos>=60);
+  const elig=pronos.filter(p=>p.coteVegas&&p.dataDispos>=50);
   const top=elig.map(p=>({p,note:noteJouabilite(p)})).filter(x=>x.note!=null).sort((a,b)=>b.note-a.note);
   const best=top.length?top[0].p:[...pronos].sort((a,b)=>(b.confScore??0)-(a.confScore??0))[0];
   FREE_PICK_ID=best?best.id:null;
@@ -2253,12 +2253,10 @@ function oddsSweet(c){ // une cote trop courte ne rapporte rien, trop longue est
   if(c<1.4)return 35; if(c<=2.2)return 100; if(c<=2.8)return 72; if(c<=3.5)return 48; return 30;
 }
 function noteJouabilite(p){
-  if(!p.coteVegas)return null;
-  const probaC=Math.max(0,Math.min(100,(p.proba-48)/(70-48)*100));        // 48%→0, 70%+→100
-  const edge=p.fairProba!=null?(p.proba/100-p.fairProba):0;
-  const valueC=Math.max(0,Math.min(100,50+edge*100*10));                   // +5% edge → 100, −5% → 0
-  const conf=p.confScore??50;
-  return Math.round(0.38*probaC + 0.22*oddsSweet(p.coteVegas) + 0.20*conf + 0.20*valueC);
+  // OBJECTIF = LA VICTOIRE : la note EST la probabilité que le pari passe. Rien d'autre ne compte pour le classement.
+  // (La fiabilité des données sert seulement de garde-fou d'éligibilité, pas à dégrader un pari plus probable.)
+  if(!p.coteVegas||p.proba==null)return null;
+  return Math.round(p.proba);
 }
 function noteLabel(n){return n>=72?'EXCELLENT':n>=58?'BON':n>=45?'CORRECT':'FAIBLE';}
 
@@ -2750,8 +2748,9 @@ function renderTrackRecord(){
 function renderSelection(pronos){
   const el=document.getElementById('best-bet');
   if(!el)return;
-  // éligibles : cote réelle, proba ≥ 53%, cote dans une fourchette jouable, données suffisantes
-  const elig=pronos.filter(p=>p.coteVegas&&p.proba>=53&&p.coteVegas>=1.45&&p.coteVegas<=2.8&&p.dataDispos>=60);
+  // OBJECTIF = LA VICTOIRE : éligible = pari réel (cote + données). Aucun filtre de cote, de type ni de « favori ».
+  // C'est la PROBABILITÉ DE GAGNER (via noteJouabilite) qui décide — favori, outsider, Over/Under, run line, tout est en concurrence.
+  const elig=pronos.filter(p=>p.coteVegas&&p.dataDispos>=50);
   const top=elig.map(p=>({p,note:noteJouabilite(p)})).filter(x=>x.note!=null).sort((a,b)=>b.note-a.note).slice(0,5);
   if(!top.length){el.innerHTML='';return;}
   const col=n=>n>=72?'var(--green)':n>=58?'var(--amber)':'var(--muted)';
@@ -2785,7 +2784,7 @@ function renderSelection(pronos){
           <div class="sel-body">
             <div class="sel-match">${p.matchLabel}</div>
             <div class="sel-pickname">${displayPick(p)}</div>
-            <div class="sel-meta">${p.proba.toFixed(0)}% ${t('sel_success')}${edge!=null&&edge>=1?` · <span style="color:var(--green)">${t('bet_value')} +${edge.toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
+            <div class="sel-meta">${p.proba.toFixed(0)}% ${t('sel_success')}${estValueReelle(p)?` · <span style="color:var(--green)">💎 ${t('bet_value')} +${(edgeReel(p)*100).toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
           </div>
           ${coteBox}
         </div>
@@ -2825,6 +2824,12 @@ function renderKPIs(pronos){
 
 // edge réel d'un prono (proba modèle − proba implicite de la meilleure cote)
 function pronoEdge(p){return p.coteVegas?(p.proba/100-1/p.coteVegas):null;}
+// Meilleure cote réellement disponible (US/EU/réf) → l'edge qu'on peut VRAIMENT capter en pariant au meilleur prix.
+function meilleureCote(p){return Math.max(p.coteVegas||0,p.coteUS||0,p.coteEU||0)||null;}
+function edgeReel(p){const c=meilleureCote(p);return c?(p.proba/100-1/c):null;}
+// VRAIE value : le désaccord avec le marché (notre proba − proba de marché dé-viggée) dépasse la marge d'incertitude
+// du modèle (≈0.8× la demi-fourchette), ET le pari est rentable à la meilleure cote. Sinon c'est du bruit, pas de la value.
+function estValueReelle(p){if(!p.coteVegas||p.fairProba==null)return false;const desaccord=p.proba/100-p.fairProba;const seuil=Math.max(0.03,(p.marge||8)/100*0.8);return desaccord>=seuil&&edgeReel(p)>0;}
 // Bloc « meilleure cote US / EU » (avec bookmaker) — réutilisé sur les pronos ET la sélection
 function regionsBox(p){
   if(!p.coteUS&&!p.coteEU)return '';
@@ -2835,7 +2840,7 @@ function regionsBox(p){
 function pronosFiltres(){
   if(filtreMode==='tous')return tousLesPronos;
   // Value = notre proba bat la proba de marché dé-viggée d'au moins 2 pts ET rendement positif à la meilleure cote
-  if(filtreMode==='value')return tousLesPronos.filter(p=>p.coteVegas&&p.fairProba!=null&&(p.proba/100-p.fairProba)>=0.04&&pronoEdge(p)>0);
+  if(filtreMode==='value')return tousLesPronos.filter(estValueReelle);
   return tousLesPronos.filter(p=>p.type===filtreMode);
 }
 function filtrer(type,btn){
@@ -3499,9 +3504,9 @@ function renderHistStats(hist){
   let roi=0;
   finis.forEach(h=>{roi+=h.resultat==='W'?0.9:-1;});
 
-  document.getElementById('h-taux').textContent=taux+'%';
+  document.getElementById('h-taux').textContent=finis.length?taux+'%':'—';
   document.getElementById('h-total').textContent=hist.length;
-  document.getElementById('h-roi').textContent=(roi>=0?'+':'')+roi.toFixed(1)+'u';
+  document.getElementById('h-roi').textContent=finis.length?(roi>=0?'+':'')+roi.toFixed(1)+'u':'—';
   document.getElementById('h-attente').textContent=hist.filter(h=>h.resultat==='P').length;
 
   // Par niveau de confiance — tranches de score /100 (les anciennes entrées en étoiles sont converties ×20)

@@ -159,7 +159,7 @@ function normProba(sA,sB){const t=sA+sB;if(!t)return[50,50];return[pt(sA/t*100),
 function confiance(dA,dB,ecart){const base=Math.min(dA,dB);let c=1;if(base>=60)c=2;if(base>=75)c=3;if(base>=85)c=4;if(base>=90&&ecart>=10)c=5;return c;}
 function confScore100(dataDispos,ecart,qualite){const dataC=Math.max(0,Math.min(100,dataDispos)),ecartC=Math.max(0,Math.min(100,ecart*2.2)),qualC=Math.max(0,Math.min(100,qualite));return Math.round(dataC*0.4+ecartC*0.4+qualC*0.2);}
 // FIABILITÉ d'une estimation = quantité de données réelles + précision (resserrement de l'intervalle). AUCUN biais favori/cote/écart.
-function reliabScore(dataDispos,incertitude){const dataC=Math.max(0,Math.min(100,dataDispos||0));const precC=Math.max(0,Math.min(100,(12-(incertitude||8))/9*100));return Math.round(dataC*0.65+precC*0.35);}
+function reliabScore(dataDispos,incertitude){const dataC=Math.max(0,Math.min(100,dataDispos||0));const precC=Math.max(0,Math.min(100,(12-(incertitude||8))/9*100));return Math.round(dataC*0.5+precC*0.5);}
 // Confiance TOTAL (O/U) : données dispo (FIP des 2 partants, OPS, park, météo) + écart estimé/ligne (conviction) + qualité du marché.
 function confScoreOU(aData,hData,meteo,expTotal,line,fairOver){
   let dataC=10; // park factor toujours présent
@@ -193,11 +193,11 @@ function calcEquipe(data){
   else if(data.streak){const boost=sStreakBoost(data.streak);add(50+boost,0.04,{nom:'Série en cours et momentum',valeur:`${data.streak.startsWith('W')?`${parseInt(data.streak.slice(1))||0} victoires`:`${parseInt(data.streak.slice(1))||0} défaites`} consécutives`,detail:'Une équipe en série de victoires est en confiance',code:'streak',valVars:{n:parseInt(data.streak.slice(1))||0,wlKey:data.streak.startsWith('W')?'streak_win':'streak_loss'},sense:boost>0?'pos':boost<0?'neg':'neu'});}
   if(data.forme&&data.forme.matchs7j!=null){const m7=data.forme.matchs7j,repos=data.forme.reposSemaine,dh=data.forme.doubleHeaders;const fatScore=Math.round(Math.max(35,Math.min(62,50+repos*5-dh*6-(m7>=7?5:0))));add(fatScore,0.03,{nom:'Fraîcheur / calendrier',valeur:`${m7} matchs sur 7 jours · ${repos} jour${repos>1?'s':''} de repos${dh>0?` · ${dh} doubleheader${dh>1?'s':''}`:''}`,detail:'Un calendrier chargé sans jour de repos fatigue surtout le bullpen (lanceurs de relève)',code:'fatigue',valVars:{m7,repos,reposS:repos>1?'s':'',dhStr:dh>0?` · ${dh} doubleheader${dh>1?'s':''}`:''},sense:fatScore>=52?'pos':fatScore<=44?'neg':'neu'});}
   let score=totalPoids>0?Math.round(scoreTotal/totalPoids):50;
-  const dataDispos=Math.min(100,Math.round(totalPoids*100));
+  const dataDispos=Math.round(Math.min(100,totalPoids/1.12*100)); // normalisé sur le poids max possible → discrimine la vraie complétude (ne sature plus à 100)
   let facteurReg=0,regInfo=null;
   if(data.streak&&data.streak.startsWith('W')){const n=parseInt(data.streak.slice(1))||0;facteurReg=Math.min(0.15,Math.max(0,(n-4)*0.03));if(facteurReg>0){const avant=score;score=Math.round(50+(score-50)*(1-facteurReg));regInfo={n,facteur:facteurReg,avant,apres:score};facteurs.push({nom:'Régression vers la moyenne',valeur:`Série de ${n}V → score ajusté ${avant}→${score} (−${Math.round(facteurReg*100)}%)`,detail:`Après ${n}+ victoires consécutives, les équipes reviennent statistiquement vers leur niveau réel. Le score est corrigé à la baisse.`,code:'reg',valVars:{n,avant,apres:score,pct:Math.round(facteurReg*100)},score,poids:0,sense:'warn'});}}
   let incertitude=8;
-  if(scoresContrib.length){const sp=scoresContrib.reduce((a,c)=>a+c.poids,0);const moy=scoresContrib.reduce((a,c)=>a+c.score*c.poids,0)/sp;const varPond=scoresContrib.reduce((a,c)=>a+c.poids*(c.score-moy)**2,0)/sp;incertitude=Math.sqrt(varPond)*0.18;}
+  if(scoresContrib.length){const sp=scoresContrib.reduce((a,c)=>a+c.poids,0);const moy=scoresContrib.reduce((a,c)=>a+c.score*c.poids,0)/sp;const varPond=scoresContrib.reduce((a,c)=>a+c.poids*(c.score-moy)**2,0)/sp;incertitude=Math.sqrt(varPond)*0.40;}
   incertitude+=(100-dataDispos)*0.06;incertitude=Math.round(Math.max(3,Math.min(12,incertitude)));
   return{score,facteurs,dataDispos,incertitude,facteurReg,regInfo};
 }
