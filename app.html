@@ -296,7 +296,8 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .histc-date{font-family:var(--mono);font-size:10px;color:var(--muted)}
 .histc-res{margin-left:auto;font-weight:800;font-size:12px;white-space:nowrap}
 .histc-res.w{color:var(--green)}.histc-res.l{color:var(--red)}.histc-res.p{color:var(--amber)}
-.histc-pick{font-weight:700;font-size:13px;margin:7px 0;line-height:1.3}
+.histc-pick{font-weight:700;font-size:13px;margin:7px 0 2px;line-height:1.3}
+.histc-match{font-size:11px;color:var(--muted);margin-bottom:7px}
 .histc-stats{display:flex;flex-wrap:wrap;gap:5px 14px;font-size:11px;color:var(--muted)}
 .histc-stats b{color:var(--white);font-weight:800}
 /* Badge score en direct / statut du match */
@@ -613,7 +614,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v65 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v67 · 28/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -882,7 +883,7 @@ let SNAP=null;
 const I18N={
  fr:{
   nav_pronos:'⚡ Pronostics',nav_matchs:'⚾ Matchs',nav_tendances:'📈 Tendances',nav_historique:'📊 Historique',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Classements',nav_joueurs:'🏆 Joueurs',
-  auth_login_title:'Connexion',auth_login_sub:'Connecte-toi pour accéder aux pronostics du jour.',auth_signup_title:'Créer un compte',auth_signup_sub:'Crée ton compte gratuit pour accéder aux pronostics.',auth_login_btn:'Se connecter',auth_signup_btn:'Créer mon compte',auth_pass_ph:'Mot de passe (min. 6 caractères)',auth_forgot:'Mot de passe oublié ?',auth_back:"← Retour à l'accueil",auth_foot:"🔒 Connexion sécurisée. Outil d'analyse à but informatif — 18+. Aucun pari n'est sans risque.",auth_no_acc:'Pas encore de compte ?',auth_create:'Créer un compte',auth_have_acc:'Déjà un compte ?',auth_login_link:'Se connecter',auth_email_ph:'Adresse email',auth_need_email:"Entre d'abord ton adresse email, puis clique « Mot de passe oublié ».",auth_sending:'Envoi…',auth_reset_sent:'📧 Email envoyé à {email}. Clique le lien reçu pour choisir un nouveau mot de passe.',auth_reset_expired:'Lien expiré. Refais une demande de réinitialisation.',auth_signup_ok:'✅ Compte créé ! Un email de confirmation a été envoyé à {email}. Clique le lien reçu, puis connecte-toi.',auth_link_expired:'Le lien a peut-être expiré.',auth_reset_title:'Nouveau mot de passe',auth_reset_sub:'Choisis un nouveau mot de passe pour ton compte.',auth_reset_btn:'Enregistrer',auth_reset_ph:'Nouveau mot de passe (min. 6)',
+  auth_login_title:'Connexion',auth_login_sub:'Connecte-toi pour accéder aux pronostics du jour.',auth_signup_title:'Créer un compte',auth_signup_sub:'Crée ton compte gratuit pour accéder aux pronostics.',auth_login_btn:'Se connecter',auth_signup_btn:'Créer mon compte',auth_pass_ph:'Mot de passe (min. 6 caractères)',auth_forgot:'Mot de passe oublié ?',auth_back:"← Retour à l'accueil",auth_foot:"🔒 Connexion sécurisée. Outil d'analyse à but informatif — 18+. Aucun pari n'est sans risque.",auth_no_acc:'Pas encore de compte ?',auth_create:'Créer un compte',auth_have_acc:'Déjà un compte ?',auth_login_link:'Se connecter',auth_email_ph:'Adresse email',auth_need_email:"Entre d'abord ton adresse email, puis clique « Mot de passe oublié ».",auth_sending:'Envoi…',auth_reset_sent:'📧 Email envoyé à {email}. Clique le lien reçu pour choisir un nouveau mot de passe.',auth_reset_expired:'Lien expiré. Refais une demande de réinitialisation.',auth_signup_ok:'✅ Compte créé ! Un email de confirmation a été envoyé à {email}. Clique le lien reçu, puis connecte-toi.',auth_link_expired:'Le lien a peut-être expiré.',auth_reset_title:'Nouveau mot de passe',auth_reset_sub:'Choisis un nouveau mot de passe pour ton compte.',auth_reset_btn:'Enregistrer',auth_reset_ph:'Nouveau mot de passe (min. 6)',auth_reset_done:'✅ Mot de passe mis à jour. Connecte-toi avec ton nouveau mot de passe.',
   kpi_total:'Total pronos',kpi_total_m:'générés',kpi_forte:'Forte chance',kpi_forte_m:'≥62% de chances',kpi_proba:'Meilleure proba',kpi_proba_m:'probabilité max',kpi_matchs:'Matchs analysés',kpi_matchs_m:"aujourd'hui",kpi_data:'Données dispo',kpi_data_m:'critères moyens',
   ph_pronos_title:'PRONOSTICS DU JOUR',ph_pronos_sub:'100% données réelles MLB · FIP des lanceurs · park factors · splits · forme réelle · cotes du marché · meilleure cote bookmaker · zéro simulation',
   pm_h:'Débloque TOUS les pronos',pm_cta:'⭐ Devenir Premium',pm_mois:'/ mois',pm_an:'/ an',pm_an_tag:'2 MOIS OFFERTS',pm_an_eco:'soit 4,92€/mois',
@@ -985,7 +986,7 @@ const I18N={
  },
  en:{
   nav_pronos:'⚡ Predictions',nav_matchs:'⚾ Games',nav_tendances:'📈 Trends',nav_historique:'📊 History',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Standings',nav_joueurs:'🏆 Players',
-  auth_login_title:'Login',auth_login_sub:"Log in to access today's predictions.",auth_signup_title:'Create account',auth_signup_sub:'Create your free account to access the predictions.',auth_login_btn:'Log in',auth_signup_btn:'Create my account',auth_pass_ph:'Password (min. 6 characters)',auth_forgot:'Forgot password?',auth_back:'← Back to home',auth_foot:'🔒 Secure login. Informational analysis tool — 18+. No bet is risk-free.',auth_no_acc:'No account yet?',auth_create:'Create an account',auth_have_acc:'Already have an account?',auth_login_link:'Log in',auth_email_ph:'Email address',auth_need_email:'Enter your email address first, then click "Forgot password".',auth_sending:'Sending…',auth_reset_sent:'📧 Email sent to {email}. Click the link to choose a new password.',auth_reset_expired:'Link expired. Request a new reset.',auth_signup_ok:'✅ Account created! A confirmation email was sent to {email}. Click the link, then log in.',auth_link_expired:'The link may have expired.',auth_reset_title:'New password',auth_reset_sub:'Choose a new password for your account.',auth_reset_btn:'Save',auth_reset_ph:'New password (min. 6)',
+  auth_login_title:'Login',auth_login_sub:"Log in to access today's predictions.",auth_signup_title:'Create account',auth_signup_sub:'Create your free account to access the predictions.',auth_login_btn:'Log in',auth_signup_btn:'Create my account',auth_pass_ph:'Password (min. 6 characters)',auth_forgot:'Forgot password?',auth_back:'← Back to home',auth_foot:'🔒 Secure login. Informational analysis tool — 18+. No bet is risk-free.',auth_no_acc:'No account yet?',auth_create:'Create an account',auth_have_acc:'Already have an account?',auth_login_link:'Log in',auth_email_ph:'Email address',auth_need_email:'Enter your email address first, then click "Forgot password".',auth_sending:'Sending…',auth_reset_sent:'📧 Email sent to {email}. Click the link to choose a new password.',auth_reset_expired:'Link expired. Request a new reset.',auth_signup_ok:'✅ Account created! A confirmation email was sent to {email}. Click the link, then log in.',auth_link_expired:'The link may have expired.',auth_reset_title:'New password',auth_reset_sub:'Choose a new password for your account.',auth_reset_btn:'Save',auth_reset_ph:'New password (min. 6)',auth_reset_done:'✅ Password updated. Log in with your new password.',
   kpi_total:'Total predictions',kpi_total_m:'generated',kpi_forte:'High chance',kpi_forte_m:'≥62% chance',kpi_proba:'Best probability',kpi_proba_m:'max probability',kpi_matchs:'Games analyzed',kpi_matchs_m:'today',kpi_data:'Data available',kpi_data_m:'avg. criteria',
   ph_pronos_title:"TODAY'S PREDICTIONS",ph_pronos_sub:'100% real MLB data · pitcher FIP · park factors · splits · real form · market odds · best bookmaker odds · zero simulation',
   pm_h:'Unlock ALL predictions',pm_cta:'⭐ Go Premium',pm_mois:'/ month',pm_an:'/ year',pm_an_tag:'2 MONTHS FREE',pm_an_eco:'i.e. €4.92/month',
@@ -1088,7 +1089,7 @@ const I18N={
  },
  es:{
   nav_pronos:'⚡ Pronósticos',nav_matchs:'⚾ Partidos',nav_tendances:'📈 Tendencias',nav_historique:'📊 Historial',nav_bankroll:'💰 Bankroll',nav_classements:'📊 Clasificación',nav_joueurs:'🏆 Jugadores',
-  auth_login_title:'Iniciar sesión',auth_login_sub:'Inicia sesión para ver los pronósticos del día.',auth_signup_title:'Crear cuenta',auth_signup_sub:'Crea tu cuenta gratis para acceder a los pronósticos.',auth_login_btn:'Entrar',auth_signup_btn:'Crear mi cuenta',auth_pass_ph:'Contraseña (mín. 6 caracteres)',auth_forgot:'¿Olvidaste tu contraseña?',auth_back:'← Volver al inicio',auth_foot:'🔒 Conexión segura. Herramienta de análisis informativa — 18+. Ninguna apuesta está libre de riesgo.',auth_no_acc:'¿Aún no tienes cuenta?',auth_create:'Crear una cuenta',auth_have_acc:'¿Ya tienes cuenta?',auth_login_link:'Iniciar sesión',auth_email_ph:'Correo electrónico',auth_need_email:'Introduce primero tu correo, luego haz clic en "¿Olvidaste la contraseña?".',auth_sending:'Enviando…',auth_reset_sent:'📧 Correo enviado a {email}. Haz clic en el enlace para elegir una nueva contraseña.',auth_reset_expired:'Enlace caducado. Solicita otro restablecimiento.',auth_signup_ok:'✅ ¡Cuenta creada! Se envió un correo de confirmación a {email}. Haz clic en el enlace y luego inicia sesión.',auth_link_expired:'El enlace puede haber caducado.',auth_reset_title:'Nueva contraseña',auth_reset_sub:'Elige una nueva contraseña para tu cuenta.',auth_reset_btn:'Guardar',auth_reset_ph:'Nueva contraseña (mín. 6)',
+  auth_login_title:'Iniciar sesión',auth_login_sub:'Inicia sesión para ver los pronósticos del día.',auth_signup_title:'Crear cuenta',auth_signup_sub:'Crea tu cuenta gratis para acceder a los pronósticos.',auth_login_btn:'Entrar',auth_signup_btn:'Crear mi cuenta',auth_pass_ph:'Contraseña (mín. 6 caracteres)',auth_forgot:'¿Olvidaste tu contraseña?',auth_back:'← Volver al inicio',auth_foot:'🔒 Conexión segura. Herramienta de análisis informativa — 18+. Ninguna apuesta está libre de riesgo.',auth_no_acc:'¿Aún no tienes cuenta?',auth_create:'Crear una cuenta',auth_have_acc:'¿Ya tienes cuenta?',auth_login_link:'Iniciar sesión',auth_email_ph:'Correo electrónico',auth_need_email:'Introduce primero tu correo, luego haz clic en "¿Olvidaste la contraseña?".',auth_sending:'Enviando…',auth_reset_sent:'📧 Correo enviado a {email}. Haz clic en el enlace para elegir una nueva contraseña.',auth_reset_expired:'Enlace caducado. Solicita otro restablecimiento.',auth_signup_ok:'✅ ¡Cuenta creada! Se envió un correo de confirmación a {email}. Haz clic en el enlace y luego inicia sesión.',auth_link_expired:'El enlace puede haber caducado.',auth_reset_title:'Nueva contraseña',auth_reset_sub:'Elige una nueva contraseña para tu cuenta.',auth_reset_btn:'Guardar',auth_reset_ph:'Nueva contraseña (mín. 6)',auth_reset_done:'✅ Contraseña actualizada. Inicia sesión con tu nueva contraseña.',
   kpi_total:'Pronósticos totales',kpi_total_m:'generados',kpi_forte:'Alta probabilidad',kpi_forte_m:'≥62% de prob.',kpi_proba:'Mejor probabilidad',kpi_proba_m:'prob. máxima',kpi_matchs:'Partidos analizados',kpi_matchs_m:'hoy',kpi_data:'Datos disponibles',kpi_data_m:'criterios prom.',
   ph_pronos_title:'PRONÓSTICOS DEL DÍA',ph_pronos_sub:'100% datos reales MLB · FIP de lanzadores · park factors · splits · forma real · cuotas del mercado · mejor cuota bookmaker · cero simulación',
   pm_h:'Desbloquea TODOS los pronósticos',pm_cta:'⭐ Hazte Premium',pm_mois:'/ mes',pm_an:'/ año',pm_an_tag:'2 MESES GRATIS',pm_an_eco:'o sea 4,92€/mes',
@@ -1446,15 +1447,18 @@ async function submitAuth(e){
   const email=document.getElementById('auth-email').value.trim();
   const password=document.getElementById('auth-pass').value;
   const btn=document.getElementById('auth-submit');
-  authMsg('');btn.disabled=true;const lbl=btn.textContent;btn.textContent='…';
+  authMsg('');btn.disabled=true;const lbl=btn.textContent;btn.textContent='…';let _navAuth=false;
   try{
     if(authMode==='reset'){
-      const s=getSession();
+      let s=getSession();
       if(!s?.access_token)throw new Error(t('auth_reset_expired'));
+      // Transforme le jeton de RÉCUPÉRATION en session complète (un jeton recovery « limité » peut renvoyer 200 sans appliquer le changement).
+      try{if(s.refresh_token){const fr=await fetch(`${SUPA_URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{apikey:SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token})});if(fr.ok){const fd=await fr.json();if(fd.access_token){s={...s,access_token:fd.access_token,refresh_token:fd.refresh_token||s.refresh_token};setSession(s);}}}}catch(_){}
       await updatePassword(s.access_token,password);
-      const u=await fetchUser(s.access_token);
-      setSession({...s,email:u?.email,id:u?.id});
-      await demarrerApp(getSession());
+      // Déconnexion + retour à la connexion : l'utilisateur teste tout de suite son NOUVEAU mot de passe (et confirme que ça a marché).
+      setSession(null);_navAuth=true;
+      setAuthMode('login');
+      authMsg(t('auth_reset_done'),'ok');
     }else if(authMode==='signup'){
       const d=await authSignup(email,password);
       if(d.access_token){ setSession(sessionFrom(d)); await demarrerApp(getSession()); }
@@ -1464,7 +1468,7 @@ async function submitAuth(e){
       setSession(sessionFrom(d)); await demarrerApp(getSession());
     }
   }catch(err){ authMsg('⚠️ '+err.message,'err'); }
-  finally{ btn.disabled=false; btn.textContent=lbl; }
+  finally{ btn.disabled=false; if(!_navAuth)btn.textContent=lbl; }
   return false;
 }
 function showAuthScreen(){
@@ -3604,6 +3608,7 @@ function renderHistList(hist,filtre){
         ${resBadge}
       </div>
       <div class="histc-pick">${h.pick||''}</div>
+      ${h.matchLabel?`<div class="histc-match">⚾ ${h.matchLabel}</div>`:''}
       <div class="histc-stats">
         <span>🎯 ${t('hl_proba')} <b style="color:${confColor(h.proba??50)}">${h.proba!=null?h.proba.toFixed(0)+'%':'—'}</b></span>
         ${cote?`<span>💰 ${t('hl_cote')} <b>${(+cote).toFixed(2)}</b></span>`:''}
