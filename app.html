@@ -488,6 +488,8 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .bet-btn:active{transform:scale(.98)}
 .bet-btn-off{background:var(--card2);color:var(--muted);border:1px solid var(--b2);font-weight:600;cursor:pointer}
 .bet-btn-off[disabled]{cursor:not-allowed;opacity:.6}
+.bet-btn-soft{background:var(--card2);color:var(--amber);border:1px solid var(--amber-b)}
+.sel-bet{margin-top:9px;border-top:1px solid var(--b1);padding-top:9px}
 
 /* POIDS DES CRITÈRES — barres horizontales (labels complets, pas de troncature) */
 .poids-rows{display:flex;flex-direction:column;gap:6px}
@@ -608,7 +610,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v44 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v45 · 28/06</span></div>
   <div class="topbar-r">
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
     <button id="premium-btn" class="premium-btn" style="display:none" onclick="ouvrirPremium()">⭐ Premium</button>
@@ -2421,6 +2423,7 @@ function renderSelection(pronos){
         </div>
         ${regionsBox(p)}
         <div class="sel-why">💡 ${raisonPick(p)}</div>
+        <div class="sel-bet" onclick="event.stopPropagation()">${betButtonHTML(p)}</div>
       </div>`;
     }).join('')}
   </div>`;
@@ -2637,12 +2640,16 @@ function betButtonHTML(p){
   if(!cap||cap<=0){
     return `<button class="bet-btn bet-btn-off" onclick="goTo('bankroll')">💰 Définir ma bankroll pour parier</button>`;
   }
-  const {mise,edge}=miseKelly(p.proba/100,p.coteVegas,cap);
-  const edgePct=(edge*100).toFixed(1);
-  if(mise<0.5){
-    return `<button class="bet-btn bet-btn-off" disabled>❌ Pas de valeur à la cote ${p.coteVegas.toFixed(2)} (le marché paie moins que notre estimation)</button>`;
-  }
-  return `<button class="bet-btn" onclick="placerPari('${p.id}',this)">🎯 Parier ${mise.toFixed(2)}€ @ ${p.coteVegas.toFixed(2)} <span style="opacity:.8;font-weight:400">· valeur +${edgePct}%</span></button>`;
+  const {mise,edge,value}=miseEffective(p.proba/100,p.coteVegas,cap);
+  const tag=value?`<span style="opacity:.8;font-weight:400">· valeur +${(edge*100).toFixed(1)}%</span>`:`<span style="opacity:.75;font-weight:400">· suivi (pas de valeur)</span>`;
+  return `<button class="bet-btn${value?'':' bet-btn-soft'}" onclick="placerPari('${p.id}',this)">🎯 Parier ${mise.toFixed(2)}€ @ ${p.coteVegas.toFixed(2)} ${tag}</button>`;
+}
+// Mise : quart de Kelly si valeur ; sinon mise de SUIVI réduite (l'utilisateur reste libre de parier ce qu'il veut)
+function miseEffective(prob,cote,cap){
+  const k=miseKelly(prob,cote,cap);
+  if(k.mise>=0.5)return {mise:k.mise,edge:k.edge,value:true};
+  const flat=Math.max(0.5,Math.round(cap*0.005*100)/100); // ~0.5% du capital, min 0.5€
+  return {mise:flat,edge:k.edge,value:false};
 }
 
 // Export
@@ -2989,8 +2996,34 @@ function outsiderHTML(o){return `<div class="outsider" onclick="ouvrirMatchDepui
       <div style="margin-top:5px">${liveBadge({gamePk:o.gp,type:'victoire',homePickExplicit:o.homeDog})}</div>
       ${o.stats.length?`<div class="outsider-data">${o.stats.join(' · ')}</div>`:''}
       ${o.cle?`<div class="outsider-cle">${o.cle}</div>`:''}
+      <div onclick="event.stopPropagation()" style="margin-top:8px">${outsiderBetBtn(o)}</div>
     </div>
   </div>`;}
+function outsiderBetBtn(o){
+  const bet=getHistorique().find(h=>h.id==='O|'+o.gp&&h.parie);
+  if(bet){const res=bet.resultat;const st=res==='W'?`<span style="color:var(--green);font-weight:700">✅ Gagné +${(bet.mise*(bet.cote-1)).toFixed(2)}€</span>`:res==='L'?`<span style="color:var(--red);font-weight:700">❌ Perdu −${bet.mise.toFixed(2)}€</span>`:`<span style="color:var(--amber);font-weight:700">⏳ En attente</span>`;
+    return `<div class="combo-bet"><span>🎟️ Parié <strong>${bet.mise.toFixed(2)}€</strong> · cote ${bet.cote.toFixed(2)} · ${st}</span>${res==='P'?`<button class="combo-cancel" onclick="annulerPari('O|${o.gp}')">annuler</button>`:''}</div>`;}
+  return `<button class="combo-bet-btn" onclick="placerOutsider(${o.gp})">🎟️ Parier cet outsider</button>`;
+}
+function placerOutsider(gp){
+  const o=(FUN.outs||[]).find(x=>x.gp===gp);if(!o)return;
+  const cap=getBankrollActuel();
+  if(!cap||cap<=0){toast('💰 Définis d\'abord ton capital dans l\'onglet Bankroll','info');goTo('bankroll');return;}
+  const {mise,edge,value}=miseEffective(o.mp/100,o.odds,cap);
+  askConfirm('🎯 Parier cet outsider ?',
+    `<strong>${o.team.name} gagne</strong> @ <strong>${o.odds.toFixed(2)}</strong><br>${o.label}<br><br>
+     Mise : <strong>${mise.toFixed(2)}€</strong> · Gain potentiel : <strong style="color:var(--green)">+${(mise*(o.odds-1)).toFixed(2)}€</strong><br>
+     ${value?`Valeur : <strong style="color:var(--green)">+${(edge*100).toFixed(1)}%</strong> vs marché`:`<strong style="color:var(--amber)">⚠️ Gros coup risqué</strong> — mise de suivi réduite.`}`,
+    ()=>{
+      const hist=getHistorique();const id='O|'+gp;
+      let entry=hist.find(h=>h.id===id);
+      if(!entry){entry={id,date:today(),type:'outsider',typeLabel:'Outsider',matchLabel:o.label,pick:`${o.team.name} gagne`,proba:Math.round(o.mp),coteVegas:o.odds,gamePk:gp,homeDog:o.homeDog,resultat:'P',scoreReel:null,suggere:true};hist.push(entry);}
+      entry.parie=true;entry.mise=mise;entry.cote=o.odds;entry.datePari=today();
+      sauverHistorique(hist);renderFunSection();renderHistFun();
+      if(document.getElementById('bk-curve'))renderBankroll();
+      toast(`✅ Pari placé : <strong>${mise.toFixed(2)}€</strong> sur ${o.team.name}`);
+    },'Parier');
+}
 function renderFunSection(){
   const el=document.getElementById('fun-section');if(!el)return;
   if(!tousLesPronos.length){el.innerHTML='';return;}
@@ -3226,25 +3259,24 @@ function placerPari(id,btn){
   const cap=getBankrollActuel();
   if(!cap||cap<=0){toast('💰 Définissez d\'abord votre capital dans l\'onglet Bankroll','info');goTo('bankroll');return;}
   const cote=p.coteVegas;
-  const {mise,edge}=miseKelly(p.proba/100,cote,cap);
-  if(mise<0.5){toast('Pas de valeur à cette cote — le marché paie moins que notre estimation.','err');return;}
+  const {mise,edge,value}=miseEffective(p.proba/100,cote,cap);
   const gain=(mise*(cote-1)).toFixed(2);
   askConfirm('🎯 Placer ce pari ?',
     `<strong>${p.pick}</strong><br>${p.matchLabel}<br><br>
-     Mise : <strong>${mise.toFixed(2)}€</strong> · Cote réelle : <strong>${cote.toFixed(2)}</strong><br>
+     Mise : <strong>${mise.toFixed(2)}€</strong> · Cote : <strong>${cote.toFixed(2)}</strong><br>
      Gain potentiel : <strong style="color:var(--green)">+${gain}€</strong><br>
-     Valeur (edge) : <strong style="color:var(--green)">+${(edge*100).toFixed(1)}%</strong> vs marché<br>
-     <span style="font-size:11px">Mise calculée automatiquement (quart de Kelly sur la vraie cote, plafond 5% du capital).</span>`,
+     ${value?`Valeur (edge) : <strong style="color:var(--green)">+${(edge*100).toFixed(1)}%</strong> vs marché<br><span style="font-size:11px">Mise = quart de Kelly (plafond 5% du capital).</span>`:`<strong style="color:var(--amber)">⚠️ Pas de valeur selon le modèle</strong> (le marché paie moins).<br><span style="font-size:11px">Tu restes libre de suivre ce pari — mise de suivi réduite (~0,5% du capital).</span>`}`,
     ()=>{
       const hist=getHistorique();
       let entry=hist.find(h=>h.id===id);
       if(!entry){
-        entry={id:p.id,date:today(),type:p.type,typeLabel:p.typeLabel,matchLabel:p.matchLabel,pick:p.pick,proba:p.proba,confiance:p.confiance,confScore:p.confScore,marge:p.marge,resultat:'P',scoreReel:null,gamePk:p.gamePk};
+        entry={id:p.id,date:today(),type:p.type,typeLabel:p.typeLabel,matchLabel:p.matchLabel,pick:p.pick,proba:p.proba,confScore:p.confScore,coteVegas:cote,ouLine:p.ouLine??null,ouSide:p.ouSide??null,rlIsHome:p.rlIsHome??null,rlPoint:p.rlPoint??null,resultat:'P',scoreReel:null,gamePk:p.gamePk};
         hist.push(entry);
       }
       entry.parie=true;entry.mise=mise;entry.cote=cote;entry.datePari=today();
       sauverHistorique(hist);
-      if(btn)btn.outerHTML=betButtonHTML(p); // remplace juste le bouton (préserve le scroll)
+      if(btn)btn.outerHTML=betButtonHTML(p);
+      if(document.getElementById('best-bet'))renderSelection(tousLesPronos); // garde la sélection en phase
       if(document.getElementById('bk-curve'))renderBankroll();
       toast(`✅ Pari placé : <strong>${mise.toFixed(2)}€</strong> sur ${p.pick}`);
     },'Parier');
