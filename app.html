@@ -613,7 +613,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v63 · 28/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v64 · 28/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -765,8 +765,21 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
       <div class="kpi"><div class="kpi-l" data-i18n="hf_roi">Gain / Perte</div><div class="kpi-v" id="hf-roi">—</div><div class="kpi-m" data-i18n="hf_roi_m">sur tes paris fun</div></div>
       <div class="kpi"><div class="kpi-l" data-i18n="hf_jeu">En jeu</div><div class="kpi-v" style="color:var(--amber)" id="hf-jeu">—</div><div class="kpi-m" data-i18n="hf_jeu_m">paris fun en attente</div></div>
     </div>
+    <div class="card mb12">
+      <div class="card-h"><div class="card-ht" data-i18n="hc_type">Réussite par type de pari</div></div>
+      <div style="padding:12px" id="hist-fun-bytype"></div>
+    </div>
+
     <div class="card">
-      <div class="card-h"><div class="card-ht" data-i18n="hf_all">🎲 Tous les pronos fun</div><div class="card-hs" data-i18n="hf_all_s">Suivi de TOUS les combinés & outsiders suggérés chaque jour (pariés ou non) et leur résultat. 🎟️ = pari placé.</div></div>
+      <div class="card-h">
+        <div class="card-ht" data-i18n="hf_all">🎲 Tous les pronos fun</div>
+        <div style="display:flex;gap:6px">
+          <button class="tab-btn active" style="border:1px solid var(--b1)" onclick="filtrerHistFun('tous',this)" data-i18n="f_tous">Tous</button>
+          <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHistFun('W',this)" data-i18n="f_won">✅ Gagnés</button>
+          <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHistFun('L',this)" data-i18n="f_lost">❌ Perdus</button>
+          <button class="tab-btn" style="border:1px solid var(--b1)" onclick="filtrerHistFun('P',this)" data-i18n="f_pend">⏳ En attente</button>
+        </div>
+      </div>
       <div id="hist-fun-list"></div>
     </div>
   </div>
@@ -888,7 +901,7 @@ const I18N={
   h_taux:'Taux de réussite',h_taux_m:'pronos terminés',h_total:'Pronos analysés',h_total_m:'depuis le début',h_roi:'ROI théorique',h_roi_m:'si 1u sur chaque prono',h_attente:'En attente',h_attente_m:'résultats inconnus',
   hc_conf:'Réussite par probabilité annoncée',hc_conf_s:'Quand on annonce X%, gagne-t-on vraiment X% ?',hc_type:'Réussite par type de pari',hc_cal:'📐 Calibration du modèle',hc_cal_s:'Quand on annonce X%, gagne-t-on vraiment X% du temps ? (outil de pilotage interne)',hc_all:'Tous les pronostics',
   f_tous:'Tous',f_won:'✅ Gagnés',f_lost:'❌ Perdus',f_pend:'⏳ En attente',f_clear:'Effacer',
-  hf_nb:'Pronos fun suivis',hf_nb_m:'combinés + outsiders',hf_taux_m:'pronos fun terminés',hf_roi:'Gain / Perte',hf_roi_m:'sur tes paris fun',hf_jeu:'En jeu',hf_jeu_m:'paris fun en attente',hf_all:'🎲 Tous les pronos fun',hf_all_s:'Suivi de TOUS les combinés & outsiders suggérés chaque jour (pariés ou non) et leur résultat. 🎟️ = pari placé.',
+  hf_nb:'Pronos fun suivis',hf_nb_m:'combinés + outsiders',hf_taux_m:'pronos fun terminés',hf_roi:'Gain / Perte',hf_roi_m:'sur tes paris fun',hf_jeu:'En jeu',hf_jeu_m:'paris fun en attente',hf_all:'🎲 Tous les pronos fun',hf_all_s:'Suivi de TOUS les combinés & outsiders suggérés chaque jour (pariés ou non) et leur résultat. 🎟️ = pari placé.',hf_combos:'🎲 Combinés',hf_outs:'🐶 Outsiders',hf_none_filter:'Aucun prono fun pour ce filtre.',
   bh_eye:'Gestion financière',bh_title:'MA BANKROLL',bh_sub:"Définissez votre capital, pariez depuis l'onglet ⚡ Pronostics, suivez votre courbe ici",
   bk_cap:'💰 Votre capital de départ',bk_cap_s:'Mises calculées automatiquement (Kelly fractionné 25%)',bk_save:'Sauvegarder',
   bk_actuel:'Capital actuel',bk_actuel_m:'euros',bk_delta:'Gain/Perte',bk_delta_m:'paris terminés',bk_roi:'ROI',bk_roi_m:'% rendement',bk_nb:'Paris placés',bk_nb_m:'au total',bk_jeu:'En jeu',bk_jeu_m:'paris en attente',
@@ -991,7 +1004,7 @@ const I18N={
   h_taux:'Win rate',h_taux_m:'settled picks',h_total:'Picks analyzed',h_total_m:'since the start',h_roi:'Theoretical ROI',h_roi_m:'if 1u on each pick',h_attente:'Pending',h_attente_m:'unknown results',
   hc_conf:'Win rate by predicted probability',hc_conf_s:'When we say X%, do we really win X%?',hc_type:'Win rate by bet type',hc_cal:'📐 Model calibration',hc_cal_s:'When we say X%, do we really win X% of the time? (internal tuning tool)',hc_all:'All predictions',
   f_tous:'All',f_won:'✅ Won',f_lost:'❌ Lost',f_pend:'⏳ Pending',f_clear:'Clear',
-  hf_nb:'Fun picks tracked',hf_nb_m:'combos + underdogs',hf_taux_m:'settled fun picks',hf_roi:'Profit / Loss',hf_roi_m:'on your fun bets',hf_jeu:'At stake',hf_jeu_m:'pending fun bets',hf_all:'🎲 All fun picks',hf_all_s:'Tracking of ALL combos & underdogs suggested each day (bet or not) and their result. 🎟️ = bet placed.',
+  hf_nb:'Fun picks tracked',hf_nb_m:'combos + underdogs',hf_taux_m:'settled fun picks',hf_roi:'Profit / Loss',hf_roi_m:'on your fun bets',hf_jeu:'At stake',hf_jeu_m:'pending fun bets',hf_all:'🎲 All fun picks',hf_all_s:'Tracking of ALL combos & underdogs suggested each day (bet or not) and their result. 🎟️ = bet placed.',hf_combos:'🎲 Parlays',hf_outs:'🐶 Underdogs',hf_none_filter:'No fun pick for this filter.',
   bh_eye:'Money management',bh_title:'MY BANKROLL',bh_sub:'Set your capital, bet from the ⚡ Predictions tab, follow your curve here.',
   bk_cap:'💰 Your starting capital',bk_cap_s:'Stakes computed automatically (quarter Kelly)',bk_save:'Save',
   bk_actuel:'Current capital',bk_actuel_m:'euros',bk_delta:'Profit/Loss',bk_delta_m:'settled bets',bk_roi:'ROI',bk_roi_m:'% return',bk_nb:'Bets placed',bk_nb_m:'in total',bk_jeu:'At stake',bk_jeu_m:'pending bets',
@@ -1094,7 +1107,7 @@ const I18N={
   h_taux:'Tasa de acierto',h_taux_m:'pronósticos terminados',h_total:'Pronósticos analizados',h_total_m:'desde el inicio',h_roi:'ROI teórico',h_roi_m:'si 1u en cada pronóstico',h_attente:'Pendiente',h_attente_m:'resultados desconocidos',
   hc_conf:'Acierto por probabilidad anunciada',hc_conf_s:'Cuando decimos X%, ¿ganamos realmente el X%?',hc_type:'Acierto por tipo de apuesta',hc_cal:'📐 Calibración del modelo',hc_cal_s:'Cuando decimos X%, ¿ganamos realmente el X% de las veces? (herramienta interna de ajuste)',hc_all:'Todos los pronósticos',
   f_tous:'Todos',f_won:'✅ Ganados',f_lost:'❌ Perdidos',f_pend:'⏳ Pendiente',f_clear:'Borrar',
-  hf_nb:'Pronósticos fun seguidos',hf_nb_m:'combinadas + outsiders',hf_taux_m:'pronósticos fun terminados',hf_roi:'Ganancia / Pérdida',hf_roi_m:'en tus apuestas fun',hf_jeu:'En juego',hf_jeu_m:'apuestas fun pendientes',hf_all:'🎲 Todos los pronósticos fun',hf_all_s:'Seguimiento de TODAS las combinadas y outsiders sugeridos cada día (apostados o no) y su resultado. 🎟️ = apuesta realizada.',
+  hf_nb:'Pronósticos fun seguidos',hf_nb_m:'combinadas + outsiders',hf_taux_m:'pronósticos fun terminados',hf_roi:'Ganancia / Pérdida',hf_roi_m:'en tus apuestas fun',hf_jeu:'En juego',hf_jeu_m:'apuestas fun pendientes',hf_all:'🎲 Todos los pronósticos fun',hf_all_s:'Seguimiento de TODAS las combinadas y outsiders sugeridos cada día (apostados o no) y su resultado. 🎟️ = apuesta realizada.',hf_combos:'🎲 Combinadas',hf_outs:'🐶 Outsiders',hf_none_filter:'Ningún pronóstico fun para este filtro.',
   bh_eye:'Gestión financiera',bh_title:'MI BANKROLL',bh_sub:'Define tu capital, apuesta desde la pestaña ⚡ Pronósticos, sigue tu curva aquí.',
   bk_cap:'💰 Tu capital inicial',bk_cap_s:'Stakes calculados automáticamente (Kelly fraccionado 25%)',bk_save:'Guardar',
   bk_actuel:'Capital actual',bk_actuel_m:'euros',bk_delta:'Ganancia/Pérdida',bk_delta_m:'apuestas terminadas',bk_roi:'ROI',bk_roi_m:'% rendimiento',bk_nb:'Apuestas realizadas',bk_nb_m:'en total',bk_jeu:'En juego',bk_jeu_m:'apuestas pendientes',
@@ -1810,29 +1823,35 @@ function settleLeg(leg,games){
   if(leg.type==='runline'){const my=leg.rlIsHome?hScore:aScore,opp=leg.rlIsHome?aScore:hScore;return (my+(leg.rlPoint??0))>opp?'W':'L';}
   return 'L';
 }
-// MAJ automatique des résultats d'hier (paris simples ET combinés)
+// MAJ automatique des résultats : règle CHAQUE prono en attente dès que son match est terminé (aujourd'hui ET hier).
 async function majResultatsHier(){
   const hist=getHistorique();
-  const enAttente=hist.filter(h=>h.resultat==='P'&&h.date===yesterday());
+  // On règle tout prono en attente des 4 derniers jours (rattrape aussi les combinés/outsiders non réglés des jours précédents).
+  const c=new Date();c.setDate(c.getDate()-4);const cutoff=c.toISOString().split('T')[0];
+  const enAttente=hist.filter(h=>h.resultat==='P'&&h.date&&h.date>=cutoff);
   if(!enAttente.length)return;
   try{
-    const d=await api(`/schedule?sportId=1&date=${yesterday()}&hydrate=team,linescore`);
-    const games=d.dates?.[0]?.games??[];
+    // On récupère les scores pour chaque date concernée (aujourd'hui + hier)
+    const dates=[...new Set(enAttente.map(h=>h.date))];
+    const gamesByDate={};
+    for(const dt of dates){try{const d=await api(`/schedule?sportId=1&date=${dt}&hydrate=team,linescore`);gamesByDate[dt]=d.dates?.[0]?.games??[];}catch(e){gamesByDate[dt]=[];}}
+    let changed=false;
     enAttente.forEach(entry=>{
+      const games=gamesByDate[entry.date]||[];
       if(entry.type==='combo'){
         const rs=(entry.legs||[]).map(l=>settleLeg(l,games));
         if(rs.some(r=>r===null))return;                 // une jambe pas encore terminée → on attend
         entry.resultat=rs.every(r=>r==='W')?'W':'L';     // gagne SEULEMENT si toutes passent
-        entry.scoreReel=rs.join('');
+        entry.scoreReel=rs.join('');changed=true;
       }else{
         const r=settleLeg(entry,games);
         if(r===null)return;
         const game=games.find(g=>g.gamePk===entry.gamePk);
         if(game)entry.scoreReel=`${game.teams.away.score??0}-${game.teams.home.score??0}`;
-        entry.resultat=r;
+        entry.resultat=r;changed=true;
       }
     });
-    sauverHistorique(hist);
+    if(changed)sauverHistorique(hist);
   }catch(e){}
 }
 
@@ -3457,7 +3476,9 @@ function switchHistView(v,btn){
   if(f)f.style.display=v==='fun'?'':'none';
   if(v==='fun')renderHistFun();
 }
-// Suivi dédié des paris combinés (Fun)
+// Suivi dédié des paris fun (combinés + outsiders) — même architecture que l'onglet global (KPIs + analyse par type + liste filtrable)
+let filtreFun='tous';
+function filtrerHistFun(f,btn){filtreFun=f;document.querySelectorAll('#hist-view-fun .card-h .tab-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderHistFun();}
 function renderHistFun(){
   const el=document.getElementById('hist-fun-list');if(!el)return;
   const fun=getHistorique().filter(h=>h.type==='combo'||h.type==='outsider'); // TOUS les pronos fun (suggérés + pariés)
@@ -3469,11 +3490,20 @@ function renderHistFun(){
   const enJeu=paris.filter(h=>h.resultat==='P').reduce((a,h)=>a+(h.mise||0),0);
   const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   set('hf-nb',fun.length);
-  set('hf-taux',taux!=null?taux+'%':'—');
+  set('hf-taux',settled.length?taux+'%':'—');
   const roiEl=document.getElementById('hf-roi');if(roiEl){roiEl.textContent=(pl>=0?'+':'')+pl.toFixed(2)+'€';roiEl.style.color=pl>=0?'var(--green)':'var(--red)';}
   set('hf-jeu',enJeu.toFixed(2)+'€');
+  // Réussite par type (combinés vs outsiders) — même rendu que l'onglet global
+  const bt=document.getElementById('hist-fun-bytype');
+  if(bt)bt.innerHTML=[['combo',t('hf_combos')],['outsider',t('hf_outs')]].map(([tp,lbl])=>{
+    const it=settled.filter(h=>h.type===tp),w=it.filter(h=>h.resultat==='W').length,pct=it.length?Math.round(w/it.length*100):null;
+    const c=pct===null?'var(--muted)':pct>=60?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+    return `<div class="roi-line"><span class="roi-label">${lbl} (${it.length})</span><div class="roi-bar-wrap">${pct!==null?`<div class="roi-bar-fill" style="width:${pct}%;background:${c}"></div>`:''}</div><span class="roi-val" style="color:${c}">${pct!==null?pct+'%':'—'}</span></div>`;
+  }).join('');
   if(!fun.length){el.innerHTML=`<div class="empty" style="padding:22px;font-size:12px">${t('hf_empty')}</div>`;return;}
-  const sorted=[...fun].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.parie?1:0)-(a.parie?1:0));
+  const filtered=filtreFun==='tous'?fun:fun.filter(h=>h.resultat===filtreFun);
+  if(!filtered.length){el.innerHTML=`<div class="empty" style="padding:20px">${t('hf_none_filter')}</div>`;return;}
+  const sorted=[...filtered].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.parie?1:0)-(a.parie?1:0));
   el.innerHTML=sorted.map(h=>{
     const res=h.resultat;
     const resTxt=res==='W'?`<span style="color:var(--green);font-weight:800">${t('bet_won')}${h.parie?' +'+((h.mise||0)*((h.cote||1)-1)).toFixed(2)+'€':''}</span>`:res==='L'?`<span style="color:var(--red);font-weight:800">${t('bet_lost')}${h.parie?' −'+(h.mise||0).toFixed(2)+'€':''}</span>`:`<span style="color:var(--amber);font-weight:800">${t('bet_pending')}</span>`;
