@@ -158,6 +158,8 @@ function versMarche(modele,marche,poidsMarche,cap){if(marche==null||isNaN(marche
 function normProba(sA,sB){const t=sA+sB;if(!t)return[50,50];return[pt(sA/t*100),pt(sB/t*100)];}
 function confiance(dA,dB,ecart){const base=Math.min(dA,dB);let c=1;if(base>=60)c=2;if(base>=75)c=3;if(base>=85)c=4;if(base>=90&&ecart>=10)c=5;return c;}
 function confScore100(dataDispos,ecart,qualite){const dataC=Math.max(0,Math.min(100,dataDispos)),ecartC=Math.max(0,Math.min(100,ecart*2.2)),qualC=Math.max(0,Math.min(100,qualite));return Math.round(dataC*0.4+ecartC*0.4+qualC*0.2);}
+// FIABILITÉ d'une estimation = quantité de données réelles + précision (resserrement de l'intervalle). AUCUN biais favori/cote/écart.
+function reliabScore(dataDispos,incertitude){const dataC=Math.max(0,Math.min(100,dataDispos||0));const precC=Math.max(0,Math.min(100,(12-(incertitude||8))/9*100));return Math.round(dataC*0.65+precC*0.35);}
 // Confiance TOTAL (O/U) : données dispo (FIP des 2 partants, OPS, park, météo) + écart estimé/ligne (conviction) + qualité du marché.
 function confScoreOU(aData,hData,meteo,expTotal,line,fairOver){
   let dataC=10; // park factor toujours présent
@@ -205,10 +207,10 @@ function estimerMatch(aData,hData,parkPct,vegas,scoreA,scoreH){
   const pitchRating=d=>{const fip=d.fipPartant??d.eraPartant??leaguePitch;const te=d.eraEquipe??leaguePitch;const raw=0.55*fip+0.45*te;return leaguePitch+SH*(raw-leaguePitch);};
   const offRatio=d=>{const raw=Math.pow((d.ops??leagueOPS)/leagueOPS,1.6);return 1+SH*(raw-1);};
   const base=leaguePitch;
-  let rA=Math.max(2,Math.min(8.5,base*offRatio(aData)*(pitchRating(hData)/leaguePitch)*park));
-  let rH=Math.max(2,Math.min(8.5,base*offRatio(hData)*(pitchRating(aData)/leaguePitch)*park*1.03));
+  let rA=Math.max(1.5,Math.min(12,base*offRatio(aData)*(pitchRating(hData)/leaguePitch)*park));
+  let rH=Math.max(1.5,Math.min(12,base*offRatio(hData)*(pitchRating(aData)/leaguePitch)*park*1.03));
   const line=vegas&&vegas.totalLine!=null?vegas.totalLine:null;
-  if(line){const tot=rA+rH,sA=rA/tot,anchored=0.65*line+0.35*tot;rA=anchored*sA;rH=anchored*(1-sA);}
+  // (Plus d'ancrage sur la ligne : le total estimé reste 100% data. La ligne ne sert qu'à juger Over/Under ci-dessous.)
   const expTotal=rA+rH;const overProb=line!=null?1/(1+Math.exp(-(expTotal-line)/1.7)):null;
   const cov=(p,pw)=>Math.max(0.08,Math.min(0.92,p<0?pw*0.62:0.38+0.62*pw));
   return{winA:1-winH,winH,expRunsA:rA,expRunsH:rH,line,overProb,coverA_m15:cov(-1.5,1-winH),coverA_p15:cov(1.5,1-winH),coverH_m15:cov(-1.5,winH),coverH_p15:cov(1.5,winH)};
@@ -352,14 +354,15 @@ async function build(){
     const vg=vegas||{}; // raccourci sûr pour lire les cotes US/EU même si vegas est null
     const parkPct=PARK[hId]||100;
     const sim=estimerMatch(aData,hData,parkPct,vegas,rA.score,rH.score);
-    const wMkt=0.55,capMkt=0.06;
+    const wMkt=0,capMkt=null; // ⬅️ ON OUBLIE LES COTES DANS LE CALCUL : probas 100% data, aucun ancrage marché (cotes = affichage/edge seulement)
     let pH=versMarche(sim.winH,vegas&&vegas.probaH!=null?vegas.probaH/100:null,wMkt,capMkt)*100;
     let pA=100-pH;pA=pt(pA);pH=pt(pH);
     const ecart=Math.abs(pA-pH);const conf=confiance(rA.dataDispos,rH.dataDispos,ecart);
-    const favH=pH>=pA,favTeam=favH?home.team:away.team,favProba=favH?pH:pA,favRes=favH?rH:rA,favForme=favH?hForme:aForme;
-    const qualite=Math.round((rA.dataDispos+rH.dataDispos)/2*(favForme?1:0.85));
-    const cScore=confScore100(Math.min(rA.dataDispos,rH.dataDispos),ecart,qualite);
+    // Le PARI victoire = le côté qui a le PLUS DE CHANCES DE GAGNER (objectif = la victoire, pas la valeur).
+    const favH=pH>=pA;
+    const favTeam=favH?home.team:away.team,favProba=favH?pH:pA,favRes=favH?rH:rA,favForme=favH?hForme:aForme;
     const margeCI=Math.round((rA.incertitude+rH.incertitude)/2);
+    const cScore=reliabScore(Math.min(rA.dataDispos,rH.dataDispos),margeCI); // confiance = FIABILITÉ de l'estimation (données + précision), pas l'écart entre équipes
     const alerteReg=favRes.regInfo?{valeur:`${favTeam.name} sur ${favRes.regInfo.n} victoires — score corrigé de la surchauffe (régression vers la moyenne appliquée)`}:null;
     let valueAlert=null,valueData=null,coteVegasFav=null,bkFav=null,fairFav=null;
     if(vegas&&vegas.coteH&&vegas.coteA){const ourFav=favProba,vegasFav=favH?vegas.probaH:vegas.probaA;const edge=pt(ourFav-vegasFav,1);coteVegasFav=favH?vegas.coteH:vegas.coteA;bkFav=favH?vegas.bkH:vegas.bkA;fairFav=(favH?vegas.probaH:vegas.probaA)/100;if(edge<=-4){valueAlert=`Valeur inversée : le marché donne ${favTeam.name} plus probable (${vegasFav.toFixed(1)}%) que notre modèle (${ourFav.toFixed(1)}%). Signal contrarian — prudence sur ce favori.`;valueData={kind:'inverse',team:favTeam.name,vegas:vegasFav.toFixed(1),our:ourFav.toFixed(1)};}else if(edge>=5){valueAlert=`Value bet : notre modèle voit ${favTeam.name} plus fort (${ourFav.toFixed(1)}%) que le marché (${vegasFav.toFixed(1)}%). Edge potentiellement rentable.`;valueData={kind:'value',team:favTeam.name,our:ourFav.toFixed(1),vegas:vegasFav.toFixed(1)};}}
@@ -385,7 +388,7 @@ async function build(){
     if(vegas&&vegas.totalLine!=null&&sim.overProb!=null){
       const line=vegas.totalLine;const fairOver=vegas.overOdds&&vegas.underOdds?(1/vegas.overOdds)/((1/vegas.overOdds)+(1/vegas.underOdds)):null;
       const simOver=versMarche(sim.overProb,fairOver,wMkt,capMkt);const isOver=simOver>=0.5;const ourProba=(isOver?simOver:1-simOver)*100;const coteOU=isOver?vegas.overOdds:vegas.underOdds;
-      const csOU=confScoreOU(aData,hData,meteo,sim.expRunsA+sim.expRunsH,line,fairOver);const margeOU=margeFromConf(csOU);
+      const csOU=reliabScore(Math.min(rA.dataDispos,rH.dataDispos),margeCI);const margeOU=margeCI;
       pronos.push({...base,id:`${game.gamePk}-OU`,type:'ou',typeLabel:'Total points (O/U)',pickKey:isOver?'pk_over':'pk_under',pickVars:{line},explKey:'expl_ou',explVars:{total:(sim.expRunsA+sim.expRunsH).toFixed(1),ra:sim.expRunsA.toFixed(1),rh:sim.expRunsH.toFixed(1),line,side:isOver?'OVER':'UNDER',proba:ourProba.toFixed(1)},pick:`${isOver?'OVER':'UNDER'} ${line} points au total`,ouLine:line,ouSide:isOver?'over':'under',explication:`Estimation sur données réelles : total attendu ${(sim.expRunsA+sim.expRunsH).toFixed(1)} points (${sim.expRunsA.toFixed(1)} − ${sim.expRunsH.toFixed(1)}) vs ligne ${line}. Probabilité ${isOver?'OVER':'UNDER'} : ${ourProba.toFixed(1)}%.`,proba:pt(ourProba),confiance:Math.max(1,conf-1),confScore:csOU,marge:margeOU,coteVegas:coteOU,bookmaker:isOver?vegas.bkOver:vegas.bkUnder,coteUS:(isOver?vg.overOdds_us:vg.underOdds_us)??null,bkUS:(isOver?vg.bkOver_us:vg.bkUnder_us)??null,coteEU:(isOver?vg.overOdds_eu:vg.underOdds_eu)??null,bkEU:(isOver?vg.bkOver_eu:vg.bkUnder_eu)??null,fairProba:fairOver!=null?(isOver?fairOver:1-fairOver):null,dataDispos:Math.round(Math.min(rA.dataDispos,rH.dataDispos)),facteurs:[{nom:'Total de runs estimé',valeur:`${(sim.expRunsA+sim.expRunsH).toFixed(1)} pts au total vs ligne ${line}`,detail:'Calculé sur les données réelles : offense (OPS), FIP des lanceurs, bullpen, park factor, ancrage sur la ligne du marché',code:'outotal',valVars:{total:(sim.expRunsA+sim.expRunsH).toFixed(1),line},score:isOver?70:30,poids:40,sense:isOver?'pos':'neg'},aData.fipPartant!=null?{nom:'FIP lanceur visiteur',valeur:`${aData.nomPartant||'TBD'} : ${aData.fipPartant.toFixed(2)}`,detail:'FIP = qualité réelle du lanceur.',code:'fip_a',valVars:{name:aData.nomPartant||'TBD',fip:aData.fipPartant.toFixed(2)},score:sERA(aData.fipPartant),poids:20,sense:isOver?(sERA(aData.fipPartant)<=45?'pos':'neg'):(sERA(aData.fipPartant)>=55?'pos':'neg')}:null,hData.fipPartant!=null?{nom:'FIP lanceur domicile',valeur:`${hData.nomPartant||'TBD'} : ${hData.fipPartant.toFixed(2)}`,detail:'',code:'fip_h',valVars:{name:hData.nomPartant||'TBD',fip:hData.fipPartant.toFixed(2)},score:sERA(hData.fipPartant),poids:20,sense:isOver?(sERA(hData.fipPartant)<=45?'pos':'neg'):(sERA(hData.fipPartant)>=55?'pos':'neg')}:null,{nom:`Park factor (${meteo?.stade||'stade'})`,valeur:`${parkPct} / 100`,detail:parkPct>=104?'Stade qui gonfle les points':parkPct<=97?'Stade qui réduit les points':'Stade neutre',code:'park',valVars:{stade:meteo?.stade||'stade',pct:parkPct},detKey:parkPct>=104?'fac_park_d_hi':parkPct<=97?'fac_park_d_lo':'fac_park_d_neu',score:parkPct,poids:10,sense:(parkPct>=104&&isOver)||(parkPct<=97&&!isOver)?'pos':'neu'},meteo&&wind.score!==0?{nom:'Impact météo (net)',valeur:wind.label,detail:wind.breakdown,score:50+wind.score*2,poids:10,sense:wind.impact}:null].filter(Boolean),regAlertHTML:'',tendance:(aForme?.tendances||hForme?.tendances)?`📈 Over 8.5 récemment : ${aForme?.tendances?`${away.team.abbreviation} ${aForme.tendances.over85}/${aForme.tendances.over85n}`:''}${aForme?.tendances&&hForme?.tendances?' · ':''}${hForme?.tendances?`${home.team.abbreviation} ${hForme.tendances.over85}/${hForme.tendances.over85n}`:''}`:'',tendData:(aForme?.tendances||hForme?.tendances)?{kind:'ou',aAbbr:aForme?.tendances?away.team.abbreviation:'',aOver:aForme?.tendances?.over85,aN:aForme?.tendances?.over85n,hAbbr:hForme?.tendances?home.team.abbreviation:'',hOver:hForme?.tendances?.over85,hN:hForme?.tendances?.over85n}:null});
     }
     // 3. RUN LINE
@@ -396,7 +399,7 @@ async function build(){
       homeCover=versMarche(homeCover,fH,wMkt,capMkt);awayCover=versMarche(awayCover,fH!=null?1-fH:null,wMkt,capMkt);
       const edgeHome=homeCover-1/vegas.spHomeOdds,edgeAway=awayCover-1/vegas.spAwayOdds,betHome=edgeHome>=edgeAway;
       const side=betHome?{team:home.team,isHome:true,point:vegas.spHomePoint,odds:vegas.spHomeOdds,proba:homeCover*100,win:pH,bk:vegas.bkSpHome,fair:fH}:{team:away.team,isHome:false,point:vegas.spAwayPoint,odds:vegas.spAwayOdds,proba:awayCover*100,win:pA,bk:vegas.bkSpAway,fair:fH!=null?1-fH:null};
-      const csRL=confScoreRL(cScore,side.proba);const margeRL=margeFromConf(csRL);
+      const csRL=reliabScore(Math.min(rA.dataDispos,rH.dataDispos),margeCI);const margeRL=margeCI;
       const rlEdge=side.proba/100-1/side.odds;
       // On NE recommande une run line que si le côté choisi a une vraie chance (≥50% de couverture) OU une vraie valeur (edge ≥3%). Sinon on n'émet pas ce pari.
       if(side.proba>=50||rlEdge>=0.03)
