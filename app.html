@@ -530,6 +530,19 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .modal-btn{flex:1;padding:11px;border-radius:9px;border:none;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer}
 .modal-btn.ok{background:var(--green);color:#04140d}
 .modal-btn.cancel{background:var(--card2);border:1px solid var(--b2);color:var(--muted)}
+/* Lexique débutant */
+#lex-modal{position:fixed;inset:0;z-index:6000;background:rgba(4,7,12,.86);backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;padding:24px 14px;overflow:auto}
+.lex-box{background:var(--card);border:1px solid var(--b2);border-radius:16px;max-width:640px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.lex-head{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--b1);padding:15px 20px;display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0;z-index:2}
+.lex-head h2{font-size:16px;font-weight:800}
+.lex-close{background:var(--card2);border:1px solid var(--b2);color:var(--white);min-width:30px;height:30px;border-radius:8px;font-size:18px;cursor:pointer;line-height:1}
+.lex-body{padding:6px 20px 22px}
+.lex-cat{font-size:11.5px;font-weight:800;color:var(--green);letter-spacing:.5px;margin:18px 0 6px}
+.lex-item{padding:9px 0;border-bottom:1px solid var(--b1)}
+.lex-t{font-size:13.5px;font-weight:700;color:var(--white);margin-bottom:2px}
+.lex-d{font-size:12.5px;color:var(--muted);line-height:1.5}
+.lex-open-btn{display:block;width:100%;margin-top:10px;background:var(--card2);border:1px solid var(--blue);color:var(--blue);font-weight:700;font-size:12.5px;padding:11px;border-radius:9px;cursor:pointer;font-family:var(--sans)}
+.lex-open-btn:hover{background:var(--b1)}
 
 /* AIDE DÉBUTANT */
 .help-box{background:var(--card);border:1px solid var(--b1);border-radius:10px;margin-bottom:14px;overflow:hidden}
@@ -613,13 +626,21 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f1"><strong>Tous les pronos du jour</strong> — chaque match, chaque pari (Victoire, Total, Run line) avec cote et analyse complète.</div></div>
     <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f2"><strong>La Sélection complète</strong> — les 5 meilleurs coups notés sur 100, pas seulement le n°1.</div></div>
     <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f3"><strong>Tendances & séries</strong> détaillées + <strong>value bets</strong> où le modèle bat le marché.</div></div>
-    <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f4"><strong>Bankroll & suivi</strong> : mise auto, courbe de gains, calibration.</div></div>
+    <div class="pm-feat"><b>✓</b><div data-i18n-html="pm_f4"><strong>Historique complet & calibration</strong> : la fiabilité réelle de tous tes pronos (réussite, ROI, par tranche de probabilité).</div></div>
     <div class="pm-plans">
       <div class="pm-plan" id="plan-mois" onclick="choisirPlan('mois')"><div class="pm-plan-price">5,99€</div><div class="pm-plan-per" data-i18n="pm_mois">/ mois</div></div>
       <div class="pm-plan sel" id="plan-an" onclick="choisirPlan('an')"><div class="pm-plan-tag" data-i18n="pm_an_tag">2 MOIS OFFERTS</div><div class="pm-plan-price">59€</div><div class="pm-plan-per" data-i18n="pm_an">/ an</div><div class="pm-plan-eco" data-i18n="pm_an_eco">soit 4,92€/mois</div></div>
     </div>
     <button class="pm-cta" onclick="lancerAbonnement()" data-i18n="pm_cta">⭐ Devenir Premium</button>
     <div class="pm-foot" data-i18n-html="pm_foot">Sans engagement · Annulable à tout moment · Paiement sécurisé.<br>Les matchs du soir n'attendent pas — débloque maintenant.</div>
+  </div>
+</div>
+
+<!-- LEXIQUE DÉBUTANT -->
+<div id="lex-modal" onclick="if(event.target===this)fermerLexique()">
+  <div class="lex-box">
+    <div class="lex-head"><h2 data-i18n="lex_title">📖 Lexique du débutant</h2><button class="lex-close" onclick="fermerLexique()">×</button></div>
+    <div class="lex-body" id="lex-content"></div>
   </div>
 </div>
 
@@ -677,6 +698,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
       <div class="help-item" style="color:var(--muted)" data-i18n-html="help_10">⚠️ Outil d'analyse à but informatif. <strong>Aucun modèle ne bat le marché à coup sûr</strong> — le marché des bookmakers est très efficace. Ne misez que ce que vous pouvez perdre.</div>
     </div>
   </details>
+  <button class="lex-open-btn" onclick="openLexique()" data-i18n="lex_open">📖 Lexique du débutant — tous les termes expliqués</button>
   <div id="best-bet"></div>
   <div id="fun-section"></div>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
@@ -902,7 +924,7 @@ const I18N={
   pm_f1:'<strong>Tous les pronos du jour</strong> — chaque match, chaque pari (Victoire, Total, Run line) avec cote et analyse complète.',
   pm_f2:'<strong>La Sélection complète</strong> — les 5 meilleurs coups notés sur 100, pas seulement le n°1.',
   pm_f3:'<strong>Tendances & séries</strong> détaillées + <strong>value bets</strong> où le modèle bat le marché.',
-  pm_f4:'<strong>Bankroll & suivi</strong> : mise auto, courbe de gains, calibration.',
+  pm_f4:'<strong>Historique complet & calibration</strong> : la fiabilité réelle de tous tes pronos (réussite, ROI, par tranche de probabilité).',
   pm_foot:"Sans engagement · Annulable à tout moment · Paiement sécurisé.<br>Les matchs du soir n'attendent pas — débloque maintenant.",
   mh_eye:'En direct',mh_title:'MATCHS DU JOUR',mh_sub:"Cliquez pour voir l'analyse complète avec toutes les données croisées",
   th_eye:'Séries & forme · 100% données réelles',th_title:'TENDANCES DU JOUR',th_sub:"Les séries des équipes qui jouent aujourd'hui, calculées sur leurs 10 derniers vrais matchs. Triez pour repérer les équipes chaudes.",
@@ -922,7 +944,7 @@ const I18N={
   jh_title:'MEILLEURS JOUEURS',jh_sub:'Classements officiels MLB avec explications simples',jou_bat:'Batteurs',jou_lan:'Lanceurs',
   pl_hr:'💣 Plus de circuits',pl_hr_s:'Balle envoyée hors du terrain — tous les coureurs marquent',pl_avg:'🏏 Meilleure moyenne',pl_avg_s:'Coups sûrs ÷ passages au bâton',pl_rbi:'📈 Plus de points produits',pl_rbi_s:'Coéquipiers fait marquer',pl_ops:'⚡ Force offensive totale',pl_ops_s:'Capacité à atteindre les bases + puissance de frappe',pl_sb:'🏃 Bases volées',pl_sb_s:'Volé une base sans se faire éliminer',pl_runs:'🎯 Points marqués',pl_runs_s:'Fois où le joueur a lui-même passé le marbre',
   pl_era:'🎯 Moins de points encaissés',pl_era_s:"Moyenne points encaissés sur 9 manches — plus c'est bas, mieux c'est",pl_so:"💨 Plus d'éliminations directes",pl_so_s:'Batteurs mis hors-jeu directement',pl_wins:'✅ Plus de victoires',pl_wins_s:'Matchs gagnés quand le lanceur était en jeu',pl_whip:'🔢 Efficacité globale',pl_whip_s:"Marcheurs + coups sûrs concédés par manche — plus c'est bas, mieux c'est",pl_saves:'💾 Matchs sauvegardés',pl_saves_s:'Entre en fin de match et préserve la victoire',pl_k9:'📐 Éliminations par manche',pl_k9_s:"Moyenne d'éliminations directes pour 9 manches lancées",
-  f2_value:'💎 Value (rentables)',f2_signal:'🎯 Signal fort',pill_serre:'⚖️ trop serré',edge_lbl:'Edge',edge_devig:'(dé-viggé)',f2_victoire:'🏆 Victoire',f2_ou:'📊 Total points',f2_runline:'📐 Run line',sort_conf:'Confiance ↓',sort_proba:'Chance ↓',export_pdf:'📄 Export',loading_pronos:'Analyse mathématique en cours...',help_summary:'🔰 Comment lire un pronostic ? (cliquez)',
+  f2_value:'💎 Value (rentables)',f2_signal:'🎯 Signal fort',pill_serre:'⚖️ trop serré',edge_lbl:'Edge',edge_devig:'(dé-viggé)',f2_victoire:'🏆 Victoire',f2_ou:'📊 Total points',f2_runline:'📐 Run line',sort_conf:'Confiance ↓',sort_proba:'Chance ↓',export_pdf:'📄 Export',loading_pronos:'Analyse mathématique en cours...',help_summary:'🔰 Comment lire un pronostic ? (cliquez)',lex_title:'📖 Lexique du débutant',lex_open:'📖 Lexique du débutant — tous les termes expliqués',
   bet_won:'✅ Gagné',bet_lost:'❌ Perdu',bet_pending:'⏳ En attente',bet_placed:'🎟️ Parié',odds_lbl:'cote',bet_cancel:'annuler',bet_analyse:'📊 Analyse seule — aucune cote bookmaker pour ce type de pari',bet_setbk:'💰 Définir ma bankroll pour parier',bet_action:'🎯 Parier',bet_value:'valeur',bet_suivi:'suivi (pas de valeur)',match_fin_closed:'🔒 Match terminé — pari fermé',match_live_closed:'🔒 Match commencé — pari fermé',
   live_won:'✅ Gagné',live_lost:'❌ Perdu',live_fin:'Terminé',live_now:'🔴 EN DIRECT',live_soon:'🕐 À venir',live_top:'début',live_bot:'fin',inning_suf:'ᵉ',
   m_none:"Aucun match aujourd'hui",m_unavail:'⚠️ Données indisponibles',m_live:'🔴 EN DIRECT',m_fin:'✅ TERMINÉ',m_soon:'🕐 À VENIR',m_nostarter:'Partant non annoncé',m_seefull:"Voir l'analyse complète avec tous les pronostics →",rec_w:'V',rec_l:'D',
@@ -1012,7 +1034,7 @@ const I18N={
   pm_f1:'<strong>All daily picks</strong> — every game, every bet (Moneyline, Total, Run line) with odds and full analysis.',
   pm_f2:'<strong>The full Selection</strong> — the top 5 plays scored out of 100, not just #1.',
   pm_f3:'<strong>Detailed trends & streaks</strong> + <strong>value bets</strong> where the model beats the market.',
-  pm_f4:'<strong>Bankroll & tracking</strong>: auto stake, profit curve, calibration.',
+  pm_f4:'<strong>Full history & calibration</strong>: the real reliability of all your picks (win rate, ROI, by probability band).',
   pm_foot:"No commitment · Cancel anytime · Secure payment.<br>Tonight's games won't wait — unlock now.",
   mh_eye:'Live',mh_title:"TODAY'S GAMES",mh_sub:'Click to see the full analysis with all the cross-data.',
   th_eye:'Streaks & form · 100% real data',th_title:"TODAY'S TRENDS",th_sub:'Streaks of the teams playing today, computed over their last 10 real games. Sort to spot hot teams.',
@@ -1032,7 +1054,7 @@ const I18N={
   jh_title:'TOP PLAYERS',jh_sub:'Official MLB rankings with simple explanations',jou_bat:'Batters',jou_lan:'Pitchers',
   pl_hr:'💣 Most home runs',pl_hr_s:'Ball hit out of the park — all runners score',pl_avg:'🏏 Best average',pl_avg_s:'Hits ÷ at-bats',pl_rbi:'📈 Most RBIs',pl_rbi_s:'Teammates driven in to score',pl_ops:'⚡ Total offensive power',pl_ops_s:'Ability to reach base + hitting power',pl_sb:'🏃 Stolen bases',pl_sb_s:'Stole a base without being thrown out',pl_runs:'🎯 Runs scored',pl_runs_s:'Times the player crossed home plate himself',
   pl_era:'🎯 Fewest runs allowed',pl_era_s:'Average runs allowed per 9 innings — lower is better',pl_so:'💨 Most strikeouts',pl_so_s:'Batters struck out directly',pl_wins:'✅ Most wins',pl_wins_s:'Games won while the pitcher was in',pl_whip:'🔢 Overall efficiency',pl_whip_s:'Walks + hits allowed per inning — lower is better',pl_saves:'💾 Saves',pl_saves_s:'Comes in late and preserves the win',pl_k9:'📐 Strikeouts per inning',pl_k9_s:'Average strikeouts per 9 innings pitched',
-  f2_value:'💎 Value (profitable)',f2_signal:'🎯 Strong signal',pill_serre:'⚖️ too close',edge_lbl:'Edge',edge_devig:'(devigged)',f2_victoire:'🏆 Moneyline',f2_ou:'📊 Total runs',f2_runline:'📐 Run line',sort_conf:'Confidence ↓',sort_proba:'Win chance ↓',export_pdf:'📄 Export',loading_pronos:'Running the math…',help_summary:'🔰 How to read a prediction? (click)',
+  f2_value:'💎 Value (profitable)',f2_signal:'🎯 Strong signal',pill_serre:'⚖️ too close',edge_lbl:'Edge',edge_devig:'(devigged)',f2_victoire:'🏆 Moneyline',f2_ou:'📊 Total runs',f2_runline:'📐 Run line',sort_conf:'Confidence ↓',sort_proba:'Win chance ↓',export_pdf:'📄 Export',loading_pronos:'Running the math…',help_summary:'🔰 How to read a prediction? (click)',lex_title:'📖 Beginner glossary',lex_open:'📖 Beginner glossary — every term explained',
   bet_won:'✅ Won',bet_lost:'❌ Lost',bet_pending:'⏳ Pending',bet_placed:'🎟️ Bet',odds_lbl:'odds',bet_cancel:'cancel',bet_analyse:'📊 Analysis only — no bookmaker odds for this bet type',bet_setbk:'💰 Set my bankroll to bet',bet_action:'🎯 Bet',bet_value:'value',bet_suivi:'follow (no value)',match_fin_closed:'🔒 Game finished — betting closed',match_live_closed:'🔒 Game started — betting closed',
   live_won:'✅ Won',live_lost:'❌ Lost',live_fin:'Final',live_now:'🔴 LIVE',live_soon:'🕐 Upcoming',live_top:'top',live_bot:'bot',inning_suf:'',
   m_none:'No game today',m_unavail:'⚠️ Data unavailable',m_live:'🔴 LIVE',m_fin:'✅ FINAL',m_soon:'🕐 UPCOMING',m_nostarter:'Starter TBA',m_seefull:'See the full analysis with all predictions →',rec_w:'W',rec_l:'L',
@@ -1122,7 +1144,7 @@ const I18N={
   pm_f1:'<strong>Todos los pronósticos del día</strong> — cada partido, cada apuesta (Victoria, Total, Run line) con cuota y análisis completo.',
   pm_f2:'<strong>La Selección completa</strong> — las 5 mejores jugadas puntuadas sobre 100, no solo la n.º1.',
   pm_f3:'<strong>Tendencias y rachas</strong> detalladas + <strong>value bets</strong> donde el modelo supera al mercado.',
-  pm_f4:'<strong>Bankroll y seguimiento</strong>: stake automático, curva de ganancias, calibración.',
+  pm_f4:'<strong>Historial completo y calibración</strong>: la fiabilidad real de todos tus pronósticos (acierto, ROI, por tramo de probabilidad).',
   pm_foot:'Sin compromiso · Cancela cuando quieras · Pago seguro.<br>Los partidos de la noche no esperan — desbloquea ahora.',
   mh_eye:'En directo',mh_title:'PARTIDOS DEL DÍA',mh_sub:'Haz clic para ver el análisis completo con todos los datos cruzados.',
   th_eye:'Rachas y forma · 100% datos reales',th_title:'TENDENCIAS DEL DÍA',th_sub:'Las rachas de los equipos que juegan hoy, calculadas sobre sus últimos 10 partidos reales. Ordena para detectar los equipos en racha.',
@@ -1142,7 +1164,7 @@ const I18N={
   jh_title:'MEJORES JUGADORES',jh_sub:'Clasificaciones oficiales MLB con explicaciones sencillas',jou_bat:'Bateadores',jou_lan:'Lanzadores',
   pl_hr:'💣 Más home runs',pl_hr_s:'Bola enviada fuera del campo — todos los corredores anotan',pl_avg:'🏏 Mejor promedio',pl_avg_s:'Hits ÷ turnos al bate',pl_rbi:'📈 Más carreras impulsadas',pl_rbi_s:'Compañeros impulsados a anotar',pl_ops:'⚡ Poder ofensivo total',pl_ops_s:'Capacidad de llegar a base + poder de bateo',pl_sb:'🏃 Bases robadas',pl_sb_s:'Robó una base sin ser eliminado',pl_runs:'🎯 Carreras anotadas',pl_runs_s:'Veces que el jugador cruzó el home',
   pl_era:'🎯 Menos carreras permitidas',pl_era_s:'Promedio de carreras permitidas por 9 entradas — más bajo es mejor',pl_so:'💨 Más ponches',pl_so_s:'Bateadores ponchados directamente',pl_wins:'✅ Más victorias',pl_wins_s:'Partidos ganados con el lanzador en juego',pl_whip:'🔢 Eficiencia global',pl_whip_s:'Bases por bolas + hits permitidos por entrada — más bajo es mejor',pl_saves:'💾 Juegos salvados',pl_saves_s:'Entra al final y preserva la victoria',pl_k9:'📐 Ponches por entrada',pl_k9_s:'Promedio de ponches por 9 entradas lanzadas',
-  f2_value:'💎 Value (rentables)',f2_signal:'🎯 Señal fuerte',pill_serre:'⚖️ muy reñido',edge_lbl:'Edge',edge_devig:'(sin margen)',f2_victoire:'🏆 Victoria',f2_ou:'📊 Total carreras',f2_runline:'📐 Run line',sort_conf:'Confianza ↓',sort_proba:'Probabilidad ↓',export_pdf:'📄 Exportar',loading_pronos:'Calculando…',help_summary:'🔰 ¿Cómo leer un pronóstico? (clic)',
+  f2_value:'💎 Value (rentables)',f2_signal:'🎯 Señal fuerte',pill_serre:'⚖️ muy reñido',edge_lbl:'Edge',edge_devig:'(sin margen)',f2_victoire:'🏆 Victoria',f2_ou:'📊 Total carreras',f2_runline:'📐 Run line',sort_conf:'Confianza ↓',sort_proba:'Probabilidad ↓',export_pdf:'📄 Exportar',loading_pronos:'Calculando…',help_summary:'🔰 ¿Cómo leer un pronóstico? (clic)',lex_title:'📖 Glosario del principiante',lex_open:'📖 Glosario del principiante — todos los términos explicados',
   bet_won:'✅ Ganado',bet_lost:'❌ Perdido',bet_pending:'⏳ Pendiente',bet_placed:'🎟️ Apostado',odds_lbl:'cuota',bet_cancel:'cancelar',bet_analyse:'📊 Solo análisis — sin cuota de bookmaker para este tipo de apuesta',bet_setbk:'💰 Define tu bankroll para apostar',bet_action:'🎯 Apostar',bet_value:'valor',bet_suivi:'seguir (sin valor)',match_fin_closed:'🔒 Partido terminado — apuestas cerradas',match_live_closed:'🔒 Partido empezado — apuestas cerradas',
   live_won:'✅ Ganado',live_lost:'❌ Perdido',live_fin:'Terminado',live_now:'🔴 EN DIRECTO',live_soon:'🕐 Próximamente',live_top:'alta',live_bot:'baja',inning_suf:'ª',
   m_none:'No hay partidos hoy',m_unavail:'⚠️ Datos no disponibles',m_live:'🔴 EN DIRECTO',m_fin:'✅ TERMINADO',m_soon:'🕐 PRÓXIMAMENTE',m_nostarter:'Lanzador por confirmar',m_seefull:'Ver el análisis completo con todos los pronósticos →',rec_w:'G',rec_l:'P',
@@ -1344,6 +1366,149 @@ function pageLockHTML(titre,desc){
 }
 function ouvrirPremium(){document.getElementById('premium-modal').style.display='flex';}
 function fermerPremium(){document.getElementById('premium-modal').style.display='none';}
+// ─── LEXIQUE DÉBUTANT (3 langues) ───
+const LEX={
+ fr:[
+  {c:'🎯 LES PARIS',items:[
+   ['Cote','Ce que tu gagnes pour 1€ misé (cote 2.00 = tu doubles). Plus la cote est haute, moins le résultat est jugé probable.'],
+   ['Mise','La somme que tu engages sur un pari.'],
+   ['Favori / Outsider','L\'équipe que le marché juge la plus probable de gagner (favori) / la moins probable (outsider).'],
+   ['Victoire (Moneyline)','Pari le plus simple : qui gagne le match, point.'],
+   ['Total (Over / Under)','Pari sur le nombre total de points des 2 équipes : au-dessus (Over) ou en-dessous (Under) d\'une ligne fixée par le bookmaker.'],
+   ['Run line (handicap ±1.5)','Le favori part avec −1.5 point (doit gagner par 2+), l\'outsider avec +1.5 (peut perdre par 1 et le pari passe).'],
+   ['Couvrir','« Couvrir le handicap » = remplir la condition du run line (ex. gagner par au moins 2 points).'],
+   ['Combiné','Plusieurs paris regroupés : les cotes se multiplient (gros gain potentiel) mais TOUTES les sélections doivent passer.'],
+   ['Vig (marge)','La commission que le bookmaker intègre dans ses cotes. C\'est son bénéfice garanti.'],
+   ['Proba implicite','La probabilité « cachée » dans une cote (1 ÷ cote). Elle inclut la vig.'],
+   ['Proba dé-viggée','La vraie estimation du marché, une fois la vig retirée. C\'est elle qu\'on compare à notre proba.'],
+  ]},
+  {c:'🧮 LE MODÈLE & LES PROBAS',items:[
+   ['Probabilité','Notre estimation (sur 100) de la chance que le pari passe. C\'est aussi la note du pronostic.'],
+   ['Edge','Notre proba − la proba dé-viggée du marché. Positif = on pense avoir un avantage sur le book.'],
+   ['Value (pari de valeur)','Un pari où notre proba dépasse celle du marché → potentiellement rentable sur la durée.'],
+   ['Signal fort / Trop serré','« Signal fort » = vraie conviction (≥58% ou value). « Trop serré » = match quasi pile-ou-face, qu\'on n\'habille PAS en pronostic sûr.'],
+   ['Calibration','On vérifie : « quand on annonce 60%, gagne-t-on vraiment ~60% ? ». C\'est la preuve que nos probas sont honnêtes.'],
+   ['CLV','Closing Line Value : as-tu parié à une meilleure cote que la cote finale du match ? Meilleur indicateur de profit à long terme.'],
+   ['Dé-ancrage','Notre modèle calcule les probas sans regarder les cotes — 100% à partir des données.'],
+  ]},
+  {c:'⚾ STATS DES LANCEURS',items:[
+   ['Partant (starter)','Le lanceur qui commence le match (~6 premières manches). C\'est le facteur n°1 d\'un match de baseball.'],
+   ['ERA','Points encaissés en moyenne sur 9 manches. Plus c\'est bas, meilleur est le lanceur.'],
+   ['FIP','Comme l\'ERA, mais isole ce que le lanceur contrôle vraiment (circuits, marches, retraits), sans la défense. Plus prédictif que l\'ERA.'],
+   ['WHIP','Nombre de coureurs (marches + coups sûrs) laissés par manche. Plus c\'est bas, mieux c\'est.'],
+   ['K/9','Retraits sur des prises (strikeouts) par 9 manches. Élevé = lanceur dominant, moins dépendant de sa défense.'],
+   ['Bullpen','Les lanceurs de relève qui terminent le match après le partant. Un bon bullpen protège les avances.'],
+  ]},
+  {c:'🏏 STATS DES FRAPPEURS / ÉQUIPE',items:[
+   ['OPS','Mesure combinée : capacité à atteindre les bases + à frapper fort. Élevé = attaque performante.'],
+   ['Platoon (vs G/D)','Une équipe frappe souvent mieux contre un lanceur gaucher OU droitier. On regarde son OPS face à la main du partant adverse.'],
+   ['Park factor','Coefficient du stade : certains gonflent les points (ex. Coors Field, +18%), d\'autres les réduisent. Crucial pour l\'Over/Under.'],
+   ['Pythagore','% de victoires « mérité » selon les points marqués/encaissés sur la saison. Plus fiable que le simple bilan V-D.'],
+   ['Forme récente','Performance sur les 10-15 derniers jours (équipe chaude/froide), pas la moyenne de toute la saison.'],
+  ]},
+  {c:'💰 BANKROLL & GESTION',items:[
+   ['Bankroll','Ton capital total dédié aux paris. À ne jamais dépasser.'],
+   ['Kelly','Formule qui calcule la mise optimale selon ton edge et ta bankroll. On utilise un quart de Kelly (prudent) pour limiter le risque.'],
+   ['ROI','Retour sur investissement = gain net ÷ total misé. Le vrai juge de la rentabilité (≠ taux de réussite).'],
+  ]},
+ ],
+ en:[
+  {c:'🎯 BETTING',items:[
+   ['Odds','What you win per $1 staked (2.00 = you double). Higher odds = outcome judged less likely.'],
+   ['Stake','The amount you put on a bet.'],
+   ['Favorite / Underdog','The team the market rates most likely to win (favorite) / least likely (underdog).'],
+   ['Moneyline','The simplest bet: who wins the game, period.'],
+   ['Total (Over / Under)','Bet on the combined runs of both teams: above (Over) or below (Under) a line set by the book.'],
+   ['Run line (±1.5)','The favorite starts at −1.5 (must win by 2+), the underdog at +1.5 (can lose by 1 and still win the bet).'],
+   ['Cover','"Cover the spread" = meet the run line condition (e.g. win by at least 2).'],
+   ['Parlay','Several bets combined: odds multiply (big potential payout) but ALL legs must hit.'],
+   ['Vig (juice)','The margin the bookmaker bakes into its odds. That\'s its guaranteed profit.'],
+   ['Implied probability','The probability "hidden" in odds (1 ÷ odds). It includes the vig.'],
+   ['Devigged probability','The market\'s true estimate, vig removed. That\'s what we compare our probability to.'],
+  ]},
+  {c:'🧮 THE MODEL & PROBABILITIES',items:[
+   ['Probability','Our estimate (out of 100) of the bet hitting. Also the prediction score.'],
+   ['Edge','Our probability − the devigged market probability. Positive = we think we have an advantage.'],
+   ['Value bet','A bet where our probability exceeds the market\'s → potentially profitable long-term.'],
+   ['Strong signal / Too close','"Strong signal" = real conviction (≥58% or value). "Too close" = near coin-flip, which we DON\'T dress up as a sure pick.'],
+   ['Calibration','We check: "when we say 60%, do we really win ~60%?" Proof our probabilities are honest.'],
+   ['CLV','Closing Line Value: did you bet at better odds than the closing line? Best predictor of long-term profit.'],
+   ['De-anchoring','Our model computes probabilities without looking at the odds — 100% from data.'],
+  ]},
+  {c:'⚾ PITCHING STATS',items:[
+   ['Starter','The pitcher who starts the game (~first 6 innings). The #1 factor in a baseball game.'],
+   ['ERA','Runs allowed per 9 innings on average. Lower = better pitcher.'],
+   ['FIP','Like ERA, but isolates what the pitcher truly controls (HR, walks, strikeouts), minus the defense. More predictive than ERA.'],
+   ['WHIP','Runners (walks + hits) allowed per inning. Lower = better.'],
+   ['K/9','Strikeouts per 9 innings. High = dominant pitcher, less reliant on his defense.'],
+   ['Bullpen','The relief pitchers who finish the game after the starter. A good bullpen protects leads.'],
+  ]},
+  {c:'🏏 HITTING / TEAM STATS',items:[
+   ['OPS','Combined measure: ability to reach base + hit for power. High = strong offense.'],
+   ['Platoon (vs L/R)','A team often hits better against left- OR right-handed pitching. We look at its OPS vs the opposing starter\'s hand.'],
+   ['Park factor','Stadium coefficient: some inflate scoring (e.g. Coors Field, +18%), others reduce it. Key for Over/Under.'],
+   ['Pythagorean','"Deserved" win % based on runs scored/allowed over the season. More reliable than the raw W-L record.'],
+   ['Recent form','Performance over the last 10-15 days (hot/cold team), not the full-season average.'],
+  ]},
+  {c:'💰 BANKROLL & MANAGEMENT',items:[
+   ['Bankroll','Your total capital set aside for betting. Never exceed it.'],
+   ['Kelly','Formula computing the optimal stake from your edge and bankroll. We use a quarter Kelly (conservative) to limit risk.'],
+   ['ROI','Return on investment = net profit ÷ total staked. The real judge of profitability (≠ win rate).'],
+  ]},
+ ],
+ es:[
+  {c:'🎯 LAS APUESTAS',items:[
+   ['Cuota','Lo que ganas por 1€ apostado (2.00 = duplicas). Cuota más alta = resultado menos probable.'],
+   ['Stake (apuesta)','La cantidad que pones en una apuesta.'],
+   ['Favorito / Outsider','El equipo que el mercado ve más probable ganar (favorito) / menos probable (outsider).'],
+   ['Moneyline (Victoria)','La apuesta más simple: quién gana el partido, sin más.'],
+   ['Total (Over / Under)','Apuesta sobre las carreras combinadas de los 2 equipos: por encima (Over) o por debajo (Under) de una línea del book.'],
+   ['Run line (±1.5)','El favorito sale con −1.5 (debe ganar por 2+), el outsider con +1.5 (puede perder por 1 y la apuesta entra).'],
+   ['Cubrir','«Cubrir el hándicap» = cumplir la condición del run line (ej. ganar por al menos 2).'],
+   ['Combinada','Varias apuestas juntas: las cuotas se multiplican (gran premio potencial) pero TODAS deben entrar.'],
+   ['Vig (margen)','La comisión que el bookmaker mete en sus cuotas. Es su beneficio garantizado.'],
+   ['Prob. implícita','La probabilidad «oculta» en una cuota (1 ÷ cuota). Incluye la vig.'],
+   ['Prob. sin margen','La verdadera estimación del mercado, quitada la vig. Es la que comparamos con nuestra probabilidad.'],
+  ]},
+  {c:'🧮 EL MODELO Y LAS PROBABILIDADES',items:[
+   ['Probabilidad','Nuestra estimación (sobre 100) de que la apuesta entre. También es la nota del pronóstico.'],
+   ['Edge','Nuestra probabilidad − la del mercado sin margen. Positivo = creemos tener ventaja.'],
+   ['Value (valor)','Una apuesta donde nuestra probabilidad supera la del mercado → potencialmente rentable a largo plazo.'],
+   ['Señal fuerte / Muy reñido','«Señal fuerte» = convicción real (≥58% o value). «Muy reñido» = casi cara o cruz, que NO disfrazamos de pronóstico seguro.'],
+   ['Calibración','Verificamos: «cuando decimos 60%, ¿ganamos de verdad ~60%?». La prueba de que nuestras probabilidades son honestas.'],
+   ['CLV','Closing Line Value: ¿apostaste a mejor cuota que la de cierre? Mejor indicador de beneficio a largo plazo.'],
+   ['Sin anclaje','Nuestro modelo calcula las probabilidades sin mirar las cuotas — 100% con datos.'],
+  ]},
+  {c:'⚾ ESTADÍSTICAS DE LANZADORES',items:[
+   ['Abridor (starter)','El lanzador que empieza el partido (~primeras 6 entradas). Es el factor n°1 de un partido.'],
+   ['ERA','Carreras permitidas por 9 entradas en promedio. Más bajo = mejor lanzador.'],
+   ['FIP','Como el ERA, pero aísla lo que el lanzador controla (HR, bases por bolas, ponches), sin la defensa. Más predictivo que el ERA.'],
+   ['WHIP','Corredores (bases por bolas + hits) permitidos por entrada. Más bajo = mejor.'],
+   ['K/9','Ponches por 9 entradas. Alto = lanzador dominante, menos dependiente de su defensa.'],
+   ['Bullpen','Los relevistas que terminan el partido tras el abridor. Un buen bullpen protege las ventajas.'],
+  ]},
+  {c:'🏏 ESTADÍSTICAS DE BATEO / EQUIPO',items:[
+   ['OPS','Medida combinada: capacidad de llegar a base + batear con poder. Alto = ofensiva fuerte.'],
+   ['Platoon (vs Z/D)','Un equipo suele batear mejor contra lanzadores zurdos O diestros. Miramos su OPS ante la mano del abridor rival.'],
+   ['Park factor','Coeficiente del estadio: algunos inflan las carreras (ej. Coors Field, +18%), otros las reducen. Clave para el Over/Under.'],
+   ['Pitagórico','% de victorias «merecido» según las carreras anotadas/permitidas en la temporada. Más fiable que el récord V-D.'],
+   ['Forma reciente','Rendimiento en los últimos 10-15 días (equipo caliente/frío), no el promedio de toda la temporada.'],
+  ]},
+  {c:'💰 BANKROLL Y GESTIÓN',items:[
+   ['Bankroll','Tu capital total destinado a apuestas. Nunca lo superes.'],
+   ['Kelly','Fórmula que calcula el stake óptimo según tu edge y tu bankroll. Usamos un cuarto de Kelly (prudente) para limitar el riesgo.'],
+   ['ROI','Retorno de inversión = beneficio neto ÷ total apostado. El verdadero juez de la rentabilidad (≠ tasa de acierto).'],
+  ]},
+ ]
+};
+function renderLexique(){
+  const data=LEX[LANG]||LEX.fr;
+  document.getElementById('lex-content').innerHTML=data.map(cat=>
+    `<div class="lex-cat">${cat.c}</div>`+cat.items.map(it=>`<div class="lex-item"><div class="lex-t">${it[0]}</div><div class="lex-d">${it[1]}</div></div>`).join('')
+  ).join('');
+}
+function openLexique(){renderLexique();document.getElementById('lex-modal').style.display='flex';}
+function fermerLexique(){document.getElementById('lex-modal').style.display='none';}
 function choisirPlan(p){planChoisi=p;document.getElementById('plan-mois').classList.toggle('sel',p==='mois');document.getElementById('plan-an').classList.toggle('sel',p==='an');}
 const STRIPE_READY=false; // ⚙️ passer à true une fois l'Edge Function "create-checkout" déployée sur Supabase
 async function lancerAbonnement(){
