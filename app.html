@@ -242,6 +242,21 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .pg-body{display:none;padding:11px 11px 3px;border-top:1px solid var(--b1)}
 .prono-group.open .pg-body{display:block}
 .pg-body .prono{margin-bottom:9px}
+/* Cartes MATCHS (matchup propre avec logos) */
+.match-card{background:var(--card);border:1px solid var(--b1);border-radius:14px;margin-bottom:11px;cursor:pointer;overflow:hidden;transition:border-color .2s,transform .15s,box-shadow .2s}
+.match-card:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.mc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 15px 5px}
+.mc-date{font-size:12.5px;color:var(--white);font-weight:600;letter-spacing:.2px;display:inline-flex;align-items:center;gap:6px}
+.mc-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:12px;padding:12px 12px 16px;max-width:440px;margin:0 auto}
+.mc-team{display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;min-width:0}
+.mc-logo{width:46px;height:46px;object-fit:contain;background:#fff;border-radius:50%;padding:6px;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.mc-name{font-size:13px;font-weight:800;line-height:1.15}
+.mc-rec{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.mc-pitch{font-size:10.5px;color:var(--blue);margin-top:1px;line-height:1.25}
+.mc-center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;align-self:center;min-width:52px}
+.mc-score{font-family:var(--display);font-size:27px;letter-spacing:1px;line-height:1}
+.mc-vs{font-family:var(--display);font-size:18px;color:var(--b2);letter-spacing:2px}
+.mc-cta{padding:9px 15px;background:var(--card2);border-top:1px solid var(--b1);font-size:10.5px;color:var(--red);font-weight:700;text-align:center}
 .prono.forte{border-color:var(--green-b);box-shadow:0 0 20px rgba(0,200,150,.06)}
 .prono.moyenne{border-color:var(--amber-b)}
 .prono.alerte{border-color:var(--red-b)}
@@ -2503,6 +2518,16 @@ function noteJouabilite(p){
   return Math.round(p.proba);
 }
 function noteLabel(n){return n>=72?'EXCELLENT':n>=58?'BON':n>=45?'CORRECT':'FAIBLE';}
+// Logo d'équipe MLB sur pastille blanche (lisible même pour les logos sombres). Réutilisé partout.
+function teamLogo(id,size){size=size||20;return id?`<img src="https://www.mlbstatic.com/team-logos/${id}.svg" alt="" width="${size}" height="${size}" loading="lazy" style="vertical-align:middle;background:#fff;border-radius:50%;padding:2px;box-sizing:border-box;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">`:'';}
+// Les 2 logos d'un match (équipes retrouvées via le gamePk dans les pronos chargés)
+function gameLogos(gamePk,size){const p=(typeof tousLesPronos!=='undefined'?tousLesPronos:[]).find(x=>x.gamePk===gamePk&&x.awayTeam);return p?teamLogo(p.awayTeam.id,size)+teamLogo(p.homeTeam.id,size):'';}
+// Registre statique des 30 équipes MLB → permet un logo depuis un NOM ou une ABBR (utile pour l'historique/joueurs où on n'a que du texte)
+const MLB_TEAMS=[[108,'Los Angeles Angels','LAA'],[109,'Arizona Diamondbacks','AZ'],[110,'Baltimore Orioles','BAL'],[111,'Boston Red Sox','BOS'],[112,'Chicago Cubs','CHC'],[113,'Cincinnati Reds','CIN'],[114,'Cleveland Guardians','CLE'],[115,'Colorado Rockies','COL'],[116,'Detroit Tigers','DET'],[117,'Houston Astros','HOU'],[118,'Kansas City Royals','KC'],[119,'Los Angeles Dodgers','LAD'],[120,'Washington Nationals','WSH'],[121,'New York Mets','NYM'],[133,'Athletics','ATH'],[134,'Pittsburgh Pirates','PIT'],[135,'San Diego Padres','SD'],[136,'Seattle Mariners','SEA'],[137,'San Francisco Giants','SF'],[138,'St. Louis Cardinals','STL'],[139,'Tampa Bay Rays','TB'],[140,'Texas Rangers','TEX'],[141,'Toronto Blue Jays','TOR'],[142,'Minnesota Twins','MIN'],[143,'Philadelphia Phillies','PHI'],[144,'Atlanta Braves','ATL'],[145,'Chicago White Sox','CWS'],[146,'Miami Marlins','MIA'],[147,'New York Yankees','NYY'],[158,'Milwaukee Brewers','MIL']];
+const _TID_NAME={},_TID_ABBR={};MLB_TEAMS.forEach(([id,n,a])=>{_TID_NAME[n.toLowerCase()]=id;_TID_ABBR[a.toLowerCase()]=id;});
+function teamIdOf(s){if(!s)return null;s=String(s).trim().replace(/\s*\(.*\)\s*$/,'');const k=s.toLowerCase();if(_TID_NAME[k])return _TID_NAME[k];if(_TID_ABBR[k])return _TID_ABBR[k];for(const[id,n]of MLB_TEAMS){const nl=n.toLowerCase();if(k.includes(nl)||nl.includes(k))return id;}return null;}
+function logoByName(s,size){return teamLogo(teamIdOf(s),size);}
+function logosFromLabel(label,size){if(!label)return '';return String(label).split(' @ ').map(p=>logoByName(p,size)).join('');}
 // SIGNAL HONNÊTE (backtest 912 matchs) : entre ~50% et 58% le modèle est indiscernable du hasard.
 // On ne présente comme VRAI prono que les convictions fortes (≥58%) OU les vraies value vs marché.
 // Le reste est marqué « trop serré » au lieu d'être habillé en recommandation.
@@ -3032,7 +3057,7 @@ function renderSelection(pronos){
         <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${typeLabelOf(p)}</span>${free?'<span class="free-badge">🎁 GRATUIT</span>':''}<span class="sel-time">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}</div>
         <div class="sel-row">${noteBox}
           <div class="sel-body">
-            <div class="sel-match">${p.matchLabel}</div>
+            <div class="sel-match">${teamLogo(p.awayTeam.id,15)}${teamLogo(p.homeTeam.id,15)} ${p.matchLabel}</div>
             <div class="sel-pickname">${displayPick(p)}</div>
             <div class="sel-meta">${p.proba.toFixed(0)}% ${t('sel_success')}${estValueReelle(p)?` · <span style="color:var(--green)">💎 ${t('bet_value')} +${(edgeReel(p)*100).toFixed(1)}%</span>`:''}${p.bookmaker?` · ${p.bookmaker}`:''}</div>
           </div>
@@ -3225,7 +3250,7 @@ function mkProno(p){
     <div class="prono-top">
       <div class="prono-meta">
         <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}
-        <span style="font-size:10px;color:var(--muted)">${p.matchLabel}</span>
+        <span style="font-size:10.5px;color:var(--muted);display:inline-flex;align-items:center;gap:4px">${teamLogo(p.awayTeam.id,17)}${teamLogo(p.homeTeam.id,17)} ${p.matchLabel}</span>
         <span class="tag ${tagClass}">${typeLabelOf(p)}</span>
         ${isFort?`<span class="pill pg">${t('prono_hi')}</span>`:isMoyen?`<span class="pill py">${t('prono_good')}</span>`:''}
         ${estSerre(p)?`<span class="pill" style="background:var(--b2);color:var(--muted);border:1px solid var(--b1)">${t('pill_serre')}</span>`:''}
@@ -3362,21 +3387,17 @@ async function loadMatchs(){
       const awP=g.awayP??t('m_nostarter'),hmP=g.homeP??t('m_nostarter');
       const inn=(st==='Live'&&lv&&lv.inning)?` · ${lv.inningState==='Top'?t('live_top'):lv.inningState==='Bottom'?t('live_bot'):''} ${lv.inning}${t('inning_suf')}`:'';
       const stBadge=st==='Live'?`<span class="pill pr">${t('m_live')}${inn}</span>`:st==='Final'?`<span class="pill pg">${t('m_fin')}</span>`:`<span class="pill py">${t('m_soon')}</span>`;
-      return `<div class="card mb12" style="cursor:pointer" onclick="ouvrirMatch(${g.gamePk})">
-        <div style="padding:14px 16px">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:7px">📅 ${date} · ⏱ ${hr} · ${stBadge}</div>
-          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px">
-            <div><div style="font-size:13px;font-weight:700">${g.away.name}</div><div style="font-size:10px;color:var(--muted)">${g.awayRec?.wins??'—'}${t('rec_w')} - ${g.awayRec?.losses??'—'}${t('rec_l')}</div></div>
-            <div style="text-align:center">
-              ${st!=='Preview'?`<div style="font-family:var(--display);font-size:24px">${as} - ${hs}</div>`:'<div style="color:var(--muted);font-weight:700;font-size:13px">@</div>'}
-            </div>
-            <div style="text-align:right"><div style="font-size:13px;font-weight:700">${g.home.name}</div><div style="font-size:10px;color:var(--muted)">${g.homeRec?.wins??'—'}${t('rec_w')} - ${g.homeRec?.losses??'—'}${t('rec_l')}</div></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);border-top:1px solid var(--b1);padding-top:8px">
-            <span>⚾ ${awP}</span><span>${hmP} ⚾</span>
-          </div>
+      const logo=id=>`<img class="mc-logo" src="https://www.mlbstatic.com/team-logos/${id}.svg" alt="" loading="lazy" onerror="this.style.display='none'">`;
+      const teamCol=(team,rec,pitcher)=>`<div class="mc-team">${logo(team.id)}<div class="mc-name">${team.name}</div><div class="mc-rec">${rec?.wins??'—'}${t('rec_w')}-${rec?.losses??'—'}${t('rec_l')}</div><div class="mc-pitch">⚾ ${pitcher}</div></div>`;
+      const center=st!=='Preview'?`<div class="mc-score">${as}-${hs}</div>`:`<div class="mc-vs">VS</div>`;
+      return `<div class="match-card" onclick="ouvrirMatch(${g.gamePk})">
+        <div class="mc-top"><span class="mc-date">📅 ${date}&nbsp;·&nbsp;⏱ ${hr}</span>${stBadge}</div>
+        <div class="mc-teams">
+          ${teamCol(g.away,g.awayRec,awP)}
+          <div class="mc-center">${center}</div>
+          ${teamCol(g.home,g.homeRec,hmP)}
         </div>
-        <div style="padding:7px 16px;background:var(--card2);border-top:1px solid var(--b1);font-size:10px;color:var(--red);font-weight:600">${t('m_seefull')}</div>
+        <div class="mc-cta">${t('m_seefull')}</div>
       </div>`;
     }).join('');
     startLive(); // assure des scores frais à l'ouverture de l'onglet (+ rafraîchissement auto)
@@ -3402,12 +3423,14 @@ async function ouvrirMatch(gamePk){
     <div class="card mb12" style="padding:18px">
       <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:12px">
         <div style="text-align:center">
+          <div style="margin-bottom:7px">${teamLogo(vProno.awayTeam.id,54)}</div>
           <div style="font-family:var(--display);font-size:22px;margin-bottom:4px">${vProno.awayTeam.name}</div>
           <div style="font-family:var(--display);font-size:28px;color:var(--blue)">${vProno.probaAway.toFixed(1)}%</div>
           <div style="font-size:10px;color:var(--muted)">${t('md_winchance')}</div>
         </div>
         <div style="font-family:var(--display);font-size:18px;color:var(--muted);text-align:center">@</div>
         <div style="text-align:center">
+          <div style="margin-bottom:7px">${teamLogo(vProno.homeTeam.id,54)}</div>
           <div style="font-family:var(--display);font-size:22px;margin-bottom:4px">${vProno.homeTeam.name}</div>
           <div style="font-family:var(--display);font-size:28px;color:var(--red)">${vProno.probaHome.toFixed(1)}%</div>
           <div style="font-size:10px;color:var(--muted)">${t('md_winchance')}</div>
@@ -3512,7 +3535,7 @@ function renderTendances(){
     const covC=td.over85n&&td.cover15/td.over85n>=0.5?'var(--green)':'var(--muted)';
     return `<div class="tc2">
       <div class="tc2-head">
-        <div class="tc2-team"><span class="sdot" style="background:${TCOLORS[x.team.abbreviation]||'#888'}"></span>${x.team.name}</div>
+        <div class="tc2-team" style="display:flex;align-items:center;gap:7px">${teamLogo(x.team.id,24)}${x.team.name}</div>
         <div class="tc2-badges"><span class="tc2-pct ${pctCls}">${pct}%</span>${streak}</div>
       </div>
       <div class="tc2-dots">${t('tend_last10')} ${dots} &nbsp;<strong style="color:var(--white)">${td.bilan10.w}${t('rec_w')}-${td.bilan10.l}${t('rec_l')}</strong></div>
@@ -3567,7 +3590,7 @@ function mkComboHTML(c){
   if(!c)return '';
   const legsHTML=c.legs.map(p=>{const ty=TYP[p.type]||TYP.victoire,le=p.proba-100/p.coteVegas;return `<div class="combo-leg" onclick="ouvrirMatchDepuis(${p.gamePk})">
     <div style="flex:1;min-width:0"><div><span class="combo-leg-type ${ty[1]}">${t(ty[0])}</span> <strong>${p.pick}</strong></div>
-    <div class="combo-leg-math">${p.matchLabel} · proba ${p.proba.toFixed(0)}% · edge ${le>=0?'+':''}${le.toFixed(1)}% ${liveBadge(p)}</div></div>
+    <div class="combo-leg-math" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${gameLogos(p.gamePk,14)}<span>${p.matchLabel} · proba ${p.proba.toFixed(0)}% · edge ${le>=0?'+':''}${le.toFixed(1)}%</span> ${liveBadge(p)}</div></div>
     <span class="combo-leg-cote">${p.coteVegas.toFixed(2)}</span></div>`;}).join('');
   return `<div class="combo ${c.cls}">
     <div class="combo-head">
@@ -3648,7 +3671,7 @@ function computeFun(){
 function outsiderHTML(o){return `<div class="outsider" onclick="ouvrirMatchDepuis(${o.gp})">
     <div class="outsider-cote">${o.odds.toFixed(2)}</div>
     <div class="outsider-body">
-      <div class="outsider-pick">${o.team.name} ${t('win_verb')} <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span></div>
+      <div class="outsider-pick" style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">${teamLogo(o.team.id,18)}<span>${o.team.name} ${t('win_verb')}</span> <span class="outsider-val ${o.edge>=0?'pos':'neg'}">${o.edge>=0?'💎 +'+o.edge.toFixed(1)+'%':o.edge.toFixed(1)+'%'}</span></div>
       <div class="outsider-meta">${o.label} · ${t('out_model')} <strong>${o.mp.toFixed(0)}%</strong> vs ${t('prono_market')} ${o.marketP!=null?o.marketP.toFixed(0)+'%':'—'} · ${o.bk||''}</div>
       <div style="margin-top:5px">${liveBadge({gamePk:o.gp,type:'victoire',homePickExplicit:o.homeDog})}</div>
       ${o.stats.length?`<div class="outsider-data">${o.stats.join(' · ')}</div>`:''}
@@ -3770,7 +3793,7 @@ function renderHistFun(){
     const resTxt=res==='W'?`<span style="color:var(--green);font-weight:800">${t('bet_won')}${h.parie?' +'+((h.mise||0)*((h.cote||1)-1)).toFixed(2)+'€':''}</span>`:res==='L'?`<span style="color:var(--red);font-weight:800">${t('bet_lost')}${h.parie?' −'+(h.mise||0).toFixed(2)+'€':''}</span>`:`<span style="color:var(--amber);font-weight:800">${t('bet_pending')}</span>`;
     const meta=h.parie?`${t('hf_stake')} <strong style="color:var(--white)">${(+h.mise||0).toFixed(2)}€</strong>`:`<span style="color:var(--muted)">${t('hf_suggested')}</span>`;
     if(h.type==='combo'){
-      const legs=(h.legs||[]).map(l=>`<div class="hf-leg">${t((TYP[l.type]||TYP.victoire)[0])} <strong>${l.pick}</strong> <span style="color:var(--muted)">· ${l.matchLabel} · @${(+l.coteVegas||0).toFixed(2)}</span></div>`).join('');
+      const legs=(h.legs||[]).map(l=>`<div class="hf-leg">${t((TYP[l.type]||TYP.victoire)[0])} <strong>${l.pick}</strong> <span style="color:var(--muted)">· ${logosFromLabel(l.matchLabel,13)} ${l.matchLabel} · @${(+l.coteVegas||0).toFixed(2)}</span></div>`).join('');
       return `<div class="hf-item">
         <div class="hf-top"><span class="hf-name">🎯 ${(h.pick||'Combiné').split(' : ')[0]}</span><span class="hf-cote">${(+h.cote||0).toFixed(2)}</span></div>
         <div class="hf-legs">${legs}</div>
@@ -3779,7 +3802,7 @@ function renderHistFun(){
     }
     return `<div class="hf-item">
       <div class="hf-top"><span class="hf-name">🐶 ${h.pick}</span><span class="hf-cote">${(+h.cote||0).toFixed(2)}</span></div>
-      <div class="hf-sub2">${h.matchLabel} · proba modèle ${h.proba}%</div>
+      <div class="hf-sub2" style="display:flex;align-items:center;gap:5px">${logosFromLabel(h.matchLabel,14)}<span>${h.matchLabel} · proba modèle ${h.proba}%</span></div>
       <div class="hf-foot"><span>📅 ${(h.date||'').slice(5)} · ${meta}</span>${resTxt}</div>
     </div>`;
   }).join('');
@@ -3865,7 +3888,7 @@ function renderHistList(hist,filtre){
         ${resBadge}
       </div>
       <div class="histc-pick">${h.pick||''}</div>
-      ${h.matchLabel?`<div class="histc-match">⚾ ${h.matchLabel}</div>`:''}
+      ${h.matchLabel?`<div class="histc-match" style="display:flex;align-items:center;gap:5px">${logosFromLabel(h.matchLabel,15)}<span>${h.matchLabel}</span></div>`:''}
       <div class="histc-stats">
         <span>🎯 ${t('hl_proba')} <b style="color:${confColor(h.proba??50)}">${h.proba!=null?h.proba.toFixed(0)+'%':'—'}</b></span>
         ${cote?`<span>💰 ${t('hl_cote')} <b>${(+cote).toFixed(2)}</b></span>`:''}
@@ -4068,7 +4091,7 @@ function renderStands(id,recs){
       const pythHtml=pyth?`<span style="font-family:var(--mono);font-size:9px;color:var(--muted)">(${Math.round(pyth*100)}% ${t('st_theo')})</span>`:'';
       return`<div class="stand-row">
         <span class="srank">${i+1}</span>
-        <span class="sname"><span class="sdot" style="background:${col}"></span>${r.team.name}</span>
+        <span class="sname" style="display:inline-flex;align-items:center;gap:6px">${teamLogo(r.team.id,20)}${r.team.name}</span>
         <span class="swl">${r.wins}${t('rec_w')}-${r.losses}${t('rec_l')}</span>
         <span class="sgb">${gb}</span>
         <span class="spct" style="color:${pctCol}">${r.winningPercentage} ${pythHtml}</span>
@@ -4098,6 +4121,7 @@ async function loadJoueurs(){
     el.innerHTML=leaders.length?leaders.map((l,i)=>`
       <div class="lead-item">
         <span class="lr-rank ${i<3?'top':''}">${i+1}</span>
+        ${l.team?`<span style="margin:0 7px 0 2px">${logoByName(l.team,22)}</span>`:''}
         <div class="lr-info"><div class="lr-name">${l.name??'—'}</div><div class="lr-team">${l.team??''}</div></div>
         <span class="lr-val" style="color:var(--${col})">${l.value??'—'}</span>
       </div>`).join('')
