@@ -232,6 +232,16 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 
 /* PRONO CARD */
 .prono{background:var(--card);border:1px solid var(--b1);border-radius:12px;overflow:hidden;margin-bottom:10px;transition:border-color .2s,box-shadow .2s}
+.prono-group{margin-bottom:10px;border:1px solid var(--b1);border-radius:12px;overflow:hidden;background:var(--card)}
+.pg-head{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;user-select:none;background:linear-gradient(160deg,var(--card2),var(--card));transition:background .15s}
+.pg-head:hover{background:var(--card2)}
+.pg-title{font-weight:800;font-size:13px;color:var(--white);flex:1;letter-spacing:.3px}
+.pg-count{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap}
+.pg-chevron{font-size:12px;color:var(--muted);transition:transform .2s;margin-left:4px}
+.prono-group.open .pg-chevron{transform:rotate(180deg)}
+.pg-body{display:none;padding:11px 11px 3px;border-top:1px solid var(--b1)}
+.prono-group.open .pg-body{display:block}
+.pg-body .prono{margin-bottom:9px}
 .prono.forte{border-color:var(--green-b);box-shadow:0 0 20px rgba(0,200,150,.06)}
 .prono.moyenne{border-color:var(--amber-b)}
 .prono.alerte{border-color:var(--red-b)}
@@ -614,7 +624,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v69 · 29/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v70 · 29/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -982,7 +992,7 @@ const I18N={
   ci_rlcover_q:"La probabilité que l'équipe « couvre » son handicap : gagner par 2+ (si −1.5) ou ne pas perdre par 2+ (si +1.5).",ci_rlcover_p:"Dérivée de la proba de victoire (donc cohérente avec elle). C'est ce qui détermine la valeur du pari run line.",
   tlbl_victoire:'Victoire du match',tlbl_ou:'Total points (O/U)',tlbl_runline:'Run line (handicap)',pk_win:'{team} remporte le match',pk_over:'OVER {line} points au total',pk_under:'UNDER {line} points au total',pk_rl:'{team} {point}',expl_win:'Modèle sur données réelles (stats MLB + cotes du marché) : {team} a {proba}% de chances de gagner (intervalle {lo}–{hi}%). Runs estimés : {ra} − {rh}.',expl_ou:'Estimation sur données réelles : total attendu {total} points ({ra} − {rh}) vs ligne {line}. Probabilité {side} : {proba}%.',expl_rl:'Run line : {cond}. Couverture estimée : {proba}%.',expl_rl_neg:'{team} doit gagner par 2 points ou plus',expl_rl_pos:'{team} peut perdre par 1 point max (ou gagner)',
   prono_q:"ⓘ c'est quoi ?",odds_best:'Meilleure cote',prono_ourproba:'notre proba',prono_market:'marché',data_real:'données réelles',prono_hi:'🔥 FORTE CHANCE',prono_good:'✅ BONNE CHANCE',prono_probability:'PROBABILITÉ',prono_form:'Forme (récent → ancien) :',prono_weights:'⚖️ POIDS DE CHAQUE CRITÈRE',odds_us:'Meilleure cote US',odds_eu:'Meilleure cote EU',
-  tr_t:'Track record vérifié',tr_s:'Tous les pronostics, résultats réels — sur <strong>{n}</strong> réglés',tr_win:'réussite',pr_empty_value:"Aucun pari de valeur aujourd'hui — le marché est efficace sur ces matchs. C'est normal : les vrais value bets sont rares.",pr_empty_filter:'Aucun pronostic pour ce filtre',sel_none_signal:"Aucun pari à signal fort aujourd'hui. Le modèle ne voit que des matchs trop serrés (≈pile ou face) — mieux vaut s'abstenir que de forcer.",
+  tr_t:'Track record vérifié',tr_s:'Tous les pronostics, résultats réels — sur <strong>{n}</strong> réglés',tr_win:'réussite',pr_empty_value:"Aucun pari de valeur aujourd'hui — le marché est efficace sur ces matchs. C'est normal : les vrais value bets sont rares.",pr_empty_filter:'Aucun pronostic pour ce filtre',pg_count_lbl:'pronos',pr_empty_signal:"Aucun pari à signal fort ici — le modèle ne voit que des matchs trop serrés (≈pile ou face).",sel_none_signal:"Aucun pari à signal fort aujourd'hui. Le modèle ne voit que des matchs trop serrés (≈pile ou face) — mieux vaut s'abstenir que de forcer.",
   dlg_cancel:'Annuler',dlg_confirm:'Confirmer',dlg_bet_ok:'Parier',win_verb:'gagne',
   dc_combo_t:'🎯 Parier ce combiné ?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} sélections<br><span style="font-size:12px">{legs}</span><br><br>Mise : <strong>{m}€</strong> · Cote totale : <strong>{c}</strong><br>Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>Probabilité réelle : <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gagne uniquement si les {n} sélections passent. Mise = quart de Kelly, plafond 5%.</span>',
   dc_out_t:'🎯 Parier cet outsider ?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Mise : <strong>{m}€</strong> · Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Valeur : <strong style="color:var(--green)">+{e}%</strong> vs marché',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Gros coup risqué</strong> — mise de suivi réduite.',
@@ -1092,7 +1102,7 @@ const I18N={
   ci_rlcover_q:'The probability the team "covers" its handicap: win by 2+ (if −1.5) or not lose by 2+ (if +1.5).',ci_rlcover_p:'Derived from the win probability (so consistent with it). It determines the value of the run line bet.',
   tlbl_victoire:'Game winner',tlbl_ou:'Total runs (O/U)',tlbl_runline:'Run line (handicap)',pk_win:'{team} wins the game',pk_over:'OVER {line} total runs',pk_under:'UNDER {line} total runs',pk_rl:'{team} {point}',expl_win:'Model on real data (MLB stats + market odds): {team} has a {proba}% chance to win (range {lo}–{hi}%). Estimated runs: {ra} − {rh}.',expl_ou:'Estimate on real data: expected total {total} runs ({ra} − {rh}) vs line {line}. {side} probability: {proba}%.',expl_rl:'Run line: {cond}. Estimated coverage: {proba}%.',expl_rl_neg:'{team} must win by 2 runs or more',expl_rl_pos:'{team} can lose by 1 run max (or win)',
   prono_q:"ⓘ what's this?",odds_best:'Best odds',prono_ourproba:'our prob.',prono_market:'market',data_real:'real data',prono_hi:'🔥 HIGH CHANCE',prono_good:'✅ GOOD CHANCE',prono_probability:'PROBABILITY',prono_form:'Form (recent → old):',prono_weights:'⚖️ WEIGHT OF EACH CRITERION',odds_us:'Best US odds',odds_eu:'Best EU odds',
-  tr_t:'Verified track record',tr_s:'All predictions, real results — over <strong>{n}</strong> settled',tr_win:'win rate',pr_empty_value:"No value bet today — the market is efficient on these games. That's normal: true value bets are rare.",pr_empty_filter:'No prediction for this filter',sel_none_signal:"No strong-signal bet today. The model only sees games that are too close (≈coin-flip) — better to pass than to force one.",
+  tr_t:'Verified track record',tr_s:'All predictions, real results — over <strong>{n}</strong> settled',tr_win:'win rate',pr_empty_value:"No value bet today — the market is efficient on these games. That's normal: true value bets are rare.",pr_empty_filter:'No prediction for this filter',pg_count_lbl:'picks',pr_empty_signal:"No strong-signal bet here — the model only sees games too close to call (≈coin-flip).",sel_none_signal:"No strong-signal bet today. The model only sees games that are too close (≈coin-flip) — better to pass than to force one.",
   dlg_cancel:'Cancel',dlg_confirm:'Confirm',dlg_bet_ok:'Bet',win_verb:'wins',
   dc_combo_t:'🎯 Bet this parlay?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} picks<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Total odds: <strong>{c}</strong><br>Potential win: <strong style="color:var(--green)">+{g}€</strong><br>Real probability: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Wins only if all {n} picks hit. Stake = quarter Kelly, 5% cap.</span>',
   dc_out_t:'🎯 Bet this underdog?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Stake: <strong>{m}€</strong> · Potential win: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Value: <strong style="color:var(--green)">+{e}%</strong> vs market',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Risky long shot</strong> — reduced follow stake.',
@@ -1202,7 +1212,7 @@ const I18N={
   ci_rlcover_q:'La probabilidad de que el equipo "cubra" su hándicap: ganar por 2+ (si −1.5) o no perder por 2+ (si +1.5).',ci_rlcover_p:'Derivada de la probabilidad de victoria (coherente con ella). Determina el valor de la apuesta run line.',
   tlbl_victoire:'Ganador del partido',tlbl_ou:'Total carreras (O/U)',tlbl_runline:'Run line (hándicap)',pk_win:'{team} gana el partido',pk_over:'OVER {line} carreras en total',pk_under:'UNDER {line} carreras en total',pk_rl:'{team} {point}',expl_win:'Modelo sobre datos reales (stats MLB + cuotas del mercado): {team} tiene un {proba}% de probabilidad de ganar (rango {lo}–{hi}%). Carreras estimadas: {ra} − {rh}.',expl_ou:'Estimación sobre datos reales: total esperado {total} carreras ({ra} − {rh}) vs línea {line}. Probabilidad {side}: {proba}%.',expl_rl:'Run line: {cond}. Cobertura estimada: {proba}%.',expl_rl_neg:'{team} debe ganar por 2 carreras o más',expl_rl_pos:'{team} puede perder por 1 carrera máx (o ganar)',
   prono_q:"ⓘ ¿qué es?",odds_best:'Mejor cuota',prono_ourproba:'nuestra prob.',prono_market:'mercado',data_real:'datos reales',prono_hi:'🔥 ALTA PROBABILIDAD',prono_good:'✅ BUENA PROBABILIDAD',prono_probability:'PROBABILIDAD',prono_form:'Forma (reciente → antiguo):',prono_weights:'⚖️ PESO DE CADA CRITERIO',odds_us:'Mejor cuota US',odds_eu:'Mejor cuota EU',
-  tr_t:'Track record verificado',tr_s:'Todos los pronósticos, resultados reales — sobre <strong>{n}</strong> resueltos',tr_win:'acierto',pr_empty_value:'No hay apuesta de valor hoy — el mercado es eficiente en estos partidos. Es normal: los value bets reales son raros.',pr_empty_filter:'Sin pronóstico para este filtro',sel_none_signal:"Hoy no hay apuesta de señal fuerte. El modelo solo ve partidos muy reñidos (≈cara o cruz) — mejor abstenerse que forzar.",
+  tr_t:'Track record verificado',tr_s:'Todos los pronósticos, resultados reales — sobre <strong>{n}</strong> resueltos',tr_win:'acierto',pr_empty_value:'No hay apuesta de valor hoy — el mercado es eficiente en estos partidos. Es normal: los value bets reales son raros.',pr_empty_filter:'Sin pronóstico para este filtro',pg_count_lbl:'pronósticos',pr_empty_signal:"Ninguna apuesta de señal fuerte aquí — el modelo solo ve partidos muy reñidos (≈cara o cruz).",sel_none_signal:"Hoy no hay apuesta de señal fuerte. El modelo solo ve partidos muy reñidos (≈cara o cruz) — mejor abstenerse que forzar.",
   dlg_cancel:'Cancelar',dlg_confirm:'Confirmar',dlg_bet_ok:'Apostar',win_verb:'gana',
   dc_combo_t:'🎯 ¿Apostar esta combinada?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} selecciones<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Cuota total: <strong>{c}</strong><br>Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>Probabilidad real: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gana solo si entran las {n} selecciones. Stake = Kelly fraccionado, tope 5%.</span>',
   dc_out_t:'🎯 ¿Apostar este outsider?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Stake: <strong>{m}€</strong> · Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Valor: <strong style="color:var(--green)">+{e}%</strong> vs mercado',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Jugada arriesgada</strong> — stake de seguimiento reducido.',
@@ -1317,7 +1327,7 @@ function mkPronoLocked(p){
       <span class="time-badge">📅 ${dateProno(p)} · ⏱ ${heureProno(p)}</span>${liveBadge(p)}
       <span class="tag">${typeLabelOf(p)}</span>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${p.matchLabel}</div>
+    <div class="lk-blur" style="font-size:11px;color:var(--muted);margin-bottom:6px">${p.matchLabel}</div>
     <div class="lk-blur" style="font-size:17px;font-weight:800;margin-bottom:8px">${displayPick(p)}</div>
     <div class="lock-ic">🔒</div>
     <div class="lock-t">${t('lock_t')}</div>
@@ -2823,7 +2833,7 @@ function renderSelection(pronos){
         return `<div class="sel-pick locked" onclick="ouvrirPremium()">
           <div class="sel-hd"><span class="sel-rk">#${i+1}</span><span class="sel-tag">${typeLabelOf(p)}</span><span class="sel-lock-tag">🔒 PREMIUM</span>${liveBadge(p)}</div>
           <div class="sel-row">${noteBox}
-            <div class="sel-body"><div class="sel-match">${p.matchLabel}</div><div class="sel-pickname">${displayPick(p)}</div><div class="sel-meta">${t('sel_unlock_meta')}</div></div>
+            <div class="sel-body"><div class="sel-match lk-blur">${p.matchLabel}</div><div class="sel-pickname lk-blur">${displayPick(p)}</div><div class="sel-meta">${t('sel_unlock_meta')}</div></div>
             ${coteBox}
           </div>
         </div>`;
@@ -2907,17 +2917,40 @@ function trierPar(mode){
   afficherPronos(pronosFiltres());
 }
 
+// Sections rétractables par type de pari (plus lisible : on déroule ce qu'on veut)
+const TYPE_META={victoire:{k:'f2_victoire'},ou:{k:'f2_ou'},runline:{k:'f2_runline'},outsider:{k:null}};
+const TYPE_ORDER=['victoire','ou','runline','outsider'];
+let _openGroups={}; // mémorise l'état déroulé/replié par type
+function toggleGroup(type,head){const g=head.closest('.prono-group');if(!g)return;_openGroups[type]=g.classList.toggle('open');}
 function afficherPronos(pronos){
+  const el=document.getElementById('pronos-list');if(!el)return;
   if(!pronos.length){
-    const msg=filtreMode==='value'?t('pr_empty_value'):t('pr_empty_filter');
-    document.getElementById('pronos-list').innerHTML=`<div class="empty">${msg}</div>`;return;
+    const msg=filtreMode==='value'?t('pr_empty_value'):filtreMode==='signal'?t('pr_empty_signal'):t('pr_empty_filter');
+    el.innerHTML=`<div class="empty">${msg}</div>`;return;
   }
-  // En mode Value, on trie par edge décroissant ; sinon par CHANCE DE GAGNER (proba)
+  // En mode Value, tri par edge décroissant ; sinon par CHANCE DE GAGNER (proba)
   const sorted=[...pronos].sort((a,b)=>{
     if(filtreMode==='value')return (pronoEdge(b)||0)-(pronoEdge(a)||0);
     return b.proba-a.proba;
   });
-  document.getElementById('pronos-list').innerHTML=sorted.map(mkProno).join('');
+  // Regroupe par type de pari
+  const groups={};sorted.forEach(p=>{(groups[p.type]=groups[p.type]||[]).push(p);});
+  const order=TYPE_ORDER.filter(t=>groups[t]);Object.keys(groups).forEach(t=>{if(!order.includes(t))order.push(t);});
+  el.innerHTML=order.map((type,gi)=>{
+    const arr=groups[type],meta=TYPE_META[type]||{k:null};
+    const nFort=arr.filter(signalFort).length;
+    const open=(type in _openGroups)?_openGroups[type]:(gi===0); // 1er groupe déroulé par défaut, sinon état mémorisé
+    const label=(meta.k&&I18N[LANG][meta.k])?t(meta.k):(arr[0].typeLabel||type);
+    const fortBadge=nFort?` · <span style="color:var(--green)">${nFort} 🎯</span>`:'';
+    return `<div class="prono-group${open?' open':''}">
+      <div class="pg-head" onclick="toggleGroup('${type}',this)">
+        <span class="pg-title">${label}</span>
+        <span class="pg-count">${arr.length} ${t('pg_count_lbl')}${fortBadge}</span>
+        <span class="pg-chevron">▾</span>
+      </div>
+      <div class="pg-body">${arr.map(mkProno).join('')}</div>
+    </div>`;
+  }).join('');
 }
 
 // Explication débutant d'un critère (affichée au clic). Détectée par mots-clés dans le nom.
@@ -3472,14 +3505,13 @@ function renderFunSection(){
   if(!FUN.combos.length&&!FUN.outs.length)FUN=computeFun(); // sécurité si appelé seul
   const combos=FUN.combos.length?FUN.combos.map(mkComboHTML).join(''):`<div class="empty">${t('fun_no_combo')}</div>`;
   const outsHTML=!FUN.outs.length?`<div class="empty">${t('fun_no_outs')}</div>`:FUN.outs.map(outsiderHTML).join('');
-  el.innerHTML=`<div class="fun-wrap">
-    <div class="fun-h">${t('fun_h')}</div>
-    <div class="fun-sub">${t('fun_sub')}</div>
-    ${combos}
-    <div class="fun-h" style="font-size:15px;margin-top:16px">${t('fun_outs_h')}</div>
-    <div class="fun-sub">${t('fun_outs_sub')}</div>
-    ${outsHTML}
-  </div>`;
+  // Sections rétractables (mêmes accordéons que la liste de pronos) — combinés ouverts par défaut, outsiders repliés
+  const openF=k=>(('fun_'+k) in _openGroups)?_openGroups['fun_'+k]:(k==='combo');
+  const grpF=(key,title,n,sub,body)=>`<div class="prono-group${openF(key)?' open':''}">
+    <div class="pg-head" onclick="toggleGroup('fun_${key}',this)"><span class="pg-title">${title}</span><span class="pg-count">${n} ${t('pg_count_lbl')}</span><span class="pg-chevron">▾</span></div>
+    <div class="pg-body"><div class="fun-sub" style="margin:0 0 10px">${sub}</div>${body}</div></div>`;
+  el.innerHTML=grpF('combo',t('fun_h'),FUN.combos.length,t('fun_sub'),combos)
+    +grpF('outs',t('fun_outs_h'),FUN.outs.length,t('fun_outs_sub'),outsHTML);
 }
 // Enregistre les pronos fun du jour dans l'historique (suivi de TOUTES les suggestions, pas que les pariées)
 function ajouterFun(fun){
