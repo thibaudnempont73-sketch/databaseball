@@ -1,0 +1,48 @@
+⏳ Construction 2026-04-15→2026-06-22 (point-in-time)…
+912 matchs terminés. Reconstruction…
+  …100/912 (fetches:1051)
+  …200/912 (fetches:2051)
+  …300/912 (fetches:3051)
+  …400/912 (fetches:4051)
+  …500/912 (fetches:5049)
+  …600/912 (fetches:6049)
+  …700/912 (fetches:7049)
+  …800/912 (fetches:8049)
+  …900/912 (fetches:9039)
+912 matchs reconstruits → cache écrit (9109 fetches).
+
+════════ 912 matchs · test out-of-sample 274 · base domicile 54.0% ════════
+référence « tout à la base rate » : log-loss 0.6899
+référence « toujours domicile »   : exactitude 54.0%
+
+variante                 log-loss    Brier   exactitude
+V0 ACTUEL               0.6886   0.2478   51.8%
+V1 re-pondéré           0.6891   0.2481   50.0%
+V2 pitching récence     0.6880   0.2476   50.0%
+V3 re-pond.+récence     0.6892   0.2482   51.1%
+— plafond data (logit)  0.6872   0.2471   53.6%
+
+— Calibration de la meilleure (V2 pitching récence) :
+   0-40%    n= 23 · prédit 37% · réel 39%
+   40-45%   n= 40 · prédit 43% · réel 45%
+   45-50%   n= 64 · prédit 47% · réel 66%
+   50-55%   n= 65 · prédit 52% · réel 52%
+   55-60%   n= 55 · prédit 57% · réel 51%
+   60-100%  n= 27 · prédit 63% · réel 63%
+
+════════ RUN LINE (±1.5) — 1096 prédictions de couverture (test) ════════
+log-loss 0.6494 · Brier 0.2284 · exactitude 64.6%
+(référence : taux de couverture réel moyen 50.0% → log-loss 0.6931)
+— Calibration couverture :
+   0-40%    n=542 · prédit 31% · réel 35%
+   40-45%   n=  6 · prédit 42% · réel 67%
+   55-60%   n=  6 · prédit 58% · réel 33%
+   60-100%  n=542 · prédit 69% · réel 65%
+
+════════ TOTAL (O/U) — précision de l'estimation (test, 274 matchs) ════════
+total réel moyen 9.29 · total estimé moyen 8.61 · biais -0.68
+erreur absolue moyenne (MAE) : 3.40 runs
+direction vs ligne fixe 8.5 : 60.2% correct (réf. 50%)
+(MAE naïve « toujours prédire la moyenne 9.3 » : 3.50 runs)
+
+Note : O/U et moneyline VS LE MARCHÉ non testés (pas de cotes/lignes historiques) → forward-test.
