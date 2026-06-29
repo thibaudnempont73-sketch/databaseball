@@ -74,6 +74,14 @@ h1 .grad{background:linear-gradient(120deg,var(--green),var(--blue));-webkit-bac
 .step h3{font-size:16px;font-weight:800;margin-bottom:6px}
 .step p{font-size:13px;color:var(--muted)}
 
+/* HONNÊTETÉ (différenciateur / confiance) */
+.honest{background:linear-gradient(160deg,rgba(0,200,150,.07),transparent);border:1px solid rgba(0,200,150,.22);border-radius:22px;padding:42px 26px;margin:30px 0}
+.honest-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:20px 26px;margin-top:6px}
+.honest-item{display:flex;gap:13px;align-items:flex-start}
+.honest-item .hi-ic{font-size:23px;flex-shrink:0;line-height:1.3}
+.honest-item h4{font-size:15px;font-weight:800;margin-bottom:4px}
+.honest-item p{font-size:13px;color:var(--muted);line-height:1.55}
+
 /* FINAL CTA */
 .final{text-align:center;background:linear-gradient(135deg,rgba(0,200,150,.10),rgba(75,158,255,.06));border:1px solid rgba(0,200,150,.25);border-radius:22px;padding:50px 24px;margin:30px 0}
 .final h2{font-family:var(--display);font-size:clamp(30px,6vw,52px);letter-spacing:.5px;margin-bottom:12px}
@@ -126,7 +134,7 @@ footer{text-align:center;padding:40px 20px 60px;border-top:1px solid var(--b1);c
   <h1 data-i18n-html="h1">Pariez avec<br><span class="grad">la data, pas le hasard.</span></h1>
   <p class="sub" data-i18n-html="sub">Des pronostics MLB calculés sur des <strong>statistiques réelles</strong> (FIP des lanceurs, splits, park factors) et les <strong>vraies cotes</strong> des bookmakers. <strong>Zéro simulation, zéro promesse magique</strong> — juste de la donnée et des maths.</p>
   <a class="cta" href="app.html?auth=signup" data-i18n="cta">⚡ Créer mon compte gratuit</a>
-  <div class="cta-note" data-i18n="cta_note">Compte gratuit · 1 pronostic complet offert chaque jour · Sans carte bancaire</div>
+  <div class="cta-note" data-i18n="cta_note">Compte gratuit · 1 pronostic complet/jour + bankroll & suivi gratuits · Sans carte bancaire</div>
   <div class="cta-sec" data-i18n-html="cta_sec">Déjà inscrit ? <a href="app.html?auth=login">Se connecter</a></div>
 </header>
 
@@ -151,7 +159,7 @@ footer{text-align:center;padding:40px 20px 60px;border-top:1px solid var(--b1);c
     <div class="feat reveal"><span class="feat-ic">🎲</span><h3 data-i18n="f3h">Combinés & gros coups</h3><p data-i18n-html="f3p">Des combinés <span class="hl">du prudent au gros coup</span> (cotes multipliées) et les outsiders à grosse cote — toujours avec la <span class="hl">vraie probabilité</span> et l'edge affichés.</p></div>
     <div class="feat reveal"><span class="feat-ic">💎</span><h3 data-i18n="f4h">Value vs marché</h3><p data-i18n-html="f4p">On compare <span class="hl">les bookmakers</span> pour afficher la meilleure cote, et on repère les paris où le modèle voit de la valeur que le marché a ratée.</p></div>
     <div class="feat reveal"><span class="feat-ic">📈</span><h3 data-i18n="f5h">Tendances & séries</h3><p data-i18n-html="f5p">Forme sur 10 matchs, <span class="hl">séries en cours</span>, Over/Under, couverture du handicap — pour repérer en un coup d'œil les équipes chaudes.</p></div>
-    <div class="feat reveal"><span class="feat-ic">💰</span><h3 data-i18n="f6h">Bankroll & suivi</h3><p data-i18n-html="f6p">Mise calculée automatiquement selon ton capital, <span class="hl">courbe d'évolution</span> et suivi de chaque pari placé.</p></div>
+    <div class="feat reveal"><span class="feat-ic">💰</span><h3 data-i18n="f6h">Bankroll & suivi</h3><p data-i18n-html="f6p">Mise calculée automatiquement selon ton capital, <span class="hl">courbe d'évolution</span> et suivi de chaque pari — <span class="hl">accessible gratuitement</span>.</p></div>
     <div class="feat reveal"><span class="feat-ic">📐</span><h3 data-i18n="f7h">Calibration honnête</h3><p data-i18n-html="f7p">L'app vérifie : <span class="hl">« quand on annonce 60%, gagne-t-on vraiment 60% ? »</span> La preuve que le modèle tient ses promesses.</p></div>
     <div class="feat reveal"><span class="feat-ic">🔰</span><h3 data-i18n="f8h">Pensé pour débutants</h3><p data-i18n-html="f8p">Chaque critère est <span class="hl">cliquable</span> avec une explication simple. Tu comprends chaque pari, pas juste un chiffre.</p></div>
   </div>
@@ -165,6 +173,20 @@ footer{text-align:center;padding:40px 20px 60px;border-top:1px solid var(--b1);c
     <div class="step reveal"><div class="step-n">1</div><h3 data-i18n="s1h">Ouvre la Sélection du jour</h3><p data-i18n="s1p">Les meilleurs paris du jour, déjà triés et notés sur 100.</p></div>
     <div class="step reveal"><div class="step-n">2</div><h3 data-i18n="s2h">Comprends le pari</h3><p data-i18n="s2p">Probabilité, meilleure cote, valeur vs marché et la raison en clair.</p></div>
     <div class="step reveal"><div class="step-n">3</div><h3 data-i18n="s3h">Place & suis</h3><p data-i18n="s3p">Mise auto selon ta bankroll, puis suis tes gains et ta calibration.</p></div>
+  </div>
+</section>
+
+<!-- HONNÊTETÉ -->
+<section class="section wrap">
+  <div class="honest reveal">
+    <div class="sec-eye" style="color:var(--green)" data-i18n="hon_e">L'honnêteté avant tout</div>
+    <div class="sec-title" style="margin-bottom:26px" data-i18n="hon_t">On ne te vend pas du rêve, on te montre la data</div>
+    <div class="honest-list">
+      <div class="honest-item"><span class="hi-ic">🚫</span><div><h4 data-i18n="hon1h">Zéro simulation</h4><p data-i18n="hon1p">Tout vient de stats MLB réelles et des vraies cotes. Jamais un chiffre inventé pour faire joli.</p></div></div>
+      <div class="honest-item"><span class="hi-ic">⚖️</span><div><h4 data-i18n="hon2h">On te dit quand t'abstenir</h4><p data-i18n="hon2p">Quand un match est trop serré (≈ pile ou face), on le marque comme tel au lieu de le déguiser en pronostic sûr.</p></div></div>
+      <div class="honest-item"><span class="hi-ic">📐</span><div><h4 data-i18n="hon3h">Notre calibration est visible</h4><p data-i18n="hon3p">Quand on annonce 60%, on vérifie qu'on gagne vraiment ~60%. Des preuves chiffrées, pas des promesses.</p></div></div>
+      <div class="honest-item"><span class="hi-ic">🎯</span><div><h4 data-i18n="hon4h">Aucune promesse magique</h4><p data-i18n="hon4p">Le marché des bookmakers est très efficace. On cherche l'edge réel, sans jamais prétendre le battre à coup sûr.</p></div></div>
+    </div>
   </div>
 </section>
 
@@ -190,7 +212,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 // ─── i18n FR / EN / ES (landing) ───
 const I18N={
- fr:{doc_title:'DataBaseball — Pronostics MLB sur données réelles',nav_login:'Se connecter',nav_signup:'Créer un compte',badge:'DONNÉES MLB EN DIRECT',h1:'Pariez avec<br><span class="grad">la data, pas le hasard.</span>',sub:'Des pronostics MLB calculés sur des <strong>statistiques réelles</strong> (FIP des lanceurs, splits, park factors) et les <strong>vraies cotes</strong> des bookmakers. <strong>Zéro simulation, zéro promesse magique</strong> — juste de la donnée et des maths.',cta:'⚡ Créer mon compte gratuit',cta_note:'Compte gratuit · 1 pronostic complet offert chaque jour · Sans carte bancaire',cta_sec:'Déjà inscrit ? <a href="app.html?auth=login">Se connecter</a>',
+ fr:{doc_title:'DataBaseball — Pronostics MLB sur données réelles',nav_login:'Se connecter',nav_signup:'Créer un compte',badge:'DONNÉES MLB EN DIRECT',h1:'Pariez avec<br><span class="grad">la data, pas le hasard.</span>',sub:'Des pronostics MLB calculés sur des <strong>statistiques réelles</strong> (FIP des lanceurs, splits, park factors) et les <strong>vraies cotes</strong> des bookmakers. <strong>Zéro simulation, zéro promesse magique</strong> — juste de la donnée et des maths.',cta:'⚡ Créer mon compte gratuit',cta_note:'Compte gratuit · 1 pronostic complet/jour + bankroll & suivi gratuits · Sans carte bancaire',cta_sec:'Déjà inscrit ? <a href="app.html?auth=login">Se connecter</a>',
   tr1:'données réelles',tr2:'pronostic offert / jour',tr3:'types de paris + combinés',tr4:'équipes MLB suivies',tr5:'cotes comparées',
   fe:"Ce que fait l'app",ft:'Trouver les bons paris, sans se noyer',
   f1h:'Sélection du jour',f1p:'Parmi tous les matchs, l\'app fait remonter les <span class="hl">meilleurs coups notés sur 100</span> et t\'explique <em>pourquoi</em>. <span class="hl">1 pronostic complet t\'est offert chaque jour.</span>',
@@ -198,16 +220,21 @@ const I18N={
   f3h:'Combinés & gros coups',f3p:'Des combinés <span class="hl">du prudent au gros coup</span> (cotes multipliées) et les outsiders à grosse cote — toujours avec la <span class="hl">vraie probabilité</span> et l\'edge affichés.',
   f4h:'Value vs marché',f4p:'On compare <span class="hl">les bookmakers</span> pour afficher la meilleure cote, et on repère les paris où le modèle voit de la valeur que le marché a ratée.',
   f5h:'Tendances & séries',f5p:'Forme sur 10 matchs, <span class="hl">séries en cours</span>, Over/Under, couverture du handicap — pour repérer en un coup d\'œil les équipes chaudes.',
-  f6h:'Bankroll & suivi',f6p:'Mise calculée automatiquement selon ton capital, <span class="hl">courbe d\'évolution</span> et suivi de chaque pari placé.',
+  f6h:'Bankroll & suivi',f6p:'Mise calculée automatiquement selon ton capital, <span class="hl">courbe d\'évolution</span> et suivi de chaque pari — <span class="hl">accessible gratuitement</span>.',
   f7h:'Calibration honnête',f7p:'L\'app vérifie : <span class="hl">« quand on annonce 60%, gagne-t-on vraiment 60% ? »</span> La preuve que le modèle tient ses promesses.',
   f8h:'Pensé pour débutants',f8p:'Chaque critère est <span class="hl">cliquable</span> avec une explication simple. Tu comprends chaque pari, pas juste un chiffre.',
+  hon_e:"L'honnêteté avant tout",hon_t:'On ne te vend pas du rêve, on te montre la data',
+  hon1h:'Zéro simulation',hon1p:'Tout vient de stats MLB réelles et des vraies cotes. Jamais un chiffre inventé pour faire joli.',
+  hon2h:"On te dit quand t'abstenir",hon2p:'Quand un match est trop serré (≈ pile ou face), on le marque comme tel au lieu de le déguiser en pronostic sûr.',
+  hon3h:'Notre calibration est visible',hon3p:"Quand on annonce 60%, on vérifie qu'on gagne vraiment ~60%. Des preuves chiffrées, pas des promesses.",
+  hon4h:'Aucune promesse magique',hon4p:"Le marché des bookmakers est très efficace. On cherche l'edge réel, sans jamais prétendre le battre à coup sûr.",
   se:'Comment ça marche',stt:'3 étapes, c\'est tout',
   s1h:'Ouvre la Sélection du jour',s1p:'Les meilleurs paris du jour, déjà triés et notés sur 100.',
   s2h:'Comprends le pari',s2p:'Probabilité, meilleure cote, valeur vs marché et la raison en clair.',
   s3h:'Place & suis',s3p:'Mise auto selon ta bankroll, puis suis tes gains et ta calibration.',
   fh:'Prêt à parier malin ?',fp:'Les matchs MLB du jour sont déjà analysés. Crée ton compte gratuit et regarde la Sélection.',
   warn:'⚠️ Outil d\'analyse statistique à but informatif. Aucun pari n\'est sans risque, et aucun modèle ne bat le marché à coup sûr. Ne misez que ce que vous pouvez perdre. Réservé aux 18+.',credits:'DataBaseball · Données : MLB Stats API, Open-Meteo, The Odds API · Fait avec ⚾ et des maths'},
- en:{doc_title:'DataBaseball — MLB predictions on real data',nav_login:'Log in',nav_signup:'Sign up',badge:'LIVE MLB DATA',h1:'Bet with<br><span class="grad">data, not luck.</span>',sub:'MLB predictions computed on <strong>real stats</strong> (pitcher FIP, splits, park factors) and the <strong>real odds</strong> of bookmakers. <strong>Zero simulation, zero magic promise</strong> — just data and math.',cta:'⚡ Create my free account',cta_note:'Free account · 1 full pick offered every day · No credit card',cta_sec:'Already registered? <a href="app.html?auth=login">Log in</a>',
+ en:{doc_title:'DataBaseball — MLB predictions on real data',nav_login:'Log in',nav_signup:'Sign up',badge:'LIVE MLB DATA',h1:'Bet with<br><span class="grad">data, not luck.</span>',sub:'MLB predictions computed on <strong>real stats</strong> (pitcher FIP, splits, park factors) and the <strong>real odds</strong> of bookmakers. <strong>Zero simulation, zero magic promise</strong> — just data and math.',cta:'⚡ Create my free account',cta_note:'Free account · 1 full pick/day + free bankroll & tracking · No credit card',cta_sec:'Already registered? <a href="app.html?auth=login">Log in</a>',
   tr1:'real data',tr2:'free pick / day',tr3:'bet types + parlays',tr4:'MLB teams tracked',tr5:'odds compared',
   fe:'What the app does',ft:'Find the right bets, without drowning',
   f1h:"Today's Selection",f1p:'Across all games, the app surfaces the <span class="hl">best plays scored out of 100</span> and explains <em>why</em>. <span class="hl">1 full pick is offered to you every day.</span>',
@@ -215,16 +242,21 @@ const I18N={
   f3h:'Parlays & long shots',f3p:'Parlays <span class="hl">from safe to long shot</span> (multiplied odds) and big-odds underdogs — always with the <span class="hl">real probability</span> and edge shown.',
   f4h:'Value vs market',f4p:'We compare <span class="hl">bookmakers</span> to show the best odds, and spot the bets where the model sees value the market missed.',
   f5h:'Trends & streaks',f5p:'Form over 10 games, <span class="hl">current streaks</span>, Over/Under, handicap coverage — to spot hot teams at a glance.',
-  f6h:'Bankroll & tracking',f6p:'Stake computed automatically from your capital, <span class="hl">profit curve</span> and tracking of every placed bet.',
+  f6h:'Bankroll & tracking',f6p:'Stake computed automatically from your capital, <span class="hl">profit curve</span> and tracking of every placed bet — <span class="hl">free to use</span>.',
   f7h:'Honest calibration',f7p:'The app checks: <span class="hl">"when we say 60%, do we really win 60%?"</span> Proof the model keeps its promises.',
   f8h:'Built for beginners',f8p:'Each criterion is <span class="hl">clickable</span> with a simple explanation. You understand each bet, not just a number.',
+  hon_e:'Honesty first',hon_t:"We don't sell dreams, we show you the data",
+  hon1h:'Zero simulation',hon1p:'Everything comes from real MLB stats and real odds. Never a number made up to look good.',
+  hon2h:'We tell you when to pass',hon2p:'When a game is too close (≈ coin-flip), we tag it as such instead of dressing it up as a sure pick.',
+  hon3h:'Our calibration is visible',hon3p:'When we say 60%, we check we really win ~60%. Hard numbers, not promises.',
+  hon4h:'No magic promises',hon4p:'The bookmaker market is very efficient. We hunt the real edge, without ever claiming to beat it for sure.',
   se:'How it works',stt:'3 steps, that\'s all',
   s1h:"Open Today's Selection",s1p:'The best bets of the day, already sorted and scored out of 100.',
   s2h:'Understand the bet',s2p:'Probability, best odds, value vs market and the reason in plain words.',
   s3h:'Place & track',s3p:'Auto stake from your bankroll, then track your profit and calibration.',
   fh:'Ready to bet smart?',fp:"Today's MLB games are already analyzed. Create your free account and check the Selection.",
   warn:'⚠️ Statistical analysis tool for informational purposes. No bet is risk-free, and no model beats the market for sure. Only bet what you can afford to lose. 18+ only.',credits:'DataBaseball · Data: MLB Stats API, Open-Meteo, The Odds API · Made with ⚾ and math'},
- es:{doc_title:'DataBaseball — Pronósticos MLB sobre datos reales',nav_login:'Iniciar sesión',nav_signup:'Crear cuenta',badge:'DATOS MLB EN DIRECTO',h1:'Apuesta con<br><span class="grad">datos, no azar.</span>',sub:'Pronósticos MLB calculados sobre <strong>estadísticas reales</strong> (FIP de lanzadores, splits, park factors) y las <strong>cuotas reales</strong> de los bookmakers. <strong>Cero simulación, cero promesa mágica</strong> — solo datos y matemáticas.',cta:'⚡ Crear mi cuenta gratis',cta_note:'Cuenta gratis · 1 pronóstico completo gratis cada día · Sin tarjeta',cta_sec:'¿Ya registrado? <a href="app.html?auth=login">Iniciar sesión</a>',
+ es:{doc_title:'DataBaseball — Pronósticos MLB sobre datos reales',nav_login:'Iniciar sesión',nav_signup:'Crear cuenta',badge:'DATOS MLB EN DIRECTO',h1:'Apuesta con<br><span class="grad">datos, no azar.</span>',sub:'Pronósticos MLB calculados sobre <strong>estadísticas reales</strong> (FIP de lanzadores, splits, park factors) y las <strong>cuotas reales</strong> de los bookmakers. <strong>Cero simulación, cero promesa mágica</strong> — solo datos y matemáticas.',cta:'⚡ Crear mi cuenta gratis',cta_note:'Cuenta gratis · 1 pronóstico completo/día + bankroll y seguimiento gratis · Sin tarjeta',cta_sec:'¿Ya registrado? <a href="app.html?auth=login">Iniciar sesión</a>',
   tr1:'datos reales',tr2:'pronóstico gratis / día',tr3:'tipos de apuesta + combinadas',tr4:'equipos MLB seguidos',tr5:'cuotas comparadas',
   fe:'Lo que hace la app',ft:'Encuentra las buenas apuestas, sin agobiarte',
   f1h:'Selección del día',f1p:'Entre todos los partidos, la app destaca las <span class="hl">mejores jugadas puntuadas sobre 100</span> y te explica <em>por qué</em>. <span class="hl">1 pronóstico completo gratis cada día.</span>',
@@ -232,9 +264,14 @@ const I18N={
   f3h:'Combinadas y grandes jugadas',f3p:'Combinadas <span class="hl">de la prudente a la gran jugada</span> (cuotas multiplicadas) y outsiders de cuota alta — siempre con la <span class="hl">probabilidad real</span> y el edge mostrados.',
   f4h:'Value vs mercado',f4p:'Comparamos <span class="hl">los bookmakers</span> para mostrar la mejor cuota, y detectamos las apuestas donde el modelo ve valor que el mercado pasó por alto.',
   f5h:'Tendencias y rachas',f5p:'Forma en 10 partidos, <span class="hl">rachas actuales</span>, Over/Under, cobertura del hándicap — para detectar de un vistazo los equipos en racha.',
-  f6h:'Bankroll y seguimiento',f6p:'Stake calculado automáticamente según tu capital, <span class="hl">curva de ganancias</span> y seguimiento de cada apuesta.',
+  f6h:'Bankroll y seguimiento',f6p:'Stake calculado automáticamente según tu capital, <span class="hl">curva de ganancias</span> y seguimiento de cada apuesta — <span class="hl">de uso gratuito</span>.',
   f7h:'Calibración honesta',f7p:'La app verifica: <span class="hl">«cuando decimos 60%, ¿ganamos realmente el 60%?»</span> La prueba de que el modelo cumple.',
   f8h:'Pensado para principiantes',f8p:'Cada criterio es <span class="hl">clicable</span> con una explicación sencilla. Entiendes cada apuesta, no solo un número.',
+  hon_e:'La honestidad ante todo',hon_t:'No te vendemos sueños, te mostramos los datos',
+  hon1h:'Cero simulación',hon1p:'Todo viene de estadísticas MLB reales y cuotas reales. Nunca un número inventado para quedar bien.',
+  hon2h:'Te decimos cuándo abstenerte',hon2p:'Cuando un partido está muy reñido (≈ cara o cruz), lo marcamos como tal en vez de disfrazarlo de pronóstico seguro.',
+  hon3h:'Nuestra calibración es visible',hon3p:'Cuando decimos 60%, verificamos que ganamos de verdad ~60%. Pruebas con cifras, no promesas.',
+  hon4h:'Ninguna promesa mágica',hon4p:'El mercado de los bookmakers es muy eficiente. Buscamos el edge real, sin pretender vencerlo con seguridad.',
   se:'Cómo funciona',stt:'3 pasos, nada más',
   s1h:'Abre la Selección del día',s1p:'Las mejores apuestas del día, ya ordenadas y puntuadas sobre 100.',
   s2h:'Entiende la apuesta',s2p:'Probabilidad, mejor cuota, valor vs mercado y la razón en claro.',
