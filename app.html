@@ -691,7 +691,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v76 · 30/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v77 · 30/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -954,7 +954,7 @@ const _cache={};
 // (clé anon publique = lecture seule, protégée par RLS ; aucun secret ici)
 // ═══════════════════════════════════════════════════
 const SUPA_URL='https://qjuwtaxlidvxxhbjdsyl.supabase.co';
-const REDIRECT_URL=location.origin+location.pathname; // où Supabase renvoie après clic sur le lien email
+const REDIRECT_URL='https://databaseball.app/app.html'; // domaine perso FIXE : ne jamais exposer github.io dans les emails d'auth
 const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqdXd0YXhsaWR2eHhoYmpkc3lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTk2NTUsImV4cCI6MjA5ODEzNTY1NX0.EZmxxQ3FRJm_zeHF4Nzu7mMBht9wM9h4bpBDuAztwXQ';
 let SNAP=null;
 // ═══════════════════════════════════════════════════
