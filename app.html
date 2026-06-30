@@ -582,6 +582,8 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .lex-d{font-size:12.5px;color:var(--muted);line-height:1.5}
 .lex-open-btn{display:block;width:100%;margin-top:10px;background:var(--card2);border:1px solid var(--blue);color:var(--blue);font-weight:700;font-size:12.5px;padding:11px;border-radius:9px;cursor:pointer;font-family:var(--sans)}
 .lex-open-btn:hover{background:var(--b1)}
+.lex-mini{display:inline-flex;align-items:center;gap:5px;margin:0 0 12px;background:var(--card2);border:1px solid var(--blue);color:var(--blue);font-weight:700;font-size:11.5px;padding:8px 13px;border-radius:9px;cursor:pointer;font-family:var(--sans)}
+.lex-mini:hover{background:var(--b1)}
 
 /* AIDE DÉBUTANT */
 .help-box{background:var(--card);border:1px solid var(--b1);border-radius:10px;margin-bottom:14px;overflow:hidden}
@@ -718,7 +720,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v79 · 30/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v80 · 30/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -771,7 +773,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
       <div class="help-item" style="color:var(--muted)" data-i18n-html="help_10">⚠️ Outil d'analyse à but informatif. <strong>Aucun modèle ne bat le marché à coup sûr</strong> — le marché des bookmakers est très efficace. Ne misez que ce que vous pouvez perdre.</div>
     </div>
   </details>
-  <button class="lex-open-btn" onclick="openLexique()" data-i18n="lex_open">📖 Lexique du débutant — tous les termes expliqués</button>
+  <button class="lex-open-btn" onclick="openLexique('pronos')" data-i18n="lex_open">📖 Lexique du débutant — tous les termes expliqués</button>
   <div id="best-bet"></div>
   <div id="fun-section"></div>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
@@ -794,6 +796,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <!-- ═══ MATCHS ═══ -->
 <div class="page" id="page-matchs">
   <div class="ph"><div class="ph-eye" data-i18n="mh_eye">En direct</div><div class="ph-title" data-i18n="mh_title">MATCHS DU JOUR</div><div class="ph-sub" data-i18n="mh_sub">Cliquez pour voir l'analyse complète avec toutes les données croisées</div></div>
+  <button class="lex-mini" onclick="openLexique('matchs')" data-i18n="lex_tab">📖 Lexique de cet onglet</button>
   <div id="matchs-list"><div class="loading"><div class="spinner"></div></div></div>
   <div id="match-detail" style="display:none"></div>
 </div>
@@ -801,6 +804,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <!-- ═══ TENDANCES ═══ -->
 <div class="page" id="page-tendances">
   <div class="ph"><div class="ph-eye" data-i18n="th_eye">Séries & forme · 100% données réelles</div><div class="ph-title" data-i18n="th_title">TENDANCES DU JOUR</div><div class="ph-sub" data-i18n="th_sub">Les séries des équipes qui jouent aujourd'hui, calculées sur leurs 10 derniers vrais matchs. Triez pour repérer les équipes chaudes.</div></div>
+  <button class="lex-mini" onclick="openLexique('tendances')" data-i18n="lex_tab">📖 Lexique de cet onglet</button>
   <div class="tabs" id="tend-tris">
     <button class="tab-btn active" onclick="trierTendances('forme',this)" data-i18n="tend_forme">🔥 Forme</button>
     <button class="tab-btn" onclick="trierTendances('over',this)" data-i18n="tend_over">📊 Over 8.5</button>
@@ -814,6 +818,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <!-- ═══ HISTORIQUE ═══ -->
 <div class="page" id="page-historique">
   <div class="ph"><div class="ph-eye" data-i18n="hh_eye">Mémoire</div><div class="ph-title" data-i18n="hh_title">HISTORIQUE DES PRONOSTICS</div><div class="ph-sub" data-i18n-html="hh_sub">Tous les pronos générés sont suivis ici pour mesurer la fiabilité du modèle (calibration). Vos <strong>paris réels</strong> sont dans 💰 Bankroll.</div></div>
+  <button class="lex-mini" onclick="openLexique('historique')" data-i18n="lex_tab">📖 Lexique de cet onglet</button>
 
   <div id="hist-tools" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
     <button class="io-btn" onclick="exporterHistorique()" data-i18n="io_export">⬇️ Exporter (JSON)</button>
@@ -895,6 +900,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <!-- ═══ BANKROLL ═══ -->
 <div class="page" id="page-bankroll">
   <div class="ph"><div class="ph-eye" data-i18n="bh_eye">Gestion financière</div><div class="ph-title" data-i18n="bh_title">MA BANKROLL</div><div class="ph-sub" data-i18n="bh_sub">Définissez votre capital, pariez depuis l'onglet ⚡ Pronostics, suivez votre courbe ici</div></div>
+  <button class="lex-mini" onclick="openLexique('bankroll')" data-i18n="lex_tab">📖 Lexique de cet onglet</button>
 
   <div class="card mb16">
     <div class="card-h"><div class="card-ht" data-i18n="bk_cap">💰 Votre capital de départ</div><div class="card-hs" data-i18n="bk_cap_s">Mises calculées automatiquement (Kelly fractionné 25%)</div></div>
@@ -926,6 +932,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <!-- ═══ CLASSEMENTS ═══ -->
 <div class="page" id="page-classements">
   <div class="ph"><div class="ph-eye" data-i18n="ch_eye">Saison 2026</div><div class="ph-title" data-i18n="ch_title">CLASSEMENTS MLB</div><div class="ph-sub" data-i18n="ch_sub">Données officielles — Win% pythagoricien calculé sur runs réels</div></div>
+  <button class="lex-mini" onclick="openLexique('classements')" data-i18n="lex_tab">📖 Lexique de cet onglet</button>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('cl','al',this)" data-i18n="cl_al">Ligue Américaine</button>
     <button class="tab-btn" onclick="switchTab('cl','nl',this)" data-i18n="cl_nl">Ligue Nationale</button>
@@ -943,6 +950,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <!-- ═══ JOUEURS ═══ -->
 <div class="page" id="page-joueurs">
   <div class="ph"><div class="ph-eye" data-i18n="ch_eye">Saison 2026</div><div class="ph-title" data-i18n="jh_title">MEILLEURS JOUEURS</div><div class="ph-sub" data-i18n="jh_sub">Classements officiels MLB avec explications simples</div></div>
+  <button class="lex-mini" onclick="openLexique('joueurs')" data-i18n="lex_tab">📖 Lexique de cet onglet</button>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('jou','bat',this)" data-i18n="jou_bat">Batteurs</button>
     <button class="tab-btn" onclick="switchTab('jou','lan',this)" data-i18n="jou_lan">Lanceurs</button>
@@ -1024,7 +1032,7 @@ const I18N={
   jh_title:'MEILLEURS JOUEURS',jh_sub:'Classements officiels MLB avec explications simples',jou_bat:'Batteurs',jou_lan:'Lanceurs',
   pl_hr:'💣 Plus de circuits',pl_hr_s:'Balle envoyée hors du terrain — tous les coureurs marquent',pl_avg:'🏏 Meilleure moyenne',pl_avg_s:'Coups sûrs ÷ passages au bâton',pl_rbi:'📈 Plus de points produits',pl_rbi_s:'Coéquipiers fait marquer',pl_ops:'⚡ Force offensive totale',pl_ops_s:'Capacité à atteindre les bases + puissance de frappe',pl_sb:'🏃 Bases volées',pl_sb_s:'Volé une base sans se faire éliminer',pl_runs:'🎯 Points marqués',pl_runs_s:'Fois où le joueur a lui-même passé le marbre',
   pl_era:'🎯 Moins de points encaissés',pl_era_s:"Moyenne points encaissés sur 9 manches — plus c'est bas, mieux c'est",pl_so:"💨 Plus d'éliminations directes",pl_so_s:'Batteurs mis hors-jeu directement',pl_wins:'✅ Plus de victoires',pl_wins_s:'Matchs gagnés quand le lanceur était en jeu',pl_whip:'🔢 Efficacité globale',pl_whip_s:"Marcheurs + coups sûrs concédés par manche — plus c'est bas, mieux c'est",pl_saves:'💾 Matchs sauvegardés',pl_saves_s:'Entre en fin de match et préserve la victoire',pl_k9:'📐 Éliminations par manche',pl_k9_s:"Moyenne d'éliminations directes pour 9 manches lancées",
-  f2_value:'💎 Value (rentables)',f2_signal:'🎯 Signal fort',pill_serre:'⚖️ trop serré',edge_lbl:'Edge',edge_devig:'(dé-viggé)',f2_victoire:'🏆 Victoire',f2_ou:'📊 Total points',f2_runline:'📐 Run line',sort_conf:'Confiance ↓',sort_proba:'Chance ↓',export_pdf:'📄 Export',loading_pronos:'Analyse mathématique en cours...',help_summary:'🔰 Comment lire un pronostic ? (cliquez)',lex_title:'📖 Lexique du débutant',lex_open:'📖 Lexique du débutant — tous les termes expliqués',
+  f2_value:'💎 Value (rentables)',f2_signal:'🎯 Signal fort',pill_serre:'⚖️ trop serré',edge_lbl:'Edge',edge_devig:'(dé-viggé)',f2_victoire:'🏆 Victoire',f2_ou:'📊 Total points',f2_runline:'📐 Run line',sort_conf:'Confiance ↓',sort_proba:'Chance ↓',export_pdf:'📄 Export',loading_pronos:'Analyse mathématique en cours...',help_summary:'🔰 Comment lire un pronostic ? (cliquez)',lex_title:'📖 Lexique du débutant',lex_open:'📖 Lexique du débutant — tous les termes expliqués',lex_tab:'📖 Lexique de cet onglet',
   bet_won:'✅ Gagné',bet_lost:'❌ Perdu',bet_pending:'⏳ En attente',bet_placed:'🎟️ Parié',odds_lbl:'cote',bet_cancel:'annuler',bet_analyse:'📊 Analyse seule — aucune cote bookmaker pour ce type de pari',bet_setbk:'💰 Définir ma bankroll pour parier',bet_action:'🎯 Parier',bet_value:'valeur',bet_suivi:'suivi (pas de valeur)',match_fin_closed:'🔒 Match terminé — pari fermé',match_live_closed:'🔒 Match commencé — pari fermé',
   live_won:'✅ Gagné',live_lost:'❌ Perdu',live_fin:'Terminé',live_now:'🔴 EN DIRECT',live_soon:'🕐 À venir',live_top:'début',live_bot:'fin',inning_suf:'ᵉ',
   m_none:"Aucun match aujourd'hui",m_unavail:'⚠️ Données indisponibles',m_live:'🔴 EN DIRECT',m_fin:'✅ TERMINÉ',m_soon:'🕐 À VENIR',m_nostarter:'Partant non annoncé',m_seefull:"Voir l'analyse complète avec tous les pronostics →",rec_w:'V',rec_l:'D',
@@ -1140,7 +1148,7 @@ const I18N={
   jh_title:'TOP PLAYERS',jh_sub:'Official MLB rankings with simple explanations',jou_bat:'Batters',jou_lan:'Pitchers',
   pl_hr:'💣 Most home runs',pl_hr_s:'Ball hit out of the park — all runners score',pl_avg:'🏏 Best average',pl_avg_s:'Hits ÷ at-bats',pl_rbi:'📈 Most RBIs',pl_rbi_s:'Teammates driven in to score',pl_ops:'⚡ Total offensive power',pl_ops_s:'Ability to reach base + hitting power',pl_sb:'🏃 Stolen bases',pl_sb_s:'Stole a base without being thrown out',pl_runs:'🎯 Runs scored',pl_runs_s:'Times the player crossed home plate himself',
   pl_era:'🎯 Fewest runs allowed',pl_era_s:'Average runs allowed per 9 innings — lower is better',pl_so:'💨 Most strikeouts',pl_so_s:'Batters struck out directly',pl_wins:'✅ Most wins',pl_wins_s:'Games won while the pitcher was in',pl_whip:'🔢 Overall efficiency',pl_whip_s:'Walks + hits allowed per inning — lower is better',pl_saves:'💾 Saves',pl_saves_s:'Comes in late and preserves the win',pl_k9:'📐 Strikeouts per inning',pl_k9_s:'Average strikeouts per 9 innings pitched',
-  f2_value:'💎 Value (profitable)',f2_signal:'🎯 Strong signal',pill_serre:'⚖️ too close',edge_lbl:'Edge',edge_devig:'(devigged)',f2_victoire:'🏆 Moneyline',f2_ou:'📊 Total runs',f2_runline:'📐 Run line',sort_conf:'Confidence ↓',sort_proba:'Win chance ↓',export_pdf:'📄 Export',loading_pronos:'Running the math…',help_summary:'🔰 How to read a prediction? (click)',lex_title:'📖 Beginner glossary',lex_open:'📖 Beginner glossary — every term explained',
+  f2_value:'💎 Value (profitable)',f2_signal:'🎯 Strong signal',pill_serre:'⚖️ too close',edge_lbl:'Edge',edge_devig:'(devigged)',f2_victoire:'🏆 Moneyline',f2_ou:'📊 Total runs',f2_runline:'📐 Run line',sort_conf:'Confidence ↓',sort_proba:'Win chance ↓',export_pdf:'📄 Export',loading_pronos:'Running the math…',help_summary:'🔰 How to read a prediction? (click)',lex_title:'📖 Beginner glossary',lex_open:'📖 Beginner glossary — every term explained',lex_tab:'📖 Glossary for this tab',
   bet_won:'✅ Won',bet_lost:'❌ Lost',bet_pending:'⏳ Pending',bet_placed:'🎟️ Bet',odds_lbl:'odds',bet_cancel:'cancel',bet_analyse:'📊 Analysis only — no bookmaker odds for this bet type',bet_setbk:'💰 Set my bankroll to bet',bet_action:'🎯 Bet',bet_value:'value',bet_suivi:'follow (no value)',match_fin_closed:'🔒 Game finished — betting closed',match_live_closed:'🔒 Game started — betting closed',
   live_won:'✅ Won',live_lost:'❌ Lost',live_fin:'Final',live_now:'🔴 LIVE',live_soon:'🕐 Upcoming',live_top:'top',live_bot:'bot',inning_suf:'',
   m_none:'No game today',m_unavail:'⚠️ Data unavailable',m_live:'🔴 LIVE',m_fin:'✅ FINAL',m_soon:'🕐 UPCOMING',m_nostarter:'Starter TBA',m_seefull:'See the full analysis with all predictions →',rec_w:'W',rec_l:'L',
@@ -1256,7 +1264,7 @@ const I18N={
   jh_title:'MEJORES JUGADORES',jh_sub:'Clasificaciones oficiales MLB con explicaciones sencillas',jou_bat:'Bateadores',jou_lan:'Lanzadores',
   pl_hr:'💣 Más home runs',pl_hr_s:'Bola enviada fuera del campo — todos los corredores anotan',pl_avg:'🏏 Mejor promedio',pl_avg_s:'Hits ÷ turnos al bate',pl_rbi:'📈 Más carreras impulsadas',pl_rbi_s:'Compañeros impulsados a anotar',pl_ops:'⚡ Poder ofensivo total',pl_ops_s:'Capacidad de llegar a base + poder de bateo',pl_sb:'🏃 Bases robadas',pl_sb_s:'Robó una base sin ser eliminado',pl_runs:'🎯 Carreras anotadas',pl_runs_s:'Veces que el jugador cruzó el home',
   pl_era:'🎯 Menos carreras permitidas',pl_era_s:'Promedio de carreras permitidas por 9 entradas — más bajo es mejor',pl_so:'💨 Más ponches',pl_so_s:'Bateadores ponchados directamente',pl_wins:'✅ Más victorias',pl_wins_s:'Partidos ganados con el lanzador en juego',pl_whip:'🔢 Eficiencia global',pl_whip_s:'Bases por bolas + hits permitidos por entrada — más bajo es mejor',pl_saves:'💾 Juegos salvados',pl_saves_s:'Entra al final y preserva la victoria',pl_k9:'📐 Ponches por entrada',pl_k9_s:'Promedio de ponches por 9 entradas lanzadas',
-  f2_value:'💎 Value (rentables)',f2_signal:'🎯 Señal fuerte',pill_serre:'⚖️ muy reñido',edge_lbl:'Edge',edge_devig:'(sin margen)',f2_victoire:'🏆 Victoria',f2_ou:'📊 Total carreras',f2_runline:'📐 Run line',sort_conf:'Confianza ↓',sort_proba:'Probabilidad ↓',export_pdf:'📄 Exportar',loading_pronos:'Calculando…',help_summary:'🔰 ¿Cómo leer un pronóstico? (clic)',lex_title:'📖 Glosario del principiante',lex_open:'📖 Glosario del principiante — todos los términos explicados',
+  f2_value:'💎 Value (rentables)',f2_signal:'🎯 Señal fuerte',pill_serre:'⚖️ muy reñido',edge_lbl:'Edge',edge_devig:'(sin margen)',f2_victoire:'🏆 Victoria',f2_ou:'📊 Total carreras',f2_runline:'📐 Run line',sort_conf:'Confianza ↓',sort_proba:'Probabilidad ↓',export_pdf:'📄 Exportar',loading_pronos:'Calculando…',help_summary:'🔰 ¿Cómo leer un pronóstico? (clic)',lex_title:'📖 Glosario del principiante',lex_open:'📖 Glosario del principiante — todos los términos explicados',lex_tab:'📖 Glosario de esta pestaña',
   bet_won:'✅ Ganado',bet_lost:'❌ Perdido',bet_pending:'⏳ Pendiente',bet_placed:'🎟️ Apostado',odds_lbl:'cuota',bet_cancel:'cancelar',bet_analyse:'📊 Solo análisis — sin cuota de bookmaker para este tipo de apuesta',bet_setbk:'💰 Define tu bankroll para apostar',bet_action:'🎯 Apostar',bet_value:'valor',bet_suivi:'seguir (sin valor)',match_fin_closed:'🔒 Partido terminado — apuestas cerradas',match_live_closed:'🔒 Partido empezado — apuestas cerradas',
   live_won:'✅ Ganado',live_lost:'❌ Perdido',live_fin:'Terminado',live_now:'🔴 EN DIRECTO',live_soon:'🕐 Próximamente',live_top:'alta',live_bot:'baja',inning_suf:'ª',
   m_none:'No hay partidos hoy',m_unavail:'⚠️ Datos no disponibles',m_live:'🔴 EN DIRECTO',m_fin:'✅ TERMINADO',m_soon:'🕐 PRÓXIMAMENTE',m_nostarter:'Lanzador por confirmar',m_seefull:'Ver el análisis completo con todos los pronósticos →',rec_w:'G',rec_l:'P',
@@ -1510,6 +1518,26 @@ const LEX={
    ['Kelly','Formule qui calcule la mise optimale selon ton edge et ta bankroll. On utilise un quart de Kelly (prudent) pour limiter le risque.'],
    ['ROI','Retour sur investissement = gain net ÷ total misé. Le vrai juge de la rentabilité (≠ taux de réussite).'],
   ]},
+  {c:'📈 TENDANCES',items:[
+   ['Forme (10 derniers)','Bilan victoires-défaites sur les 10 derniers matchs — équipe chaude ou froide, bien plus parlant que la moyenne de la saison.'],
+   ['Série (streak)','Nombre de victoires ou défaites consécutives en cours (W3 = 3 victoires de suite, L2 = 2 défaites).'],
+   ['Over 8.5','Sur combien de matchs récents le total a dépassé 8,5 points. Indice pour les paris Over/Under.'],
+   ['Couvre ±1.5 / Gagne par 2+','À quelle fréquence l\'équipe couvre le handicap récemment (gagne par 2 points ou plus, ou perd par 1 au maximum).'],
+  ]},
+  {c:'📊 CLASSEMENTS',items:[
+   ['% victoire','Victoires ÷ matchs joués. Le classement de base.'],
+   ['Différentiel de runs','Points marqués − points encaissés sur la saison. Très positif = équipe qui domine vraiment.'],
+   ['10 derniers (L10)','Bilan sur les 10 derniers matchs (forme récente).'],
+   ['Régression (🍀 surcoté / 📉 sous-coté)','Écart entre le vrai bilan et le niveau pythagoricien. 🍀 Surcoté = gagne plus que son niveau réel (risque de retomber). 📉 Sous-coté = malchanceux jusqu\'ici (rebond probable). Un vrai signal de pari.'],
+  ]},
+  {c:'🏆 CLASSEMENTS DE JOUEURS',items:[
+   ['HR (circuits)','Coups de circuit : la balle quitte le terrain, tous les coureurs marquent.'],
+   ['AVG (moyenne)','Moyenne à la batte = coups sûrs ÷ passages au bâton. .300 est excellent.'],
+   ['RBI (points produits)','Points que le frappeur fait marquer (coéquipiers ramenés au marbre).'],
+   ['SB (bases volées)','Bases gagnées en courant sans se faire éliminer — vitesse et agressivité.'],
+   ['Runs (points marqués)','Nombre de fois où le joueur a lui-même marqué un point.'],
+   ['Victoires (W) / Sauvetages (SV)','W = matchs gagnés crédités au lanceur. SV = matchs préservés par le releveur de fin (closer).'],
+  ]},
  ],
  en:[
   {c:'🎯 BETTING',items:[
@@ -1553,6 +1581,26 @@ const LEX={
    ['Bankroll','Your total capital set aside for betting. Never exceed it.'],
    ['Kelly','Formula computing the optimal stake from your edge and bankroll. We use a quarter Kelly (conservative) to limit risk.'],
    ['ROI','Return on investment = net profit ÷ total staked. The real judge of profitability (≠ win rate).'],
+  ]},
+  {c:'📈 TRENDS',items:[
+   ['Form (last 10)','Win-loss record over the last 10 games — hot or cold team, far more telling than the season average.'],
+   ['Streak','Current run of consecutive wins or losses (W3 = 3 wins in a row, L2 = 2 losses).'],
+   ['Over 8.5','How many recent games went over 8.5 total runs. A cue for Over/Under bets.'],
+   ['Covers ±1.5 / Wins by 2+','How often the team covers the spread lately (wins by 2+ runs, or loses by 1 at most).'],
+  ]},
+  {c:'📊 STANDINGS',items:[
+   ['Win %','Wins ÷ games played. The basic ranking.'],
+   ['Run differential','Runs scored − runs allowed over the season. Strongly positive = a truly dominant team.'],
+   ['Last 10 (L10)','Record over the last 10 games (recent form).'],
+   ['Regression (🍀 overperforming / 📉 underperforming)','Gap between the actual record and the pythagorean level. 🍀 Overperforming = winning more than its true level (may fall back). 📉 Underperforming = unlucky so far (likely bounce-back). A real betting signal.'],
+  ]},
+  {c:'🏆 PLAYER LEADERBOARDS',items:[
+   ['HR (home runs)','The ball leaves the park; all runners score.'],
+   ['AVG (batting average)','Hits ÷ at-bats. .300 is excellent.'],
+   ['RBI (runs batted in)','Runs the batter drives in (teammates brought home).'],
+   ['SB (stolen bases)','Bases taken by running without being thrown out — speed and aggression.'],
+   ['Runs','How many times the player scored a run himself.'],
+   ['Wins (W) / Saves (SV)','W = games credited to the pitcher. SV = games preserved by the closing reliever.'],
   ]},
  ],
  es:[
@@ -1598,15 +1646,39 @@ const LEX={
    ['Kelly','Fórmula que calcula el stake óptimo según tu edge y tu bankroll. Usamos un cuarto de Kelly (prudente) para limitar el riesgo.'],
    ['ROI','Retorno de inversión = beneficio neto ÷ total apostado. El verdadero juez de la rentabilidad (≠ tasa de acierto).'],
   ]},
+  {c:'📈 TENDENCIAS',items:[
+   ['Forma (últimos 10)','Balance victorias-derrotas en los últimos 10 partidos — equipo caliente o frío, mucho más revelador que el promedio de la temporada.'],
+   ['Racha','Serie actual de victorias o derrotas seguidas (W3 = 3 victorias seguidas, L2 = 2 derrotas).'],
+   ['Over 8.5','En cuántos partidos recientes el total superó 8,5 carreras. Pista para las apuestas Over/Under.'],
+   ['Cubre ±1.5 / Gana por 2+','Con qué frecuencia el equipo cubre el hándicap últimamente (gana por 2+ carreras, o pierde por 1 como máximo).'],
+  ]},
+  {c:'📊 CLASIFICACIÓN',items:[
+   ['% victorias','Victorias ÷ partidos jugados. La clasificación básica.'],
+   ['Diferencial de carreras','Carreras anotadas − carreras permitidas en la temporada. Muy positivo = equipo que domina de verdad.'],
+   ['Últimos 10 (L10)','Balance en los últimos 10 partidos (forma reciente).'],
+   ['Regresión (🍀 sobrevalorado / 📉 infravalorado)','Diferencia entre el balance real y el nivel pitagórico. 🍀 Sobrevalorado = gana más que su nivel real (riesgo de bajar). 📉 Infravalorado = con mala suerte hasta ahora (probable recuperación). Una señal de apuesta real.'],
+  ]},
+  {c:'🏆 LÍDERES DE JUGADORES',items:[
+   ['HR (cuadrangulares)','La bola sale del campo; todos los corredores anotan.'],
+   ['AVG (promedio de bateo)','Hits ÷ turnos al bate. .300 es excelente.'],
+   ['RBI (carreras impulsadas)','Carreras que el bateador impulsa (compañeros llevados a home).'],
+   ['SB (bases robadas)','Bases ganadas corriendo sin ser eliminado — velocidad y agresividad.'],
+   ['Runs (carreras anotadas)','Cuántas veces el jugador anotó una carrera él mismo.'],
+   ['Victorias (W) / Salvamentos (SV)','W = partidos acreditados al lanzador. SV = partidos preservados por el relevista de cierre (closer).'],
+  ]},
  ]
 };
-function renderLexique(){
+// Quels blocs (index dans LEX) afficher selon l'onglet → lexique CIBLÉ par onglet
+const LEX_TABS={pronos:[0,1,2,3],matchs:[0,1,2,3],tendances:[5,3],classements:[6,3],joueurs:[7,2,3],bankroll:[0,4],historique:[1,4,0]};
+let _lexTab='pronos';
+function renderLexique(tab){
   const data=LEX[LANG]||LEX.fr;
-  document.getElementById('lex-content').innerHTML=data.map(cat=>
+  const idx=LEX_TABS[tab]||data.map((_,i)=>i);
+  document.getElementById('lex-content').innerHTML=idx.map(i=>data[i]).filter(Boolean).map(cat=>
     `<div class="lex-cat">${cat.c}</div>`+cat.items.map(it=>`<div class="lex-item"><div class="lex-t">${it[0]}</div><div class="lex-d">${it[1]}</div></div>`).join('')
   ).join('');
 }
-function openLexique(){renderLexique();document.getElementById('lex-modal').style.display='flex';}
+function openLexique(tab){_lexTab=tab||'pronos';renderLexique(_lexTab);document.getElementById('lex-modal').style.display='flex';}
 function fermerLexique(){document.getElementById('lex-modal').style.display='none';}
 function openAccount(){const s=getSession();const e=document.getElementById('acc-email');if(e)e.textContent=s?.email||'—';loadEmailPref();const m=document.getElementById('acc-manage');if(m)m.style.display=isPremium()?'block':'none';document.getElementById('account-modal').style.display='flex';}
 function fermerAccount(){document.getElementById('account-modal').style.display='none';}
