@@ -1,10 +1,15 @@
 name: Build DataBaseball snapshot
 
-on:
-  schedule:
-    - cron: '0 13 * * *'
-  workflow_dispatch:
+# Calcule le snapshot du jour (MLB + cotes) côté serveur et l'écrit dans Supabase.
+# Clés stockées dans les Secrets du dépôt (jamais exposées côté navigateur).
 
+on:
+  # ⚠️ Évite l'heure PILE (xx:00) = créneau le plus surchargé chez GitHub → gros retards/oublis.
+  schedule:
+    - cron: '17 13 * * *'   # 13:17 UTC = 15h17 Paris — UNE génération/jour (sélection figée pour la journée)
+  workflow_dispatch:        # bouton « Run workflow » : (re)lancer à la main si besoin (dépannage)
+
+# Évite que deux exécutions se chevauchent
 concurrency:
   group: build-data
   cancel-in-progress: true
@@ -23,3 +28,13 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: node scripts/build-data.mjs
+      - name: Envoyer le digest email du jour (Brevo)
+        if: ${{ always() }}   # même si une étape précédente bronche, on tente l'envoi sur le dernier snapshot dispo
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          SENDER_EMAIL: pronos@databaseball.app
+          SENDER_NAME: DataBaseball
+          SITE_URL: https://databaseball.app
+        run: node scripts/send-daily.mjs
