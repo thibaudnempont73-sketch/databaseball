@@ -437,7 +437,7 @@ async function build(){
   // Leaders (joueurs)
   const LEAD=[['hr','homeRuns'],['avg','battingAverage'],['rbi','rbi'],['ops','ops'],['sb','stolenBases'],['runs','runs'],['era','era'],['so','strikeOuts'],['wins','wins'],['whip','whip'],['saves','saves'],['k9','strikeoutsPer9Inn']];
   const leaders={};
-  await Promise.all(LEAD.map(async([key,cat])=>{try{const d=await api(`/stats/leaders?leaderCategories=${cat}&season=${SEASON}&sportId=1&limit=8`);leaders[key]=(d.leagueLeaders?.[0]?.leaders??[]).map(l=>({rank:l.rank,name:l.person?.fullName,team:l.team?.name,value:l.value}));}catch(e){leaders[key]=[];}}));
+  await Promise.all(LEAD.map(async([key,cat])=>{try{const d=await api(`/stats/leaders?leaderCategories=${cat}&season=${SEASON}&sportId=1&limit=8`);leaders[key]=(d.leagueLeaders?.[0]?.leaders??[]).map(l=>({rank:l.rank,name:l.person?.fullName,id:l.person?.id,team:l.team?.name,value:l.value}));}catch(e){leaders[key]=[];}}));
 
   // matchs (liste brute pour l'onglet Matchs)
   const matchs=games.map(g=>({gamePk:g.gamePk,away:slim(g.teams.away.team),home:slim(g.teams.home.team),awayRec:g.teams.away.leagueRecord,homeRec:g.teams.home.leagueRecord,awayScore:g.teams.away.score,homeScore:g.teams.home.score,state:g.status.abstractGameState,gameDate:g.gameDate,awayP:g.teams.away.probablePitcher?.fullName,homeP:g.teams.home.probablePitcher?.fullName}));
