@@ -96,5 +96,6 @@ async function sendOne(to,subject,html){
     await new Promise(r=>setTimeout(r,120)); // léger throttle
   }
   console.log(`✅ Digest envoyé : ${ok} OK, ${ko} échec(s).`);
-  await sb('email_log',{method:'POST',headers:{Prefer:'resolution=merge-duplicates'},body:JSON.stringify({jour:today(),kind:'digest',n_sent:ok})});
+  // On ne marque « envoyé » QUE si au moins un email est parti → un run raté peut être relancé sans être bloqué
+  if(ok>0)await sb('email_log',{method:'POST',headers:{Prefer:'resolution=merge-duplicates'},body:JSON.stringify({jour:today(),kind:'digest',n_sent:ok})});
 })().catch(e=>{console.error('❌ send-daily:',e.message);process.exit(0);}); // exit 0 : ne casse pas le workflow build
