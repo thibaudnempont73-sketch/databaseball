@@ -12,6 +12,7 @@ create table if not exists public.email_subs(
   unsub_token uuid    not null default gen_random_uuid(),
   updated_at  timestamptz default now()
 );
+alter table public.email_subs add column if not exists welcomed boolean not null default false; -- email de bienvenue déjà envoyé ?
 create index if not exists email_subs_token_idx on public.email_subs(unsub_token);
 create index if not exists email_subs_optin_idx on public.email_subs(optin) where optin;
 
