@@ -257,6 +257,19 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .mc-score{font-family:var(--display);font-size:27px;letter-spacing:1px;line-height:1}
 .mc-vs{font-family:var(--display);font-size:18px;color:var(--b2);letter-spacing:2px}
 .mc-cta{padding:9px 15px;background:var(--card2);border-top:1px solid var(--b1);font-size:10.5px;color:var(--red);font-weight:700;text-align:center}
+/* Cartes « Mes paris » (Bankroll) */
+.pari-card{background:var(--card2);border:1px solid var(--b1);border-radius:11px;padding:12px 14px;margin-bottom:9px}
+.pari-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.pari-when{font-size:12.5px;font-weight:700;color:var(--white);display:inline-flex;align-items:center;gap:5px}
+.pari-badge{font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pari-badge.w{background:var(--green-d);color:var(--green);border:1px solid var(--green-b)}
+.pari-badge.l{background:rgba(232,25,44,.10);color:var(--red);border:1px solid rgba(232,25,44,.3)}
+.pari-badge.p{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b)}
+.pari-match{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+.pari-pick2{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.3}
+.pari-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;border-top:1px solid var(--b1);padding-top:9px}
+.pari-foot .pf-mise{color:var(--muted);font-family:var(--mono)}
+.pari-foot .pf-pnl{font-weight:800}
 .prono.forte{border-color:var(--green-b);box-shadow:0 0 20px rgba(0,200,150,.06)}
 .prono.moyenne{border-color:var(--amber-b)}
 .prono.alerte{border-color:var(--red-b)}
@@ -677,7 +690,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v74 · 30/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v75 · 30/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -774,7 +787,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 <div class="page" id="page-historique">
   <div class="ph"><div class="ph-eye" data-i18n="hh_eye">Mémoire</div><div class="ph-title" data-i18n="hh_title">HISTORIQUE DES PRONOSTICS</div><div class="ph-sub" data-i18n-html="hh_sub">Tous les pronos générés sont suivis ici pour mesurer la fiabilité du modèle (calibration). Vos <strong>paris réels</strong> sont dans 💰 Bankroll.</div></div>
 
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+  <div id="hist-tools" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
     <button class="io-btn" onclick="exporterHistorique()" data-i18n="io_export">⬇️ Exporter (JSON)</button>
     <label class="io-btn"><span data-i18n="io_import">⬆️ Importer (JSON)</span><input type="file" accept="application/json" onchange="importerHistorique(this)" style="display:none"></label>
     <button class="io-btn" id="reinit-btn" style="display:none" onclick="reinitialiserStats()" data-i18n="io_reinit">♻️ Réinitialiser les stats</button>
@@ -965,7 +978,7 @@ const I18N={
   hh_eye:'Mémoire',hh_title:'HISTORIQUE DES PRONOSTICS',hh_sub:'Tous les pronos générés sont suivis ici pour mesurer la fiabilité du modèle (calibration). Vos <strong>paris réels</strong> sont dans 💰 Bankroll.',
   io_export:'⬇️ Exporter (JSON)',io_import:'⬆️ Importer (JSON)',io_reinit:'♻️ Réinitialiser les stats',io_warn:"⚠️ Sur fichier local (Android <code>content://</code>), le stockage du navigateur peut s'effacer entre sessions. Exportez régulièrement, ou hébergez l'app sur GitHub Pages pour une persistance fiable.",
   hist_tab_global:'📊 Suivi global',hist_tab_fun:'🎲 Paris Fun',
-  h_taux:'Taux de réussite',h_taux_m:'pronos terminés',h_total:'Pronos analysés',h_total_m:'depuis le début',h_roi:'ROI théorique',h_roi_m:'si 1u sur chaque prono',h_attente:'En attente',h_attente_m:'résultats inconnus',
+  h_taux:'Taux de réussite',h_taux_m:'pronos terminés',h_total:'Pronos analysés',h_total_m:'depuis le début',h_roi:'Rentabilité (ROI)',h_roi_m:'gain/perte sur le total misé',h_attente:'En attente',h_attente_m:'résultats inconnus',
   hc_conf:'Réussite par probabilité annoncée',hc_conf_s:'Quand on annonce X%, gagne-t-on vraiment X% ?',hc_type:'Réussite par type de pari',hc_cal:'📐 Calibration du modèle',hc_cal_s:'Quand on annonce X%, gagne-t-on vraiment X% du temps ? (outil de pilotage interne)',hc_all:'Tous les pronostics',
   f_tous:'Tous',f_won:'✅ Gagnés',f_lost:'❌ Perdus',f_pend:'⏳ En attente',f_clear:'Effacer',
   hf_nb:'Pronos fun suivis',hf_nb_m:'combinés + outsiders',hf_taux_m:'pronos fun terminés',hf_roi:'Gain / Perte',hf_roi_m:'sur tes paris fun',hf_jeu:'En jeu',hf_jeu_m:'paris fun en attente',hf_all:'🎲 Tous les pronos fun',hf_all_s:'Suivi de TOUS les combinés & outsiders suggérés chaque jour (pariés ou non) et leur résultat. 🎟️ = pari placé.',hf_combos:'🎲 Combinés',hf_outs:'🐶 Outsiders',hf_none_filter:'Aucun prono fun pour ce filtre.',
@@ -1075,7 +1088,7 @@ const I18N={
   hh_eye:'Memory',hh_title:'PREDICTIONS HISTORY',hh_sub:"Every generated pick is tracked here to measure the model's reliability (calibration). Your <strong>real bets</strong> are in 💰 Bankroll.",
   io_export:'⬇️ Export (JSON)',io_import:'⬆️ Import (JSON)',io_reinit:'♻️ Reset stats',io_warn:'⚠️ On a local file (Android <code>content://</code>), browser storage may be cleared between sessions. Export regularly, or host the app on GitHub Pages for reliable persistence.',
   hist_tab_global:'📊 Global tracking',hist_tab_fun:'🎲 Fun bets',
-  h_taux:'Win rate',h_taux_m:'settled picks',h_total:'Picks analyzed',h_total_m:'since the start',h_roi:'Theoretical ROI',h_roi_m:'if 1u on each pick',h_attente:'Pending',h_attente_m:'unknown results',
+  h_taux:'Win rate',h_taux_m:'settled picks',h_total:'Picks analyzed',h_total_m:'since the start',h_roi:'Profitability (ROI)',h_roi_m:'profit/loss on total staked',h_attente:'Pending',h_attente_m:'unknown results',
   hc_conf:'Win rate by predicted probability',hc_conf_s:'When we say X%, do we really win X%?',hc_type:'Win rate by bet type',hc_cal:'📐 Model calibration',hc_cal_s:'When we say X%, do we really win X% of the time? (internal tuning tool)',hc_all:'All predictions',
   f_tous:'All',f_won:'✅ Won',f_lost:'❌ Lost',f_pend:'⏳ Pending',f_clear:'Clear',
   hf_nb:'Fun picks tracked',hf_nb_m:'combos + underdogs',hf_taux_m:'settled fun picks',hf_roi:'Profit / Loss',hf_roi_m:'on your fun bets',hf_jeu:'At stake',hf_jeu_m:'pending fun bets',hf_all:'🎲 All fun picks',hf_all_s:'Tracking of ALL combos & underdogs suggested each day (bet or not) and their result. 🎟️ = bet placed.',hf_combos:'🎲 Parlays',hf_outs:'🐶 Underdogs',hf_none_filter:'No fun pick for this filter.',
@@ -1185,7 +1198,7 @@ const I18N={
   hh_eye:'Memoria',hh_title:'HISTORIAL DE PRONÓSTICOS',hh_sub:'Todos los pronósticos generados se siguen aquí para medir la fiabilidad del modelo (calibración). Tus <strong>apuestas reales</strong> están en 💰 Bankroll.',
   io_export:'⬇️ Exportar (JSON)',io_import:'⬆️ Importar (JSON)',io_reinit:'♻️ Reiniciar estadísticas',io_warn:'⚠️ En archivo local (Android <code>content://</code>), el almacenamiento del navegador puede borrarse entre sesiones. Exporta con regularidad, o aloja la app en GitHub Pages para una persistencia fiable.',
   hist_tab_global:'📊 Seguimiento global',hist_tab_fun:'🎲 Apuestas Fun',
-  h_taux:'Tasa de acierto',h_taux_m:'pronósticos terminados',h_total:'Pronósticos analizados',h_total_m:'desde el inicio',h_roi:'ROI teórico',h_roi_m:'si 1u en cada pronóstico',h_attente:'Pendiente',h_attente_m:'resultados desconocidos',
+  h_taux:'Tasa de acierto',h_taux_m:'pronósticos terminados',h_total:'Pronósticos analizados',h_total_m:'desde el inicio',h_roi:'Rentabilidad (ROI)',h_roi_m:'ganancia/pérdida sobre lo apostado',h_attente:'Pendiente',h_attente_m:'resultados desconocidos',
   hc_conf:'Acierto por probabilidad anunciada',hc_conf_s:'Cuando decimos X%, ¿ganamos realmente el X%?',hc_type:'Acierto por tipo de apuesta',hc_cal:'📐 Calibración del modelo',hc_cal_s:'Cuando decimos X%, ¿ganamos realmente el X% de las veces? (herramienta interna de ajuste)',hc_all:'Todos los pronósticos',
   f_tous:'Todos',f_won:'✅ Ganados',f_lost:'❌ Perdidos',f_pend:'⏳ Pendiente',f_clear:'Borrar',
   hf_nb:'Pronósticos fun seguidos',hf_nb_m:'combinadas + outsiders',hf_taux_m:'pronósticos fun terminados',hf_roi:'Ganancia / Pérdida',hf_roi_m:'en tus apuestas fun',hf_jeu:'En juego',hf_jeu_m:'apuestas fun pendientes',hf_all:'🎲 Todos los pronósticos fun',hf_all_s:'Seguimiento de TODAS las combinadas y outsiders sugeridos cada día (apostados o no) y su resultado. 🎟️ = apuesta realizada.',hf_combos:'🎲 Combinadas',hf_outs:'🐶 Outsiders',hf_none_filter:'Ningún pronóstico fun para este filtro.',
@@ -1344,6 +1357,7 @@ let adminViewFree=false; // admin : simuler la vue d'un membre gratuit (debug). 
 function isAdmin(){const s=getSession();return !!(s&&s.email&&ADMIN_EMAILS.includes(s.email.toLowerCase()));}
 function applyAdminUI(){
   const real=isAdmin();
+  const ht=document.getElementById('hist-tools');if(ht)ht.style.display=(real&&!adminViewFree)?'flex':'none'; // outils export/import/reset = admin only
   const rb=document.getElementById('reinit-btn');if(rb)rb.style.display=(real&&!adminViewFree)?'':'none';
   const cal=document.getElementById('cal-card');if(cal)cal.style.display=(real&&!adminViewFree)?'':'none'; // calibration = outil admin
   const ab=document.getElementById('admin-view-btn');
@@ -3876,7 +3890,8 @@ function renderHistStats(hist){
 
   document.getElementById('h-taux').textContent=finis.length?taux+'%':'—';
   document.getElementById('h-total').textContent=hist.length;
-  document.getElementById('h-roi').textContent=finis.length?(roi>=0?'+':'')+roi.toFixed(1)+'u':'—';
+  const roiPct=finis.length?roi/finis.length*100:0; // ROI en % du total misé (lisible) au lieu d'unités
+  document.getElementById('h-roi').textContent=finis.length?(roiPct>=0?'+':'')+roiPct.toFixed(1)+'%':'—';
   document.getElementById('h-attente').textContent=hist.filter(h=>h.resultat==='P').length;
 
   // Par niveau de confiance — tranches de score /100 (les anciennes entrées en étoiles sont converties ×20)
@@ -3982,6 +3997,7 @@ function reinitialiserStats(){
     tf('dc_reinit_b',{tt:termines,a:enAttente.length}),
     ()=>{
       sauverHistorique(enAttente);
+      clearTimeout(_syncTimer);_pushRaw(); // ÉCRASEMENT direct de Supabase (sinon le merge multi-appareils restaurerait les réglés)
       loadHistorique();
       toast(tf('ts_stats_reset',{n:enAttente.length}),'info');
     },t('dc_reinit_ok'));
@@ -4108,13 +4124,23 @@ function renderBankroll(){
     const res=h.resultat;
     const pnl=res==='W'?`+${(h.mise*(h.cote-1)).toFixed(2)}€`:res==='L'?`−${h.mise.toFixed(2)}€`:t('bk_pending');
     const col=res==='W'?'var(--green)':res==='L'?'var(--red)':'var(--amber)';
-    return`<div class="pari-row">
-      <span class="hist-date">${(h.datePari||h.date).slice(5)}</span>
-      <span style="flex:1;font-size:11px">${h.pick}<div style="font-size:9px;color:var(--muted)">${h.matchLabel}</div></span>
-      <span class="pari-mise">${h.mise.toFixed(2)}€<div style="font-size:9px;color:var(--muted)">@${h.cote.toFixed(2)}</div></span>
-      <span class="pari-res" style="color:${col}">${pnl}</span>
+    const bc=res==='W'?'w':res==='L'?'l':'p';
+    const bt=res==='W'?t('bet_won'):res==='L'?t('bet_lost'):t('bet_pending');
+    const isCombo=h.type==='combo';
+    const logos=isCombo?'🎲':logosFromLabel(h.matchLabel,16);
+    return`<div class="pari-card">
+      <div class="pari-card-top"><span class="pari-when">📅 ${betWhen(h)}</span><span class="pari-badge ${bc}">${bt}</span></div>
+      ${h.matchLabel?`<div class="pari-match">${logos}<span>${h.matchLabel}</span></div>`:''}
+      <div class="pari-pick2">🎯 ${h.pick||''}</div>
+      <div class="pari-foot"><span class="pf-mise">🎟️ ${(+h.mise||0).toFixed(2)}€ · @${(+h.cote||0).toFixed(2)}</span><span class="pf-pnl" style="color:${col}">${pnl}</span></div>
     </div>`;
   }).join('');
+}
+// Date (JJ/MM) + heure du match si on la retrouve dans le snapshot du jour
+function betWhen(h){
+  const d=h.date||h.datePari||'';const p=d.split('-');const jour=p.length===3?`${p[2]}/${p[1]}`:d.slice(5);
+  let time='';try{const pr=(typeof tousLesPronos!=='undefined'?tousLesPronos:[]).find(x=>x.gamePk===h.gamePk);if(pr&&pr.gameDate)time=' · '+new Date(pr.gameDate).toLocaleTimeString(dtLoc(),{hour:'2-digit',minute:'2-digit'});}catch(e){}
+  return jour+time;
 }
 
 function loadBankroll(){renderBankroll();}
