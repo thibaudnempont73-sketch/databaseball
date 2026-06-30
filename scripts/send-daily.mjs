@@ -63,6 +63,37 @@ function emailHTML(p,nFort,lang,unsubUrl){
 </div></body></html>`;
 }
 
+// ── Version PREMIUM : la sélection complète du jour (pas d'upsell) ──
+const PREM={
+ fr:{subj:'⭐ Ta sélection Premium du jour',intro:'Voici ta <b>sélection du jour</b> — les meilleurs pronos à signal fort, rien que pour toi :',cta:'Voir l\'analyse complète'},
+ en:{subj:'⭐ Your Premium selection of the day',intro:'Here is your <b>selection of the day</b> — the best strong-signal picks, just for you:',cta:'See the full analysis'},
+ es:{subj:'⭐ Tu selección Premium del día',intro:'Aquí tienes tu <b>selección del día</b> — los mejores pronósticos de señal fuerte, solo para ti:',cta:'Ver el análisis completo'}
+};
+function premiumPicks(pronos){
+  const sf=p=>p.coteVegas&&p.dataDispos>=50&&((p.proba??0)>=58||(p.fairProba!=null&&(p.proba/100-p.fairProba)>=0.04));
+  let list=pronos.filter(sf).sort((a,b)=>b.proba-a.proba);
+  if(!list.length)list=pronos.filter(p=>p.coteVegas&&p.dataDispos>=50).sort((a,b)=>b.proba-a.proba);
+  return list.slice(0,5);
+}
+function emailHTMLPremium(picks,lang,unsubUrl){
+  const L=['fr','en','es'].includes(lang)?lang:'fr',c=I[L],pc=PREM[L];
+  const rows=picks.map(p=>`<div style="background:#0F1825;border:1px solid #1C2A3E;border-left:4px solid #F5A623;border-radius:10px;padding:13px 16px;margin-bottom:10px">
+    <div style="font-size:12.5px;color:#AbB6C8">${p.matchLabel||''}</div>
+    <div style="font-size:16px;font-weight:800;color:#E8EDF5;margin:3px 0 7px">🎯 ${localizePick(p,L)}</div>
+    <span style="font-size:12px;color:#5C6E87">${c.proba}</span> <b style="font-size:15px">${Math.round(p.proba)}%</b>${p.coteVegas?` &nbsp;·&nbsp; <span style="font-size:12px;color:#5C6E87">${c.cote}</span> <b style="font-size:15px">${(+p.coteVegas).toFixed(2)}</b>`:''}
+  </div>`).join('');
+  return `<!DOCTYPE html><html><body style="margin:0;background:#0E1520;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#E8EDF5">
+<div style="max-width:520px;margin:0 auto;padding:28px 18px">
+  <div style="text-align:center;font-size:22px;font-weight:800;letter-spacing:1px;margin-bottom:6px">DATA<span style="color:#E8192C">BASEBALL</span></div>
+  <div style="text-align:center;font-size:11px;font-weight:800;color:#F5A623;letter-spacing:1px;margin-bottom:16px">⭐ PREMIUM</div>
+  <p style="font-size:14px;color:#AbB6C8;line-height:1.5;margin:0 0 16px">${pc.intro}</p>
+  ${rows}
+  <div style="text-align:center;margin:10px 0 22px"><a href="${SITE}/app.html" style="display:inline-block;background:#E8192C;color:#fff;font-weight:800;font-size:15px;text-decoration:none;padding:13px 28px;border-radius:11px">⚡ ${pc.cta}</a></div>
+  <hr style="border:none;border-top:1px solid #1C2A3E;margin:18px 0">
+  <p style="font-size:11px;color:#5C6E87;line-height:1.5;margin:0 0 8px">${c.resp}</p>
+  <p style="font-size:11px;color:#5C6E87;margin:0">${c.foot} · <a href="${unsubUrl}" style="color:#5C6E87">${c.unsub}</a></p>
+</div></body></html>`;
+}
 async function sendOne(to,subject,html){
   const r=await fetch('https://api.brevo.com/v3/smtp/email',{method:'POST',headers:{'api-key':BREVO,'Content-Type':'application/json','accept':'application/json'},
     body:JSON.stringify({sender:{name:SENDER_NAME,email:SENDER_EMAIL},to:[{email:to}],subject,htmlContent:html})});
@@ -82,17 +113,29 @@ async function sendOne(to,subject,html){
   if(!pick){console.log('ℹ️ Pas de free pick → pas d\'envoi.');return;}
   const nFort=pronos.filter(p=>p.coteVegas&&(p.proba??0)>=58).length-1; // hors le free pick montré
 
-  const subR=await sb('email_subs?select=email,lang,unsub_token&optin=is.true');
+  const subR=await sb('email_subs?select=user_id,email,lang,unsub_token&optin=is.true');
   const subs=(subR.ok?await subR.json():[]).filter(s=>s.email);
   if(!subs.length){console.log('ℹ️ Aucun abonné opt-in → rien à envoyer.');return;}
-  console.log(`📨 Envoi du digest à ${subs.length} abonné(s)…`);
+  // Qui est Premium ? (lecture de profiles avec le service_role) → digest enrichi sans upsell
+  // select=* + id tolérant (id / user_id / uid) → robuste quel que soit le schéma de profiles
+  const prR=await sb('profiles?select=*');
+  const profs=prR.ok?await prR.json():[];
+  const now=new Date(),premium=new Set();
+  profs.forEach(p=>{const pid=p.id??p.user_id??p.uid;if(pid&&p.abonnement==='actif'&&(!p.fin_periode||new Date(p.fin_periode)>now))premium.add(pid);});
+  const premPicks=premiumPicks(pronos);
+  console.log(`🔎 profiles lues: ${profs.length} · premium actifs: ${premium.size}`);
+  console.log(`📨 Envoi du digest à ${subs.length} abonné(s) (dont ${subs.filter(s=>premium.has(s.user_id)).length} premium)…`);
 
   let ok=0,ko=0;
   for(const s of subs){
     const unsub=`${SITE}/app.html?unsub=${s.unsub_token}`;
     const L=['fr','en','es'].includes(s.lang)?s.lang:'fr';
-    try{await sendOne(s.email,I[L].subj,emailHTML(pick,Math.max(0,nFort),L,unsub));ok++;}
-    catch(e){ko++;console.log('  ✗',s.email,e.message);}
+    const isPrem=premium.has(s.user_id);
+    try{
+      if(isPrem&&premPicks.length)await sendOne(s.email,PREM[L].subj,emailHTMLPremium(premPicks,L,unsub)); // sélection complète, zéro pub
+      else await sendOne(s.email,I[L].subj,emailHTML(pick,Math.max(0,nFort),L,unsub));                    // gratuit : free pick + teaser
+      ok++;
+    }catch(e){ko++;console.log('  ✗',s.email,e.message);}
     await new Promise(r=>setTimeout(r,120)); // léger throttle
   }
   console.log(`✅ Digest envoyé : ${ok} OK, ${ko} échec(s).`);
