@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '17 13 * * *'   # 13:17 UTC = 15h17 Paris — UNE génération/jour (sélection figée pour la journée)
   workflow_dispatch:        # bouton « Run workflow » : (re)lancer à la main si besoin (dépannage)
+    inputs:
+      force_weekly:
+        description: 'Forcer le récap hebdo (test, même si pas lundi)'
+        type: boolean
+        default: false
 
 # Évite que deux exécutions se chevauchent
 concurrency:
@@ -38,3 +43,24 @@ jobs:
           SENDER_NAME: DataBaseball
           SITE_URL: https://databaseball.app
         run: node scripts/send-daily.mjs
+      - name: Email de bienvenue (nouveaux inscrits)
+        if: ${{ always() }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          SENDER_EMAIL: pronos@databaseball.app
+          SENDER_NAME: DataBaseball
+          SITE_URL: https://databaseball.app
+        run: node scripts/send-welcome.mjs
+      - name: Récap hebdomadaire (le lundi)
+        if: ${{ always() }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          SENDER_EMAIL: pronos@databaseball.app
+          SENDER_NAME: DataBaseball
+          SITE_URL: https://databaseball.app
+          WEEKLY_FORCE: ${{ github.event.inputs.force_weekly == 'true' && '1' || '0' }}
+        run: node scripts/send-weekly.mjs
