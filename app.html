@@ -660,7 +660,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v71 · 29/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v72 · 30/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -854,6 +854,14 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
   </div>
 
   <div class="card mb16">
+    <div class="card-h"><div class="card-ht" data-i18n="email_pref_t">📨 Pronostics par email</div><div class="card-hs" data-i18n="email_pref_s">Reçois le prono gratuit du jour chaque matin</div></div>
+    <div style="padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <span style="font-size:13px" data-i18n="email_pref_label">Recevoir le digest quotidien par email</span>
+      <input type="checkbox" id="email-optin" onchange="setEmailPref(this.checked)" style="width:22px;height:22px;accent-color:var(--green);cursor:pointer;flex-shrink:0">
+    </div>
+  </div>
+
+  <div class="card mb16">
     <div class="card-h"><div class="card-ht" data-i18n="bk_evo">📈 Évolution du capital</div><div class="card-hs" data-i18n="bk_evo_s">Après chaque pari terminé</div></div>
     <div style="padding:14px"><div class="bk-chart" id="bk-curve"></div></div>
   </div>
@@ -1029,7 +1037,7 @@ const I18N={
   ci_rlcover_q:"La probabilité que l'équipe « couvre » son handicap : gagner par 2+ (si −1.5) ou ne pas perdre par 2+ (si +1.5).",ci_rlcover_p:"Dérivée de la proba de victoire (donc cohérente avec elle). C'est ce qui détermine la valeur du pari run line.",
   tlbl_victoire:'Victoire du match',tlbl_ou:'Total points (O/U)',tlbl_runline:'Run line (handicap)',pk_win:'{team} remporte le match',pk_over:'OVER {line} points au total',pk_under:'UNDER {line} points au total',pk_rl:'{team} {point}',expl_win:'Modèle sur données réelles (stats MLB + cotes du marché) : {team} a {proba}% de chances de gagner (intervalle {lo}–{hi}%). Runs estimés : {ra} − {rh}.',expl_ou:'Estimation sur données réelles : total attendu {total} points ({ra} − {rh}) vs ligne {line}. Probabilité {side} : {proba}%.',expl_rl:'Run line : {cond}. Couverture estimée : {proba}%.',expl_rl_neg:'{team} doit gagner par 2 points ou plus',expl_rl_pos:'{team} peut perdre par 1 point max (ou gagner)',
   prono_q:"ⓘ c'est quoi ?",odds_best:'Meilleure cote',prono_ourproba:'notre proba',prono_market:'marché',data_real:'données réelles',prono_hi:'🔥 FORTE CHANCE',prono_good:'✅ BONNE CHANCE',prono_probability:'PROBABILITÉ',prono_form:'Forme (récent → ancien) :',prono_weights:'⚖️ POIDS DE CHAQUE CRITÈRE',odds_us:'Meilleure cote US',odds_eu:'Meilleure cote EU',
-  tr_t:'Track record vérifié',tr_s:'Tous les pronostics, résultats réels — sur <strong>{n}</strong> réglés',tr_win:'réussite',pr_empty_value:"Aucun pari de valeur aujourd'hui — le marché est efficace sur ces matchs. C'est normal : les vrais value bets sont rares.",pr_empty_filter:'Aucun pronostic pour ce filtre',pg_count_lbl:'pronos',free_detail_hint:"Cliquez pour voir l'analyse détaillée du match",pr_empty_signal:"Aucun pari à signal fort ici — le modèle ne voit que des matchs trop serrés (≈pile ou face).",sel_none_signal:"Aucun pari à signal fort aujourd'hui. Le modèle ne voit que des matchs trop serrés (≈pile ou face) — mieux vaut s'abstenir que de forcer.",
+  tr_t:'Track record vérifié',tr_s:'Tous les pronostics, résultats réels — sur <strong>{n}</strong> réglés',tr_win:'réussite',pr_empty_value:"Aucun pari de valeur aujourd'hui — le marché est efficace sur ces matchs. C'est normal : les vrais value bets sont rares.",pr_empty_filter:'Aucun pronostic pour ce filtre',pg_count_lbl:'pronos',free_detail_hint:"Cliquez pour voir l'analyse détaillée du match",email_pref_t:'📨 Pronostics par email',email_pref_s:'Reçois le prono gratuit du jour chaque matin',email_pref_label:'Recevoir le digest quotidien par email',email_on:'✅ Tu recevras les pronos par email',email_off:'Désinscrit des emails',unsub_done:'✅ Tu es bien désinscrit des emails.',pr_empty_signal:"Aucun pari à signal fort ici — le modèle ne voit que des matchs trop serrés (≈pile ou face).",sel_none_signal:"Aucun pari à signal fort aujourd'hui. Le modèle ne voit que des matchs trop serrés (≈pile ou face) — mieux vaut s'abstenir que de forcer.",
   dlg_cancel:'Annuler',dlg_confirm:'Confirmer',dlg_bet_ok:'Parier',win_verb:'gagne',
   dc_combo_t:'🎯 Parier ce combiné ?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} sélections<br><span style="font-size:12px">{legs}</span><br><br>Mise : <strong>{m}€</strong> · Cote totale : <strong>{c}</strong><br>Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>Probabilité réelle : <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gagne uniquement si les {n} sélections passent. Mise = quart de Kelly, plafond 5%.</span>',
   dc_out_t:'🎯 Parier cet outsider ?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Mise : <strong>{m}€</strong> · Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Valeur : <strong style="color:var(--green)">+{e}%</strong> vs marché',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Gros coup risqué</strong> — mise de suivi réduite.',
@@ -1139,7 +1147,7 @@ const I18N={
   ci_rlcover_q:'The probability the team "covers" its handicap: win by 2+ (if −1.5) or not lose by 2+ (if +1.5).',ci_rlcover_p:'Derived from the win probability (so consistent with it). It determines the value of the run line bet.',
   tlbl_victoire:'Game winner',tlbl_ou:'Total runs (O/U)',tlbl_runline:'Run line (handicap)',pk_win:'{team} wins the game',pk_over:'OVER {line} total runs',pk_under:'UNDER {line} total runs',pk_rl:'{team} {point}',expl_win:'Model on real data (MLB stats + market odds): {team} has a {proba}% chance to win (range {lo}–{hi}%). Estimated runs: {ra} − {rh}.',expl_ou:'Estimate on real data: expected total {total} runs ({ra} − {rh}) vs line {line}. {side} probability: {proba}%.',expl_rl:'Run line: {cond}. Estimated coverage: {proba}%.',expl_rl_neg:'{team} must win by 2 runs or more',expl_rl_pos:'{team} can lose by 1 run max (or win)',
   prono_q:"ⓘ what's this?",odds_best:'Best odds',prono_ourproba:'our prob.',prono_market:'market',data_real:'real data',prono_hi:'🔥 HIGH CHANCE',prono_good:'✅ GOOD CHANCE',prono_probability:'PROBABILITY',prono_form:'Form (recent → old):',prono_weights:'⚖️ WEIGHT OF EACH CRITERION',odds_us:'Best US odds',odds_eu:'Best EU odds',
-  tr_t:'Verified track record',tr_s:'All predictions, real results — over <strong>{n}</strong> settled',tr_win:'win rate',pr_empty_value:"No value bet today — the market is efficient on these games. That's normal: true value bets are rare.",pr_empty_filter:'No prediction for this filter',pg_count_lbl:'picks',free_detail_hint:'Click to see the full match analysis',pr_empty_signal:"No strong-signal bet here — the model only sees games too close to call (≈coin-flip).",sel_none_signal:"No strong-signal bet today. The model only sees games that are too close (≈coin-flip) — better to pass than to force one.",
+  tr_t:'Verified track record',tr_s:'All predictions, real results — over <strong>{n}</strong> settled',tr_win:'win rate',pr_empty_value:"No value bet today — the market is efficient on these games. That's normal: true value bets are rare.",pr_empty_filter:'No prediction for this filter',pg_count_lbl:'picks',free_detail_hint:'Click to see the full match analysis',email_pref_t:'📨 Picks by email',email_pref_s:'Get the free pick of the day every morning',email_pref_label:'Receive the daily digest by email',email_on:'✅ You will receive picks by email',email_off:'Unsubscribed from emails',unsub_done:'✅ You have been unsubscribed from emails.',pr_empty_signal:"No strong-signal bet here — the model only sees games too close to call (≈coin-flip).",sel_none_signal:"No strong-signal bet today. The model only sees games that are too close (≈coin-flip) — better to pass than to force one.",
   dlg_cancel:'Cancel',dlg_confirm:'Confirm',dlg_bet_ok:'Bet',win_verb:'wins',
   dc_combo_t:'🎯 Bet this parlay?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} picks<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Total odds: <strong>{c}</strong><br>Potential win: <strong style="color:var(--green)">+{g}€</strong><br>Real probability: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Wins only if all {n} picks hit. Stake = quarter Kelly, 5% cap.</span>',
   dc_out_t:'🎯 Bet this underdog?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Stake: <strong>{m}€</strong> · Potential win: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Value: <strong style="color:var(--green)">+{e}%</strong> vs market',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Risky long shot</strong> — reduced follow stake.',
@@ -1249,7 +1257,7 @@ const I18N={
   ci_rlcover_q:'La probabilidad de que el equipo "cubra" su hándicap: ganar por 2+ (si −1.5) o no perder por 2+ (si +1.5).',ci_rlcover_p:'Derivada de la probabilidad de victoria (coherente con ella). Determina el valor de la apuesta run line.',
   tlbl_victoire:'Ganador del partido',tlbl_ou:'Total carreras (O/U)',tlbl_runline:'Run line (hándicap)',pk_win:'{team} gana el partido',pk_over:'OVER {line} carreras en total',pk_under:'UNDER {line} carreras en total',pk_rl:'{team} {point}',expl_win:'Modelo sobre datos reales (stats MLB + cuotas del mercado): {team} tiene un {proba}% de probabilidad de ganar (rango {lo}–{hi}%). Carreras estimadas: {ra} − {rh}.',expl_ou:'Estimación sobre datos reales: total esperado {total} carreras ({ra} − {rh}) vs línea {line}. Probabilidad {side}: {proba}%.',expl_rl:'Run line: {cond}. Cobertura estimada: {proba}%.',expl_rl_neg:'{team} debe ganar por 2 carreras o más',expl_rl_pos:'{team} puede perder por 1 carrera máx (o ganar)',
   prono_q:"ⓘ ¿qué es?",odds_best:'Mejor cuota',prono_ourproba:'nuestra prob.',prono_market:'mercado',data_real:'datos reales',prono_hi:'🔥 ALTA PROBABILIDAD',prono_good:'✅ BUENA PROBABILIDAD',prono_probability:'PROBABILIDAD',prono_form:'Forma (reciente → antiguo):',prono_weights:'⚖️ PESO DE CADA CRITERIO',odds_us:'Mejor cuota US',odds_eu:'Mejor cuota EU',
-  tr_t:'Track record verificado',tr_s:'Todos los pronósticos, resultados reales — sobre <strong>{n}</strong> resueltos',tr_win:'acierto',pr_empty_value:'No hay apuesta de valor hoy — el mercado es eficiente en estos partidos. Es normal: los value bets reales son raros.',pr_empty_filter:'Sin pronóstico para este filtro',pg_count_lbl:'pronósticos',free_detail_hint:'Haz clic para ver el análisis detallado del partido',pr_empty_signal:"Ninguna apuesta de señal fuerte aquí — el modelo solo ve partidos muy reñidos (≈cara o cruz).",sel_none_signal:"Hoy no hay apuesta de señal fuerte. El modelo solo ve partidos muy reñidos (≈cara o cruz) — mejor abstenerse que forzar.",
+  tr_t:'Track record verificado',tr_s:'Todos los pronósticos, resultados reales — sobre <strong>{n}</strong> resueltos',tr_win:'acierto',pr_empty_value:'No hay apuesta de valor hoy — el mercado es eficiente en estos partidos. Es normal: los value bets reales son raros.',pr_empty_filter:'Sin pronóstico para este filtro',pg_count_lbl:'pronósticos',free_detail_hint:'Haz clic para ver el análisis detallado del partido',email_pref_t:'📨 Pronósticos por email',email_pref_s:'Recibe el pronóstico gratis del día cada mañana',email_pref_label:'Recibir el resumen diario por email',email_on:'✅ Recibirás los pronósticos por email',email_off:'Dado de baja de los emails',unsub_done:'✅ Te has dado de baja de los emails.',pr_empty_signal:"Ninguna apuesta de señal fuerte aquí — el modelo solo ve partidos muy reñidos (≈cara o cruz).",sel_none_signal:"Hoy no hay apuesta de señal fuerte. El modelo solo ve partidos muy reñidos (≈cara o cruz) — mejor abstenerse que forzar.",
   dlg_cancel:'Cancelar',dlg_confirm:'Confirmar',dlg_bet_ok:'Apostar',win_verb:'gana',
   dc_combo_t:'🎯 ¿Apostar esta combinada?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} selecciones<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Cuota total: <strong>{c}</strong><br>Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>Probabilidad real: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gana solo si entran las {n} selecciones. Stake = Kelly fraccionado, tope 5%.</span>',
   dc_out_t:'🎯 ¿Apostar este outsider?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Stake: <strong>{m}€</strong> · Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Valor: <strong style="color:var(--green)">+{e}%</strong> vs mercado',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Jugada arriesgada</strong> — stake de seguimiento reducido.',
@@ -1724,7 +1732,31 @@ async function demarrerApp(s){
   try{await fetchProfile(s);}catch(e){}
   applyAdminUI();applyPremiumUI();
   try{await syncPull(s);}catch(e){}
+  syncEmailSub(s); // enregistre/maj l'abonné email (email + langue) ; opt-in par défaut à l'inscription
   if(!loaded['pronos']){loaded['pronos']=true;loadPronos();}
+}
+// ─── Préférences email (table email_subs côté Supabase) ───
+function syncEmailSub(s){
+  if(!s||!s.access_token||!s.id||!s.email)return;
+  // upsert email + langue (n'écrase PAS optin : nouvelle ligne → défaut true, ligne existante → inchangé)
+  fetch(`${SUPA_URL}/rest/v1/email_subs?on_conflict=user_id`,{method:'POST',headers:{apikey:SUPA_ANON,Authorization:'Bearer '+s.access_token,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:s.id,email:s.email,lang:LANG})}).catch(()=>{});
+}
+async function loadEmailPref(){
+  const s=getSession();const el=document.getElementById('email-optin');if(!s||!el)return;
+  try{const r=await fetch(`${SUPA_URL}/rest/v1/email_subs?select=optin&user_id=eq.${s.id}`,{headers:{apikey:SUPA_ANON,Authorization:'Bearer '+s.access_token}});const rows=await r.json();el.checked=rows&&rows[0]?!!rows[0].optin:true;}catch(e){el.checked=true;}
+}
+function setEmailPref(on){
+  const s=getSession();if(!s)return;
+  fetch(`${SUPA_URL}/rest/v1/email_subs?user_id=eq.${s.id}`,{method:'PATCH',headers:{apikey:SUPA_ANON,Authorization:'Bearer '+s.access_token,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({optin:on,lang:LANG})}).then(()=>toast(t(on?'email_on':'email_off'),'ok')).catch(()=>{});
+}
+// Désinscription depuis un lien email (?unsub=TOKEN) — fonctionne même sans être connecté
+async function handleUnsub(){
+  const m=location.search.match(/[?&]unsub=([^&]+)/);if(!m)return false;
+  const tok=decodeURIComponent(m[1]);
+  try{await fetch(`${SUPA_URL}/rest/v1/rpc/unsubscribe_by_token`,{method:'POST',headers:{apikey:SUPA_ANON,Authorization:'Bearer '+SUPA_ANON,'Content-Type':'application/json'},body:JSON.stringify({tok})});}catch(e){}
+  try{history.replaceState({},'',location.pathname);}catch(e){}
+  setTimeout(()=>{try{toast(t('unsub_done'),'ok');}catch(e){alert(t('unsub_done'));}},400);
+  return true;
 }
 
 // Stats de ligue (utilisées par l'ancien moteur client, désormais inerte)
@@ -4022,6 +4054,7 @@ function drawCurve(init,settled){
 }
 
 function renderBankroll(){
+  loadEmailPref(); // état du toggle « pronos par email »
   const init=getBankroll();
   document.getElementById('bk-input').value=init||'';
   const paris=getHistorique().filter(h=>h.parie).sort((a,b)=>(a.datePari||a.date).localeCompare(b.datePari||b.date));
@@ -4147,6 +4180,7 @@ if(!STORAGE_OK){
 // 1) retour d'un lien email (confirmation/réinitialisation) ? 2) sinon session existante ? 3) sinon écran de connexion.
 (async()=>{
   LANG=detectLang();applyI18n(); // langue : préférence sauvegardée, sinon langue du navigateur (FR/EN/ES)
+  await handleUnsub(); // lien de désinscription d'un email (?unsub=TOKEN) — traité avant tout, même déconnecté
   const hash=parseAuthHash();
   if(hash){
     if(hash.error){ showAuthScreen(); setAuthMode('login'); authMsg('⚠️ '+hash.error+' '+t('auth_link_expired'),'err'); return; }
