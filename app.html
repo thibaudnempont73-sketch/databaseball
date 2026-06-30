@@ -350,16 +350,23 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 /* STANDINGS */
 .div-block{background:var(--card);border:1px solid var(--b1);border-radius:10px;overflow:hidden;margin-bottom:10px}
 .div-title{padding:9px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);border-bottom:1px solid var(--b1);background:rgba(255,255,255,.02)}
-.stand-row{display:grid;grid-template-columns:18px 1fr 50px 30px 46px 52px;gap:6px;align-items:center;padding:8px 14px;border-bottom:1px solid rgba(28,42,62,.5);font-size:11px}
+.stand-row{display:flex;flex-direction:column;gap:3px;padding:9px 14px;border-bottom:1px solid rgba(28,42,62,.5);cursor:pointer}
 .stand-row:last-child{border-bottom:none}
-.stand-row:hover{background:rgba(255,255,255,.015)}
-.srank{font-family:var(--mono);font-size:10px;color:var(--muted)}
-.sname{font-weight:700;display:flex;align-items:center;gap:5px}
+.stand-row:hover{background:rgba(255,255,255,.03)}
+.sr-top{display:flex;align-items:center;gap:7px;font-size:12px}
+.srank{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:15px}
+.sname{font-weight:700;display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.swl{font-family:var(--mono);font-size:10px;color:var(--muted)}
-.sgb{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center}
-.spct{font-family:var(--mono);font-size:11px;font-weight:500;text-align:right}
-.sstreak{text-align:right}
+.spct{font-family:var(--mono);font-size:12px;font-weight:600}
+.sr-meta{display:flex;gap:11px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;color:var(--muted);padding-left:22px}
+.reg-badge{font-size:8.5px;font-weight:800;padding:1px 6px;border-radius:9px;white-space:nowrap;flex-shrink:0}
+.reg-lucky{background:var(--amber-d);color:var(--amber)}
+.reg-unlucky{background:var(--blue-d);color:var(--blue)}
+.stand-sort{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.ss-btn{background:var(--card2);border:1px solid var(--b1);color:var(--muted);font-family:var(--sans);font-size:10.5px;font-weight:600;padding:6px 11px;border-radius:8px;cursor:pointer}
+.ss-btn.active{background:var(--green-d);border-color:var(--green-b);color:var(--green)}
+.tm-stat{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--b1);font-size:13px}
+.tm-stat:last-child{border-bottom:none}.tm-stat b{font-family:var(--mono)}
 .pill{display:inline-block;padding:2px 6px;border-radius:20px;font-size:9px;font-weight:700}
 .pg{background:var(--green-d);color:var(--green)}.pr{background:var(--red-d);color:var(--red)}
 .py{background:var(--amber-d);color:var(--amber)}.pm{background:rgba(92,110,135,.12);color:var(--muted)}
@@ -375,6 +382,10 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .lr-name{font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lr-team{font-size:10px;color:var(--muted)}
 .lr-val{font-family:var(--display);font-size:19px}
+.lr-photo{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--card2);flex-shrink:0}
+.lr-today{font-size:8px;font-weight:800;color:var(--green);background:var(--green-d);padding:1px 5px;border-radius:7px;margin-left:5px;white-space:nowrap}
+.lead-item.lead-today{cursor:pointer}
+.lead-item.lead-today:hover{background:var(--green-d)}
 
 /* BANKROLL */
 .bk-input{width:100%;background:var(--card);border:1px solid var(--b1);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--white);font-family:var(--sans);outline:none;transition:border-color .2s}
@@ -559,7 +570,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .modal-btn.ok{background:var(--green);color:#04140d}
 .modal-btn.cancel{background:var(--card2);border:1px solid var(--b2);color:var(--muted)}
 /* Lexique débutant */
-#lex-modal,#account-modal,#combo-modal{position:fixed;inset:0;z-index:6000;background:rgba(4,7,12,.86);backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;padding:24px 14px;overflow:auto}
+#lex-modal,#account-modal,#combo-modal,#team-modal{position:fixed;inset:0;z-index:6000;background:rgba(4,7,12,.86);backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;padding:24px 14px;overflow:auto}
 .lex-box{background:var(--card);border:1px solid var(--b2);border-radius:16px;max-width:640px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.6)}
 .lex-head{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--b1);padding:15px 20px;display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0;z-index:2}
 .lex-head h2{font-size:16px;font-weight:800}
@@ -690,6 +701,14 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
   </div>
 </div>
 
+<!-- FICHE ÉQUIPE (depuis Classements) -->
+<div id="team-modal" onclick="if(event.target===this)fermerEquipe()">
+  <div class="lex-box" style="max-width:440px">
+    <div class="lex-head"><h2 id="team-modal-title">🏟️</h2><button class="lex-close" onclick="fermerEquipe()">×</button></div>
+    <div class="lex-body" id="team-modal-body"></div>
+  </div>
+</div>
+
 <!-- DÉTAIL D'UN COMBINÉ (depuis Bankroll) -->
 <div id="combo-modal" onclick="if(event.target===this)fermerCombo()">
   <div class="lex-box" style="max-width:480px">
@@ -699,7 +718,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v78 · 30/06</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v79 · 30/06</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -911,6 +930,12 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
     <button class="tab-btn active" onclick="switchTab('cl','al',this)" data-i18n="cl_al">Ligue Américaine</button>
     <button class="tab-btn" onclick="switchTab('cl','nl',this)" data-i18n="cl_nl">Ligue Nationale</button>
   </div>
+  <div class="stand-sort" id="stand-sort">
+    <button class="ss-btn active" onclick="setStandSort('pct',this)" data-i18n="st_sort_pct">% victoire</button>
+    <button class="ss-btn" onclick="setStandSort('diff',this)" data-i18n="st_sort_diff">Différentiel</button>
+    <button class="ss-btn" onclick="setStandSort('l10',this)" data-i18n="st_sort_l10">10 derniers</button>
+    <button class="ss-btn" onclick="setStandSort('pyth',this)" data-i18n="st_sort_pyth">Théorique</button>
+  </div>
   <div class="tc active" id="tc-cl-al"><div id="stand-al"><div class="loading"><div class="spinner"></div></div></div></div>
   <div class="tc" id="tc-cl-nl"><div id="stand-nl"></div></div>
 </div>
@@ -1075,6 +1100,8 @@ const I18N={
   rp_pitcher:'lanceur de départ de qualité',rp_offense:'attaque performante',rp_bestteam:'meilleure équipe sur la saison',rp_home:'avantage du terrain',rp_form:'équipe en forme',rp_defense:'défense solide',rp_k:'lanceur qui élimine beaucoup',rp_handicap:'handicap accessible',rp_total:'total cohérent avec les lanceurs',rp_fav:'favori du match',rp_value:'valeur +{e}% vs marché',rp_odds:'cote intéressante ({c})',rp_safety:'filet de sécurité (+1.5)',rp_balanced:'profil équilibré',
   ph_note:'🕐 Tous les pronostics du jour sont calculés <strong>automatiquement une fois par jour</strong> (vers 15h, heure de Paris) puis <strong>figés</strong> : ils ne changent plus en cours de journée.',
   combo_detail_t:'🎲 Détail du combiné',combo_detail_legs:'Les sélections du combiné',combo_potential:'Gain potentiel',combo_each_must:'⚠️ Pour gagner, TOUTES les sélections doivent passer.',
+  st_l10:'10 derniers',st_diff:'Diff.',st_lucky:'🍀 surcoté',st_unlucky:'📉 sous-coté',st_sort_pct:'% victoire',st_sort_diff:'Différentiel',st_sort_l10:'10 derniers',st_sort_pyth:'Théorique',
+  tm_today:'Match du jour',tm_no_today:'Ne joue pas aujourd\'hui',tm_home:'Domicile',tm_away:'Extérieur',tm_rundiff:'Différentiel de runs',tm_reg_lucky:'Sur-performe son niveau réel (points marqués/encaissés) → bilan possiblement surévalué, candidate à la baisse.',tm_reg_unlucky:'Sous-performe son niveau réel → malchanceuse jusqu\'ici, candidate à un rebond.',tm_reg_neutral:'Bilan cohérent avec son vrai niveau.',tm_see_prono:'Voir le pronostic du jour →',pl_today:'▶ Joue aujourd\'hui',
   dc_combo_t:'🎯 Parier ce combiné ?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} sélections<br><span style="font-size:12px">{legs}</span><br><br>Mise : <strong>{m}€</strong> · Cote totale : <strong>{c}</strong><br>Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>Probabilité réelle : <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gagne uniquement si les {n} sélections passent. Mise = quart de Kelly, plafond 5%.</span>',
   dc_out_t:'🎯 Parier cet outsider ?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Mise : <strong>{m}€</strong> · Gain potentiel : <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Valeur : <strong style="color:var(--green)">+{e}%</strong> vs marché',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Gros coup risqué</strong> — mise de suivi réduite.',
   dc_clear_t:"Effacer tout l'historique ?",dc_clear_b:'Cette action est <strong>irréversible</strong>. Pensez à exporter avant si besoin.',
@@ -1189,6 +1216,8 @@ const I18N={
   rp_pitcher:'quality starting pitcher',rp_offense:'strong offense',rp_bestteam:'best team on the season',rp_home:'home-field edge',rp_form:'team in form',rp_defense:'solid defense',rp_k:'high-strikeout pitcher',rp_handicap:'reachable handicap',rp_total:'total in line with the pitchers',rp_fav:'game favorite',rp_value:'value +{e}% vs market',rp_odds:'attractive odds ({c})',rp_safety:'safety net (+1.5)',rp_balanced:'balanced profile',
   ph_note:'🕐 All of today\'s predictions are computed <strong>automatically once a day</strong> (around 3 PM Paris time) then <strong>locked</strong>: they no longer change during the day.',
   combo_detail_t:'🎲 Parlay details',combo_detail_legs:'The parlay selections',combo_potential:'Potential payout',combo_each_must:'⚠️ To win, ALL selections must hit.',
+  st_l10:'Last 10',st_diff:'Diff',st_lucky:'🍀 overperforming',st_unlucky:'📉 underperforming',st_sort_pct:'Win %',st_sort_diff:'Run diff',st_sort_l10:'Last 10',st_sort_pyth:'Pythag.',
+  tm_today:'Today\'s game',tm_no_today:'Not playing today',tm_home:'Home',tm_away:'Away',tm_rundiff:'Run differential',tm_reg_lucky:'Overperforming its true level (runs for/against) → record may be inflated, candidate to regress down.',tm_reg_unlucky:'Underperforming its true level → unlucky so far, candidate to bounce back.',tm_reg_neutral:'Record in line with its true level.',tm_see_prono:'See today\'s prediction →',pl_today:'▶ Plays today',
   dc_combo_t:'🎯 Bet this parlay?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} picks<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Total odds: <strong>{c}</strong><br>Potential win: <strong style="color:var(--green)">+{g}€</strong><br>Real probability: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Wins only if all {n} picks hit. Stake = quarter Kelly, 5% cap.</span>',
   dc_out_t:'🎯 Bet this underdog?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Stake: <strong>{m}€</strong> · Potential win: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Value: <strong style="color:var(--green)">+{e}%</strong> vs market',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Risky long shot</strong> — reduced follow stake.',
   dc_clear_t:'Clear all history?',dc_clear_b:'This action is <strong>irreversible</strong>. Consider exporting first if needed.',
@@ -1303,6 +1332,8 @@ const I18N={
   rp_pitcher:'lanzador abridor de calidad',rp_offense:'ataque potente',rp_bestteam:'mejor equipo de la temporada',rp_home:'ventaja de local',rp_form:'equipo en forma',rp_defense:'defensa sólida',rp_k:'lanzador con muchos ponches',rp_handicap:'hándicap accesible',rp_total:'total coherente con los lanzadores',rp_fav:'favorito del partido',rp_value:'valor +{e}% vs mercado',rp_odds:'cuota interesante ({c})',rp_safety:'red de seguridad (+1.5)',rp_balanced:'perfil equilibrado',
   ph_note:'🕐 Todos los pronósticos del día se calculan <strong>automáticamente una vez al día</strong> (hacia las 15h, hora de París) y luego se <strong>congelan</strong>: ya no cambian durante el día.',
   combo_detail_t:'🎲 Detalle de la combinada',combo_detail_legs:'Las selecciones de la combinada',combo_potential:'Ganancia potencial',combo_each_must:'⚠️ Para ganar, TODAS las selecciones deben acertar.',
+  st_l10:'Últimos 10',st_diff:'Dif.',st_lucky:'🍀 sobrevalorado',st_unlucky:'📉 infravalorado',st_sort_pct:'% victorias',st_sort_diff:'Dif. carreras',st_sort_l10:'Últimos 10',st_sort_pyth:'Pitagórico',
+  tm_today:'Partido de hoy',tm_no_today:'No juega hoy',tm_home:'Local',tm_away:'Visitante',tm_rundiff:'Diferencial de carreras',tm_reg_lucky:'Rinde por encima de su nivel real (carreras a favor/en contra) → balance posiblemente inflado, candidato a bajar.',tm_reg_unlucky:'Rinde por debajo de su nivel real → con mala suerte hasta ahora, candidato a recuperarse.',tm_reg_neutral:'Balance acorde a su nivel real.',tm_see_prono:'Ver el pronóstico de hoy →',pl_today:'▶ Juega hoy',
   dc_combo_t:'🎯 ¿Apostar esta combinada?',dc_combo_b:'<strong>{emoji} {nom}</strong> · {n} selecciones<br><span style="font-size:12px">{legs}</span><br><br>Stake: <strong>{m}€</strong> · Cuota total: <strong>{c}</strong><br>Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>Probabilidad real: <strong>{p}%</strong> · edge <strong>{e}</strong><br><span style="font-size:11px">⚠️ Gana solo si entran las {n} selecciones. Stake = Kelly fraccionado, tope 5%.</span>',
   dc_out_t:'🎯 ¿Apostar este outsider?',dc_out_b:'<strong>{teamwins}</strong> @ <strong>{c}</strong><br>{label}<br><br>Stake: <strong>{m}€</strong> · Ganancia potencial: <strong style="color:var(--green)">+{g}€</strong><br>{valline}',dc_out_val:'Valor: <strong style="color:var(--green)">+{e}%</strong> vs mercado',dc_out_risk:'<strong style="color:var(--amber)">⚠️ Jugada arriesgada</strong> — stake de seguimiento reducido.',
   dc_clear_t:'¿Borrar todo el historial?',dc_clear_b:'Esta acción es <strong>irreversible</strong>. Considera exportar antes si lo necesitas.',
@@ -4240,44 +4271,93 @@ function loadBankroll(){renderBankroll();}
 // PAGE CLASSEMENTS
 // ═══════════════════════════════════════════════════
 let pythMap={}; // teamId -> {rs,ra,pyth} pour la page Classements
+let _standData={al:[],nl:[]},_standMap={},_standSort='pct';
 async function loadClassements(){
   try{
     const snap=await loadSnapshot();
     pythMap=snap?.pythMap||{};
     const recs=snap?.standings??[];
     if(!recs.length){document.getElementById('stand-al').innerHTML=`<div class="empty">${t('st_unavail')}</div>`;return;}
+    _standMap={};recs.forEach(div=>(div.teamRecords||[]).forEach(r=>{if(r.team)_standMap[r.team.id]=r;}));
     const al=recs.filter(r=>[200,201,202].includes(r.division?.id));
     const nl=recs.filter(r=>[203,204,205].includes(r.division?.id));
-    renderStands('stand-al',al.length?al:recs.slice(0,3));
-    renderStands('stand-nl',nl.length?nl:recs.slice(3));
+    _standData={al:al.length?al:recs.slice(0,3),nl:nl.length?nl:recs.slice(3)};
+    renderStands('stand-al',_standData.al);
+    renderStands('stand-nl',_standData.nl);
   }catch(e){document.getElementById('stand-al').innerHTML=`<div class="empty">${t('m_unavail')}</div>`;}
 }
-
+// Helpers classements
+function stSplit(r,type){const s=(r.records?.splitRecords||[]).find(x=>x.type===type);return s?`${s.wins}-${s.losses}`:'—';}
+function stLast10(r){return stSplit(r,'lastTen');}
+// Régression = écart bilan réel vs pythagoricien (signal de pari : sur/sous-performance)
+function stReg(r){const pyth=pythMap[r.team?.id]?.pyth;if(pyth==null)return null;const gap=(parseFloat(r.winningPercentage)||0)-pyth;if(gap>=0.045)return 'lucky';if(gap<=-0.045)return 'unlucky';return null;}
+function stSortKey(r){
+  if(_standSort==='diff')return +(r.runDifferential??-999);
+  if(_standSort==='pyth')return pythMap[r.team?.id]?.pyth??-1;
+  if(_standSort==='l10'){const s=(r.records?.splitRecords||[]).find(x=>x.type==='lastTen');return s?(s.wins/Math.max(1,s.wins+s.losses)):-1;}
+  return parseFloat(r.winningPercentage)||0;
+}
+function setStandSort(s,btn){_standSort=s;document.querySelectorAll('#stand-sort .ss-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderStands('stand-al',_standData.al);renderStands('stand-nl',_standData.nl);}
 function renderStands(id,recs){
-  document.getElementById(id).innerHTML=recs.map(div=>{
-    const rows=div.teamRecords.map((r,i)=>{
-      const abbr=r.team.abbreviation;
-      const col=TCOLORS[abbr]??'#C8102E';
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=recs.map(div=>{
+    const teams=[...(div.teamRecords||[])].sort((a,b)=>stSortKey(b)-stSortKey(a));
+    const rows=teams.map((r,i)=>{
       const pctN=parseFloat(r.winningPercentage)||0;
       const pctCol=pctN>=.580?'var(--green)':pctN>=.480?'var(--white)':'var(--red)';
-      const gb=!r.gamesBack||r.gamesBack==='0'?`<span class="pill pr">${t('st_first')}</span>`:r.gamesBack;
       const streak=r.streak?.streakCode??'—';
       const sc=streak.startsWith('W')?'pg':streak.startsWith('L')?'pr':'pm';
-      // Win% pythagoricien (depuis les runs réels récupérés dans loadClassements)
-      const pyth=pythMap[r.team.id]?.pyth??null;
-      const pythHtml=pyth?`<span style="font-family:var(--mono);font-size:9px;color:var(--muted)">(${Math.round(pyth*100)}% ${t('st_theo')})</span>`:'';
-      return`<div class="stand-row">
-        <span class="srank">${i+1}</span>
-        <span class="sname" style="display:inline-flex;align-items:center;gap:6px">${teamLogo(r.team.id,20)}${r.team.name}</span>
-        <span class="swl">${r.wins}${t('rec_w')}-${r.losses}${t('rec_l')}</span>
-        <span class="sgb">${gb}</span>
-        <span class="spct" style="color:${pctCol}">${r.winningPercentage} ${pythHtml}</span>
-        <span class="sstreak"><span class="pill ${sc}">${streak}</span></span>
+      const pyth=pythMap[r.team?.id]?.pyth??null;
+      const reg=stReg(r);
+      const regHtml=reg==='lucky'?`<span class="reg-badge reg-lucky">${t('st_lucky')}</span>`:reg==='unlucky'?`<span class="reg-badge reg-unlucky">${t('st_unlucky')}</span>`:'';
+      const diff=r.runDifferential;
+      const diffHtml=diff!=null?`<span style="color:${diff>0?'var(--green)':diff<0?'var(--red)':'var(--muted)'}">${t('st_diff')} ${diff>0?'+':''}${diff}</span>`:'';
+      return`<div class="stand-row" onclick="ouvrirEquipe(${r.team.id})">
+        <div class="sr-top">
+          <span class="srank">${i+1}</span>
+          <span class="sname">${teamLogo(r.team.id,20)}${r.team.name}</span>
+          ${regHtml}
+          <span class="spct" style="color:${pctCol}">${r.winningPercentage}</span>
+          <span class="sstreak"><span class="pill ${sc}">${streak}</span></span>
+        </div>
+        <div class="sr-meta">
+          <span>${r.wins}${t('rec_w')}-${r.losses}${t('rec_l')}</span>
+          <span>L10 ${stLast10(r)}</span>
+          ${diffHtml}
+          ${pyth!=null?`<span>${Math.round(pyth*100)}% ${t('st_theo')}</span>`:''}
+        </div>
       </div>`;
     }).join('');
     return`<div class="div-block"><div class="div-title">${div.division?.name??t('st_division')}</div>${rows}</div>`;
   }).join('');
 }
+// Mini-fiche équipe (clic sur une ligne de classement) : forme réelle + match du jour avec notre prono
+function ouvrirEquipe(teamId){
+  const r=_standMap[teamId];if(!r)return;
+  const pyth=pythMap[teamId]?.pyth;const reg=stReg(r);const diff=r.runDifferential;
+  const regTxt=reg==='lucky'?t('tm_reg_lucky'):reg==='unlucky'?t('tm_reg_unlucky'):t('tm_reg_neutral');
+  const regCol=reg==='lucky'?'var(--amber)':reg==='unlucky'?'var(--blue)':'var(--muted)';
+  let todayHtml=`<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px 0">${t('tm_no_today')}</div>`;
+  try{
+    const pr=(typeof tousLesPronos!=='undefined'?tousLesPronos:[]).find(p=>p.type==='victoire'&&(p.awayTeam?.id===teamId||p.homeTeam?.id===teamId));
+    if(pr)todayHtml=`<div class="sel-pick" onclick="fermerEquipe();ouvrirMatchDepuis(${pr.gamePk})" style="cursor:pointer;margin:0">
+      <div class="sel-hd"><span class="sel-tag">${typeLabelOf(pr)}</span><span class="sel-time">📅 ${dateProno(pr)} · ⏱ ${heureProno(pr)}</span></div>
+      <div class="sel-row"><div class="sel-body"><div class="sel-match">${teamLogo(pr.awayTeam.id,15)}${teamLogo(pr.homeTeam.id,15)} ${pr.matchLabel}</div><div class="sel-pickname">${displayPick(pr)}</div><div class="sel-meta">${pr.proba.toFixed(0)}% ${t('sel_success')}</div></div><div class="sel-right"><div class="sel-cote">${(+pr.coteVegas||0).toFixed(2)}</div></div></div>
+      <div style="font-size:11px;color:var(--blue);text-align:center;margin-top:6px;font-weight:600">${t('tm_see_prono')}</div></div>`;
+  }catch(e){}
+  document.getElementById('team-modal-title').innerHTML=`${teamLogo(teamId,26)} ${r.team.name}`;
+  document.getElementById('team-modal-body').innerHTML=`
+    <div class="tm-stat"><span>${t('st_sort_pct')}</span><b style="color:var(--white)">${r.wins}-${r.losses} · ${r.winningPercentage}</b></div>
+    <div class="tm-stat"><span>${t('st_l10')}</span><b>${stLast10(r)}</b></div>
+    <div class="tm-stat"><span>${t('tm_home')} / ${t('tm_away')}</span><b>${stSplit(r,'home')} / ${stSplit(r,'away')}</b></div>
+    <div class="tm-stat"><span>${t('tm_rundiff')}</span><b style="color:${diff>0?'var(--green)':diff<0?'var(--red)':'var(--white)'}">${diff>0?'+':''}${diff??'—'}</b></div>
+    ${pyth!=null?`<div class="tm-stat"><span>${t('st_sort_pyth')}</span><b>${Math.round(pyth*100)}%</b></div>`:''}
+    <div style="background:${regCol}1a;border:1px solid ${regCol}55;border-radius:9px;padding:10px;margin:13px 0;font-size:11.5px;line-height:1.5;color:var(--white)">${reg==='lucky'?'🍀':reg==='unlucky'?'📉':'⚖️'} ${regTxt}</div>
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${t('tm_today')}</div>
+    ${todayHtml}`;
+  document.getElementById('team-modal').style.display='flex';
+}
+function fermerEquipe(){const m=document.getElementById('team-modal');if(m)m.style.display='none';}
 
 // ═══════════════════════════════════════════════════
 // PAGE JOUEURS
@@ -4295,13 +4375,19 @@ async function loadJoueurs(){
     const el=document.getElementById(`l-${key}`);
     if(!el)continue;
     const leaders=all[key]??[];
-    el.innerHTML=leaders.length?leaders.map((l,i)=>`
-      <div class="lead-item">
+    el.innerHTML=leaders.length?leaders.map((l,i)=>{
+      const photo=l.id?`<img class="lr-photo" src="https://midfield.mlbstatic.com/v1/people/${l.id}/spots/72" onerror="this.style.display='none'">`:'';
+      let gp=null;
+      try{const tid=l.team?teamIdOf(l.team):null;if(tid){const pr=(typeof tousLesPronos!=='undefined'?tousLesPronos:[]).find(p=>p.awayTeam?.id===tid||p.homeTeam?.id===tid);if(pr)gp=pr.gamePk;}}catch(e){}
+      const todayBadge=gp?`<span class="lr-today">${t('pl_today')}</span>`:'';
+      return `<div class="lead-item${gp?' lead-today':''}"${gp?` onclick="ouvrirMatchDepuis(${gp})"`:''}>
         <span class="lr-rank ${i<3?'top':''}">${i+1}</span>
-        ${l.team?`<span style="margin:0 7px 0 2px">${logoByName(l.team,22)}</span>`:''}
-        <div class="lr-info"><div class="lr-name">${l.name??'—'}</div><div class="lr-team">${l.team??''}</div></div>
+        ${photo}
+        ${l.team?`<span style="margin:0 5px 0 1px">${logoByName(l.team,20)}</span>`:''}
+        <div class="lr-info"><div class="lr-name">${l.name??'—'}</div><div class="lr-team">${l.team??''}${todayBadge}</div></div>
         <span class="lr-val" style="color:var(--${col})">${l.value??'—'}</span>
-      </div>`).join('')
+      </div>`;
+    }).join('')
     :`<div class="empty" style="padding:16px">${t('m_unavail')}</div>`;
   }
 }
