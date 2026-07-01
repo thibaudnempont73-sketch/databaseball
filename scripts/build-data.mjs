@@ -273,6 +273,20 @@ export function buildRecalibrator(rows,minN=150,K=40){
   const corr=p=>{const b=Math.min(95,Math.floor(p/5)*5),bin=bins[b];if(!bin||!bin.n)return p;const obs=bin.w/bin.n*100,w=bin.n/(bin.n+K);return p*(1-w)+obs*w;};
   return {apply:p=>Math.max(1,Math.min(99,corr(p))),n:fin.length,active:true};
 }
+// POIDS D'ANCRAGE MARCHÉ appris sur les résultats réels (jumeau de buildRecalibrator).
+// Le marché (cote dé-viggée = fair_proba) est une DONNÉE. On ne choisit PAS son poids à la main :
+// on cherche w∈[0,1] qui minimise le log-loss de proba_finale=(1-w)·modèle + w·marché sur les paris réglés.
+// Lissage vers 0.5 (neutre) tant que l'échantillon est petit, pour éviter qu'un w extrême sorte du bruit. PURE (testable).
+export function buildMarketWeight(rows,minN=120,K=80,w0=0.5){
+  const fin=rows.filter(r=>(r.resultat==='W'||r.resultat==='L')&&typeof r.proba==='number'&&typeof r.fair_proba==='number'&&r.fair_proba>0&&r.fair_proba<1);
+  const n=fin.length;
+  const ll=w=>{if(!n)return null;let s=0;for(const r of fin){const p=Math.max(0.01,Math.min(0.99,(1-w)*(r.proba/100)+w*r.fair_proba));s+=-((r.resultat==='W'?1:0)*Math.log(p)+(r.resultat==='W'?0:1)*Math.log(1-p));}return s/n;};
+  if(n<minN)return {w:0,active:false,n,logloss:null,llModel:ll(0),llMarket:ll(1)};
+  let best=0,bestLL=Infinity;
+  for(let w=0;w<=1.0001;w+=0.05){const l=ll(w);if(l<bestLL){bestLL=l;best=Math.round(w*20)/20;}}
+  const wShrunk=Math.round(((n/(n+K))*best+(K/(n+K))*w0)*20)/20; // arrondi au pas de 0.05
+  return {w:wShrunk,wRaw:best,active:true,n,logloss:ll(wShrunk),llModel:ll(0),llMarket:ll(1),llBest:bestLL};
+}
 // Stocke les pronos du jour + règle ceux d'hier en base, renvoie toutes les lignes réglées. Non bloquant.
 async function recordAndSettleResults(pronos){
   const {url,key}=supaConf(); if(!url||!key)return [];
@@ -353,7 +367,16 @@ async function build(){
   const slim=t=>t?{id:t.id,name:t.name,abbreviation:t.abbreviation}:t;
   // Recalibration calculée AVANT la boucle → appliquée à la SOURCE (proba de victoire) pour rester cohérente sur toutes les cartes
   let recal={apply:p=>p,active:false,n:0};
-  try{recal=buildRecalibrator(await fetchSettledRows());}catch(e){console.log('ℹ️ Recalibration indisponible :',e.message);}
+  let mktW={w:0,active:false,n:0};
+  try{
+    const settled=await fetchSettledRows();
+    mktW=buildMarketWeight(settled); // poids marché décidé par les vrais résultats
+    // Recalibration construite sur les probas DÉJÀ ancrées (même espace que ce qu'on applique en live) → pas de double correction incohérente.
+    const anchored=settled.map(r=>(mktW.active&&r.fair_proba!=null)?{...r,proba:(1-mktW.w)*r.proba+mktW.w*(r.fair_proba*100)}:r);
+    recal=buildRecalibrator(anchored);
+    if(mktW.active)console.log(`⚖️ Poids marché appris : w=${mktW.w} (brut ${mktW.wRaw}, n=${mktW.n}) · log-loss modèle seul ${mktW.llModel?.toFixed(4)} → marché seul ${mktW.llMarket?.toFixed(4)} → mix ${mktW.logloss?.toFixed(4)}`);
+    else console.log(`⚖️ Poids marché : inactif (n=${mktW.n} < seuil ${120}) → wMkt=0 (modèle pur, comme avant)`);
+  }catch(e){console.log('ℹ️ Calibration indisponible :',e.message);}
   for(const game of games){
     const away=game.teams.away,home=game.teams.home,aId=away.team.id,hId=home.team.id;
     const aStand=standMap[aId]??{},hStand=standMap[hId]??{},aHit=hitMap[aId]??{},hHit=hitMap[hId]??{},aPit=pitMap[aId]??{},hPit=pitMap[hId]??{};
@@ -384,7 +407,7 @@ async function build(){
     const vg=vegas||{}; // raccourci sûr pour lire les cotes US/EU même si vegas est null
     const parkPct=PARK[hId]||100;
     const sim=estimerMatch(aData,hData,parkPct,vegas,rA.score,rH.score);
-    const wMkt=0,capMkt=null; // ⬅️ ON OUBLIE LES COTES DANS LE CALCUL : probas 100% data, aucun ancrage marché (cotes = affichage/edge seulement)
+    const wMkt=mktW.w,capMkt=null; // ⬅️ ANCRAGE MARCHÉ appris sur les résultats réels (buildMarketWeight) : 0 si données insuffisantes, sinon le poids qui minimise le log-loss réel. Le marché = donnée ; son poids = décidé par les maths, jamais à la main.
     let pH=versMarche(sim.winH,vegas&&vegas.probaH!=null?vegas.probaH/100:null,wMkt,capMkt)*100;
     let pA=100-pH;pA=pt(pA);pH=pt(pH);
     const pHraw=pH,pAraw=pA; // proba BRUTE (avant recalibration) → enregistrée en base pour l'apprentissage de la calibration
@@ -465,7 +488,9 @@ async function build(){
     const settledRows=await recordAndSettleResults(pronos);
     trackRecord=computeTrackRecord(settledRows);
     trackRecord.recalActive=recal.active; // recal déjà appliquée à la source (avant la boucle) — plus de patch post-hoc incohérent
-    console.log(`📈 Track record : ${trackRecord.n} réglés · ${trackRecord.winRate??'—'}% · ROI ${trackRecord.roiPct??'—'}% · recalibration:${recal.active?'ON':'OFF'}`);
+    trackRecord.marketWeight=mktW.active?mktW.w:0;
+    trackRecord.marketWeightMeta=mktW.active?{w:mktW.w,n:mktW.n,llModel:mktW.llModel,llMarket:mktW.llMarket,llMix:mktW.logloss}:null;
+    console.log(`📈 Track record : ${trackRecord.n} réglés · ${trackRecord.winRate??'—'}% · ROI ${trackRecord.roiPct??'—'}% · recalibration:${recal.active?'ON':'OFF'} · ancrage marché:${mktW.active?'w='+mktW.w:'OFF'}`);
   }catch(e){console.log('ℹ️ Track record indisponible :',e.message);}
 
   return {date:today(),generatedAt:new Date().toISOString(),pronos,matchDataMap,tendancesJour,standings:standData.records??[],pythMap,leaders,matchs,trackRecord};

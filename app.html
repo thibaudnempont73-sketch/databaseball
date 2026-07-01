@@ -584,6 +584,11 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 .lex-open-btn:hover{background:var(--b1)}
 .lex-mini{display:inline-flex;align-items:center;gap:5px;margin:0 0 12px;background:var(--card2);border:1px solid var(--blue);color:var(--blue);font-weight:700;font-size:11.5px;padding:8px 13px;border-radius:9px;cursor:pointer;font-family:var(--sans)}
 .lex-mini:hover{background:var(--b1)}
+.bk-filter{display:flex;gap:6px;flex-wrap:wrap;padding:12px 14px 2px}
+.bk-more{display:block;width:calc(100% - 28px);margin:6px 14px 12px;background:var(--card2);border:1px solid var(--b1);color:var(--blue);font-family:var(--sans);font-weight:700;font-size:12px;padding:10px;border-radius:9px;cursor:pointer}
+.bk-more:hover{background:var(--b1)}
+.bk-reset{background:transparent;border:1px solid var(--b2);color:var(--muted);font-family:var(--sans);font-weight:600;font-size:11.5px;padding:7px 12px;border-radius:8px;cursor:pointer}
+.bk-reset:hover{border-color:var(--red-b);color:var(--red)}
 
 /* AIDE DÉBUTANT */
 .help-box{background:var(--card);border:1px solid var(--b1);border-radius:10px;margin-bottom:14px;overflow:hidden}
@@ -723,7 +728,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 </div>
 
 <header class="topbar">
-  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v82 · 01/07</span></div>
+  <div class="logo"><div class="logo-ball"></div>DATA<span>BASEBALL</span><span class="ver-badge" style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid var(--green-b);border-radius:10px;padding:1px 6px;margin-left:6px;letter-spacing:0">v84 · 01/07</span></div>
   <div class="topbar-r">
     <select class="lang-sel" onchange="setLang(this.value)" title="Langue / Language / Idioma" aria-label="Langue"><option value="fr">🇫🇷 FR</option><option value="en">🇬🇧 EN</option><option value="es">🇪🇸 ES</option></select>
     <button id="admin-view-btn" class="admin-btn" style="display:none" onclick="toggleAdminView()" title="Basculer entre la vue Premium et la vue Gratuit (admin)">🛠 Vue : Premium</button>
@@ -911,6 +916,7 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
       <input class="bk-input" id="bk-input" type="number" placeholder="Ex: 500" min="1">
       <button class="bk-btn" onclick="sauverBankroll()" data-i18n="bk_save">Sauvegarder</button>
     </div>
+    <div style="padding:0 14px 8px"><button class="bk-reset" onclick="resetBankroll()" data-i18n="bk_reset">🔄 Repartir de zéro</button></div>
     <div style="padding:0 14px 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">
       <div class="kpi"><div class="kpi-l" data-i18n="bk_actuel">Capital actuel</div><div class="kpi-v" style="color:var(--green)" id="bk-actuel">—</div><div class="kpi-m" data-i18n="bk_actuel_m">euros</div></div>
       <div class="kpi"><div class="kpi-l" data-i18n="bk_dispo">Disponible à miser</div><div class="kpi-v" style="color:var(--blue)" id="bk-dispo">—</div><div class="kpi-m" data-i18n="bk_dispo_m">capital − en jeu</div></div>
@@ -928,6 +934,12 @@ html,body{background:var(--bg);color:var(--white);font-family:var(--sans);min-he
 
   <div class="card">
     <div class="card-h"><div class="card-ht" data-i18n="bk_mybets">🎟️ Mes paris</div><div class="card-hs" data-i18n="bk_mybets_s">Placés depuis l'onglet Pronostics</div></div>
+    <div class="bk-filter" id="bk-filter">
+      <button class="ss-btn active" onclick="setBkFilter('tous',this)" data-i18n="bk_f_all">Tous</button>
+      <button class="ss-btn" onclick="setBkFilter('P',this)" data-i18n="bk_f_p">⏳ En attente</button>
+      <button class="ss-btn" onclick="setBkFilter('W',this)" data-i18n="bk_f_w">✅ Gagnés</button>
+      <button class="ss-btn" onclick="setBkFilter('L',this)" data-i18n="bk_f_l">❌ Perdus</button>
+    </div>
     <div id="paris-list"><div class="empty" style="padding:24px" data-i18n-html="bk_empty">Aucun pari placé pour l'instant.<br>Allez dans ⚡ Pronostics et cliquez sur <strong>🎯 Parier</strong> sous un pronostic.</div></div>
   </div>
 </div>
@@ -1058,9 +1070,9 @@ const I18N={
   tend_intro:`Tendances des équipes qui jouent aujourd'hui, sur leurs <b>10 derniers vrais matchs</b>. &nbsp;<b>🔥</b> en forme · <b>❄️</b> en difficulté · <b>Over 8.5</b> = matchs avec 9 points ou + au total · <b>Gagne par 2+</b> = l'équipe l'emporte par au moins 2 points (couvre le handicap −1.5).`,
   tend_home:'🏠 À domicile',tend_away:"✈️ À l'extérieur",tend_last10:'10 derniers :',tend_over_bar:'📊 Matchs Over 8.5 pts',tend_cover_bar:'📐 Gagne par 2+ points',serie_win:'{n} victoire{s} de suite',serie_loss:'{n} défaite{s} de suite',
   typ_victoire:'🏆 Victoire',typ_ou:'📊 Total',typ_runline:'📐 Run line',
-  hf_empty:"Aucun prono fun pour l'instant.<br>Ils s'enregistrent <strong>automatiquement chaque jour</strong> (combinés + outsiders), même sans parier.",hf_suggested:'suggéré (non parié)',hf_stake:'mise',hc_b1:'70%+ · très probable',hc_b2:'60-70% · probable',hc_b3:'53-60% · serré',hc_b4:'< 53% · incertain',tl_victoire:'Victoire',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'proba',hl_conf:'confiance',hl_cote:'cote',hl_score:'score',hl_stake:'misé',bk_undefined:'Non défini',bk_curve_empty:'La courbe apparaîtra dès qu\'un pari sera terminé (gagné ou perdu).',bk_pending:'en attente',dlg_yes_cancel:'Oui, annuler',st_first:'1er',st_theo:'théo.',st_division:'Division',st_unavail:'Classements indisponibles',storage_warn:`⚠️ Stockage du navigateur bloqué (fichier local) — vos paris et historique <strong>ne seront pas conservés après fermeture</strong>. Exportez en JSON (onglet Historique) ou hébergez l'app sur GitHub Pages.`,
+  hf_empty:"Aucun prono fun pour l'instant.<br>Ils s'enregistrent <strong>automatiquement chaque jour</strong> (combinés + outsiders), même sans parier.",hf_suggested:'suggéré (non parié)',hf_stake:'mise',hc_b1:'70%+ · très probable',hc_b2:'60-70% · probable',hc_b3:'53-60% · serré',hc_b4:'< 53% · incertain',tl_victoire:'Victoire',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'proba',hl_conf:'confiance',hl_cote:'cote',hl_score:'score',hl_stake:'misé',bk_undefined:'Non défini',bk_curve_empty:'La courbe apparaîtra dès qu\'un pari sera terminé (gagné ou perdu).',bk_reset:'🔄 Repartir de zéro',bk_start:'départ',bk_more:'Voir plus (+{n})',bk_filter_empty:'Aucun pari pour ce filtre.',bk_f_all:'Tous',bk_f_p:'⏳ En attente',bk_f_w:'✅ Gagnés',bk_f_l:'❌ Perdus',dc_bkreset_t:'Repartir de zéro ?',dc_bkreset_b:'Cela efface tes <strong>{n} paris placés</strong> et remet ton capital à sa valeur de départ. Ton historique de calibration est conservé. Continuer ?',dc_bkreset_ok:'Tout effacer',ts_bk_reset:'✅ Bankroll remise à zéro.',ts_bk_nobets:'Aucun pari à effacer.',bk_pending:'en attente',dlg_yes_cancel:'Oui, annuler',st_first:'1er',st_theo:'théo.',st_division:'Division',st_unavail:'Classements indisponibles',storage_warn:`⚠️ Stockage du navigateur bloqué (fichier local) — vos paris et historique <strong>ne seront pas conservés après fermeture</strong>. Exportez en JSON (onglet Historique) ou hébergez l'app sur GitHub Pages.`,
   fun_h:'🎲 COMBINÉS & GROS COUPS',fun_sub_locked:'Combinés (du prudent au gros coup) à cotes multipliées + outsiders à grosse cote, avec toutes les maths réelles.',fun_locked_t:'Réservé aux membres Premium',fun_unlock:'⭐ Débloquer les gros coups',fun_sub:`<strong>C'est le modèle qui choisit les sélections</strong> (probabilité ou edge), pas nous — tous types de paris confondus. Plus de jambes = plus grosse cote, plus faible probabilité. Cotes et probabilités 100% réelles, edge affiché.`,fun_no_combo:"Pas assez de pronostics fiables aujourd'hui pour un combiné.",fun_outs_h:'🐶 Outsiders à grosse cote',fun_outs_sub:`Victoires surprises (cote ≥ 2). <strong>💎</strong> = le modèle bat le marché. Clique pour l'analyse complète.`,fun_no_outs:"Aucun outsider à grosse cote aujourd'hui.",
-  combo_prudent_n:'Combiné Prudent',combo_prudent_c:'les 2 paris les plus probables',combo_equil_n:'Combiné Équilibré',combo_equil_c:'les 3 meilleures valeurs (edge)',combo_gros_n:'Combiné Gros coup',combo_gros_c:'les 4 meilleures valeurs empilées',combo_subline:"{n} sélections · {crit} · clique une ligne pour l'analyse",combo_total_odds:'cote totale',combo_realproba:'Proba réelle',combo_market:'Marché',combo_default_crit:'choisies par le modèle',combo_warn:'⚠️ Un combiné ne gagne que si <strong>TOUTES</strong> les sélections passent. Plus la cote est grosse, plus la probabilité réelle est faible : pour le fun, petites mises.',out_model:'modèle',
+  combo_prudent_n:'Combiné Prudent',combo_prudent_c:'les 2 paris les plus probables',combo_equil_n:'Combiné Équilibré',combo_equil_c:'les 3 meilleures valeurs (edge)',combo_gros_n:'Combiné Gros coup',combo_gros_c:'les 4 plus grosses cotes (matchs différents)',combo_subline:"{n} sélections · {crit} · clique une ligne pour l'analyse",combo_total_odds:'cote totale',combo_realproba:'Proba réelle',combo_market:'Marché',combo_default_crit:'choisies par le modèle',combo_warn:'⚠️ Un combiné ne gagne que si <strong>TOUTES</strong> les sélections passent. Plus la cote est grosse, plus la probabilité réelle est faible : pour le fun, petites mises.',out_model:'modèle',
   md_winchance:'chances de gagner',md_tab_pronos:'⚡ Pronostics ({n})',md_tab_data:'📋 Données complètes',md_load_first:'Chargez d\'abord les pronostics (onglet ⚡)',md_data_na:"Données non disponibles. Ouvrez d'abord l'onglet ⚡ Pronostics pour les charger.",md_visitor_home:'visiteur / domicile',md_net_over:'net {v} pts Over',md_vegas:'Cotes Vegas (marché)',md_vegas_hint:'Probabilités implicites du marché',md_r_score:'🏆 Score composite du modèle',md_r_score_h:'Note globale sur tous les critères croisés',md_r_proba:'Probabilité de victoire',md_r_season:'Bilan saison',md_r_pyth:'% victoires théorique',md_r_pyth_h:'Formule pythagoricienne (runs réels)',md_r_form:'Forme (10 derniers réels)',md_r_form_h:'Vrais résultats via API MLB',md_r_rest:'Repos sur 7 jours',md_r_rest_h:'Plus de repos = plus frais',md_rest_val:'{d} j ({m} matchs)',md_r_ops:'💪 Force offensive (OPS)',md_r_ops_h1:'Split domicile/extérieur réel',md_r_ops_h2:'Saison complète',md_r_era:'🛡️ ERA équipe (défense)',md_r_era_h:'Points encaissés/9 manches, tous lanceurs',md_r_starter:'⚾ Lanceur partant',md_r_fip:'FIP partant',md_r_fip_h:"Vraie qualité du lanceur, isolée de sa défense (plus prédictif que l'ERA)",md_r_erap:'ERA partant',md_r_erap_h:'Points encaissés / 9 manches',md_r_whip:'WHIP partant',md_r_whip_h:'Coureurs concédés/manche',md_r_k9:'K/9 partant',md_r_k9_h:'Éliminations directes/9 manches',md_r_runs:'📊 Runs estimés',md_r_runs_h:'Estimés sur données réelles (offense, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Impact du stade sur les points (100 = neutre, >104 = offensif)',md_tba:'Non annoncé',md_foot:"✅ = meilleure valeur. Toutes ces données proviennent en temps réel de l'API officielle MLB{meteo}.",md_foot_meteo:" et d'Open-Meteo",
   q_excep:'exceptionnel',q_excel:'excellent',q_vgood:'très bon',q_correct:'correct',q_weak:'faible',qo_excel:'excellente',qo_good:'bonne',qo_correct:'correcte',qo_weak:'faible',qw_hi:'très efficace',qw_mid:'efficacité correcte',qw_lo:'peu efficace',ctx_home:' à domicile',ctx_away:" à l'extérieur",streak_win:'victoires consécutives',streak_loss:'défaites consécutives',
   fac_pyth_n:'Pourcentage de victoires théorique',fac_pyth_v:'{pct}% de victoires attendues cette saison',fac_pyth_d:'Calculé sur les points marqués et encaissés réels (formule pythagoricienne de Bill James, 1977)',
@@ -1174,9 +1186,9 @@ const I18N={
   tend_intro:`Trends of teams playing today, over their <b>last 10 real games</b>. &nbsp;<b>🔥</b> in form · <b>❄️</b> struggling · <b>Over 8.5</b> = games with 9+ total runs · <b>Wins by 2+</b> = the team wins by at least 2 (covers the −1.5 handicap).`,
   tend_home:'🏠 At home',tend_away:'✈️ Away',tend_last10:'Last 10:',tend_over_bar:'📊 Over 8.5 games',tend_cover_bar:'📐 Wins by 2+',serie_win:'{n}-game win streak',serie_loss:'{n}-game losing streak',
   typ_victoire:'🏆 Win',typ_ou:'📊 Total',typ_runline:'📐 Run line',
-  hf_empty:"No fun pick yet.<br>They're saved <strong>automatically every day</strong> (parlays + underdogs), even without betting.",hf_suggested:'suggested (not bet)',hf_stake:'stake',hc_b1:'70%+ · very likely',hc_b2:'60-70% · likely',hc_b3:'53-60% · tight',hc_b4:'< 53% · uncertain',tl_victoire:'Moneyline',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'prob.',hl_conf:'confidence',hl_cote:'odds',hl_score:'score',hl_stake:'staked',bk_undefined:'Not set',bk_curve_empty:'The curve will appear once a bet is settled (won or lost).',bk_pending:'pending',dlg_yes_cancel:'Yes, cancel',st_first:'1st',st_theo:'theo.',st_division:'Division',st_unavail:'Standings unavailable',storage_warn:`⚠️ Browser storage blocked (local file) — your bets and history <strong>won't be kept after closing</strong>. Export to JSON (History tab) or host the app on GitHub Pages.`,
+  hf_empty:"No fun pick yet.<br>They're saved <strong>automatically every day</strong> (parlays + underdogs), even without betting.",hf_suggested:'suggested (not bet)',hf_stake:'stake',hc_b1:'70%+ · very likely',hc_b2:'60-70% · likely',hc_b3:'53-60% · tight',hc_b4:'< 53% · uncertain',tl_victoire:'Moneyline',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'prob.',hl_conf:'confidence',hl_cote:'odds',hl_score:'score',hl_stake:'staked',bk_undefined:'Not set',bk_curve_empty:'The curve will appear once a bet is settled (won or lost).',bk_reset:'🔄 Reset to zero',bk_start:'start',bk_more:'Show more (+{n})',bk_filter_empty:'No bet for this filter.',bk_f_all:'All',bk_f_p:'⏳ Pending',bk_f_w:'✅ Won',bk_f_l:'❌ Lost',dc_bkreset_t:'Reset to zero?',dc_bkreset_b:'This clears your <strong>{n} placed bets</strong> and resets your capital to its starting value. Your calibration history is kept. Continue?',dc_bkreset_ok:'Clear everything',ts_bk_reset:'✅ Bankroll reset.',ts_bk_nobets:'No bet to clear.',bk_pending:'pending',dlg_yes_cancel:'Yes, cancel',st_first:'1st',st_theo:'theo.',st_division:'Division',st_unavail:'Standings unavailable',storage_warn:`⚠️ Browser storage blocked (local file) — your bets and history <strong>won't be kept after closing</strong>. Export to JSON (History tab) or host the app on GitHub Pages.`,
   fun_h:'🎲 PARLAYS & LONG SHOTS',fun_sub_locked:'Parlays (from safe to long shot) with multiplied odds + big-odds underdogs, with all the real math.',fun_locked_t:'Reserved for Premium members',fun_unlock:'⭐ Unlock the long shots',fun_sub:`<strong>The model picks the selections</strong> (probability or edge), not us — across all bet types. More legs = bigger odds, lower probability. 100% real odds and probabilities, edge shown.`,fun_no_combo:'Not enough reliable predictions today for a parlay.',fun_outs_h:'🐶 Big-odds underdogs',fun_outs_sub:`Surprise wins (odds ≥ 2). <strong>💎</strong> = the model beats the market. Click for the full analysis.`,fun_no_outs:'No big-odds underdog today.',
-  combo_prudent_n:'Safe parlay',combo_prudent_c:'the 2 most likely bets',combo_equil_n:'Balanced parlay',combo_equil_c:'the 3 best values (edge)',combo_gros_n:'Long-shot parlay',combo_gros_c:'the 4 best values stacked',combo_subline:'{n} picks · {crit} · click a row for the analysis',combo_total_odds:'total odds',combo_realproba:'Real prob.',combo_market:'Market',combo_default_crit:'picked by the model',combo_warn:'⚠️ A parlay only wins if <strong>ALL</strong> picks hit. The bigger the odds, the lower the real probability: for fun, small stakes.',out_model:'model',
+  combo_prudent_n:'Safe parlay',combo_prudent_c:'the 2 most likely bets',combo_equil_n:'Balanced parlay',combo_equil_c:'the 3 best values (edge)',combo_gros_n:'Long-shot parlay',combo_gros_c:'the 4 biggest odds (different games)',combo_subline:'{n} picks · {crit} · click a row for the analysis',combo_total_odds:'total odds',combo_realproba:'Real prob.',combo_market:'Market',combo_default_crit:'picked by the model',combo_warn:'⚠️ A parlay only wins if <strong>ALL</strong> picks hit. The bigger the odds, the lower the real probability: for fun, small stakes.',out_model:'model',
   md_winchance:'win chance',md_tab_pronos:'⚡ Predictions ({n})',md_tab_data:'📋 Full data',md_load_first:'Load the predictions first (⚡ tab)',md_data_na:'Data unavailable. Open the ⚡ Predictions tab first to load it.',md_visitor_home:'away / home',md_net_over:'net {v} pts Over',md_vegas:'Vegas odds (market)',md_vegas_hint:'Market implied probabilities',md_r_score:'🏆 Model composite score',md_r_score_h:'Overall score across all cross-referenced criteria',md_r_proba:'Win probability',md_r_season:'Season record',md_r_pyth:'Theoretical win %',md_r_pyth_h:'Pythagorean formula (real runs)',md_r_form:'Form (last 10 real)',md_r_form_h:'Real results via MLB API',md_r_rest:'Rest over 7 days',md_r_rest_h:'More rest = fresher',md_rest_val:'{d}d ({m} games)',md_r_ops:'💪 Offensive power (OPS)',md_r_ops_h1:'Real home/away split',md_r_ops_h2:'Full season',md_r_era:'🛡️ Team ERA (defense)',md_r_era_h:'Runs allowed/9 innings, all pitchers',md_r_starter:'⚾ Starting pitcher',md_r_fip:'Starter FIP',md_r_fip_h:'True pitcher quality, isolated from defense (more predictive than ERA)',md_r_erap:'Starter ERA',md_r_erap_h:'Runs allowed / 9 innings',md_r_whip:'Starter WHIP',md_r_whip_h:'Runners allowed/inning',md_r_k9:'Starter K/9',md_r_k9_h:'Strikeouts/9 innings',md_r_runs:'📊 Estimated runs',md_r_runs_h:'Estimated on real data (offense, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Stadium impact on runs (100 = neutral, >104 = hitter-friendly)',md_tba:'Not announced',md_foot:'✅ = best value. All this data comes in real time from the official MLB API{meteo}.',md_foot_meteo:' and Open-Meteo',
   q_excep:'exceptional',q_excel:'excellent',q_vgood:'very good',q_correct:'decent',q_weak:'weak',qo_excel:'excellent',qo_good:'good',qo_correct:'decent',qo_weak:'weak',qw_hi:'very efficient',qw_mid:'decent efficiency',qw_lo:'inefficient',ctx_home:' at home',ctx_away:' away',streak_win:'consecutive wins',streak_loss:'consecutive losses',
   fac_pyth_n:'Theoretical win %',fac_pyth_v:'{pct}% expected wins this season',fac_pyth_d:'Computed on real runs scored and allowed (Bill James Pythagorean formula, 1977)',
@@ -1290,9 +1302,9 @@ const I18N={
   tend_intro:`Tendencias de los equipos que juegan hoy, sobre sus <b>últimos 10 partidos reales</b>. &nbsp;<b>🔥</b> en forma · <b>❄️</b> en apuros · <b>Over 8.5</b> = partidos con 9+ carreras totales · <b>Gana por 2+</b> = el equipo gana por al menos 2 (cubre el hándicap −1.5).`,
   tend_home:'🏠 En casa',tend_away:'✈️ Fuera',tend_last10:'Últimos 10:',tend_over_bar:'📊 Partidos Over 8.5',tend_cover_bar:'📐 Gana por 2+',serie_win:'{n} victoria{s} seguidas',serie_loss:'{n} derrota{s} seguidas',
   typ_victoire:'🏆 Victoria',typ_ou:'📊 Total',typ_runline:'📐 Run line',
-  hf_empty:'Aún no hay pronóstico fun.<br>Se guardan <strong>automáticamente cada día</strong> (combinadas + outsiders), incluso sin apostar.',hf_suggested:'sugerido (no apostado)',hf_stake:'stake',hc_b1:'70%+ · muy probable',hc_b2:'60-70% · probable',hc_b3:'53-60% · ajustado',hc_b4:'< 53% · incierto',tl_victoire:'Victoria',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'prob.',hl_conf:'confianza',hl_cote:'cuota',hl_score:'marcador',hl_stake:'apostado',bk_undefined:'Sin definir',bk_curve_empty:'La curva aparecerá en cuanto se resuelva una apuesta (ganada o perdida).',bk_pending:'pendiente',dlg_yes_cancel:'Sí, cancelar',st_first:'1º',st_theo:'teó.',st_division:'División',st_unavail:'Clasificación no disponible',storage_warn:`⚠️ Almacenamiento del navegador bloqueado (archivo local) — tus apuestas e historial <strong>no se conservarán al cerrar</strong>. Exporta a JSON (pestaña Historial) o aloja la app en GitHub Pages.`,
+  hf_empty:'Aún no hay pronóstico fun.<br>Se guardan <strong>automáticamente cada día</strong> (combinadas + outsiders), incluso sin apostar.',hf_suggested:'sugerido (no apostado)',hf_stake:'stake',hc_b1:'70%+ · muy probable',hc_b2:'60-70% · probable',hc_b3:'53-60% · ajustado',hc_b4:'< 53% · incierto',tl_victoire:'Victoria',tl_ou:'Total O/U',tl_runline:'Run line',hl_proba:'prob.',hl_conf:'confianza',hl_cote:'cuota',hl_score:'marcador',hl_stake:'apostado',bk_undefined:'Sin definir',bk_curve_empty:'La curva aparecerá en cuanto se resuelva una apuesta (ganada o perdida).',bk_reset:'🔄 Empezar de cero',bk_start:'inicio',bk_more:'Ver más (+{n})',bk_filter_empty:'Ninguna apuesta para este filtro.',bk_f_all:'Todas',bk_f_p:'⏳ Pendientes',bk_f_w:'✅ Ganadas',bk_f_l:'❌ Perdidas',dc_bkreset_t:'¿Empezar de cero?',dc_bkreset_b:'Esto borra tus <strong>{n} apuestas realizadas</strong> y restablece tu capital a su valor inicial. Tu historial de calibración se conserva. ¿Continuar?',dc_bkreset_ok:'Borrar todo',ts_bk_reset:'✅ Bankroll reiniciada.',ts_bk_nobets:'Ninguna apuesta que borrar.',bk_pending:'pendiente',dlg_yes_cancel:'Sí, cancelar',st_first:'1º',st_theo:'teó.',st_division:'División',st_unavail:'Clasificación no disponible',storage_warn:`⚠️ Almacenamiento del navegador bloqueado (archivo local) — tus apuestas e historial <strong>no se conservarán al cerrar</strong>. Exporta a JSON (pestaña Historial) o aloja la app en GitHub Pages.`,
   fun_h:'🎲 COMBINADAS Y GRANDES JUGADAS',fun_sub_locked:'Combinadas (de la prudente a la gran jugada) con cuotas multiplicadas + outsiders de cuota alta, con todas las matemáticas reales.',fun_locked_t:'Reservado a los miembros Premium',fun_unlock:'⭐ Desbloquear las grandes jugadas',fun_sub:`<strong>Es el modelo quien elige las selecciones</strong> (probabilidad o edge), no nosotros — todos los tipos de apuesta. Más patas = cuota mayor, menor probabilidad. Cuotas y probabilidades 100% reales, edge mostrado.`,fun_no_combo:'No hay suficientes pronósticos fiables hoy para una combinada.',fun_outs_h:'🐶 Outsiders de cuota alta',fun_outs_sub:`Victorias sorpresa (cuota ≥ 2). <strong>💎</strong> = el modelo supera al mercado. Haz clic para el análisis completo.`,fun_no_outs:'Hoy no hay outsider de cuota alta.',
-  combo_prudent_n:'Combinada prudente',combo_prudent_c:'las 2 apuestas más probables',combo_equil_n:'Combinada equilibrada',combo_equil_c:'los 3 mejores valores (edge)',combo_gros_n:'Combinada gran jugada',combo_gros_c:'los 4 mejores valores apilados',combo_subline:'{n} selecciones · {crit} · haz clic en una línea para el análisis',combo_total_odds:'cuota total',combo_realproba:'Prob. real',combo_market:'Mercado',combo_default_crit:'elegidas por el modelo',combo_warn:'⚠️ Una combinada solo gana si entran <strong>TODAS</strong> las selecciones. Cuanto mayor la cuota, menor la probabilidad real: para diversión, apuestas pequeñas.',out_model:'modelo',
+  combo_prudent_n:'Combinada prudente',combo_prudent_c:'las 2 apuestas más probables',combo_equil_n:'Combinada equilibrada',combo_equil_c:'los 3 mejores valores (edge)',combo_gros_n:'Combinada gran jugada',combo_gros_c:'las 4 cuotas más altas (partidos distintos)',combo_subline:'{n} selecciones · {crit} · haz clic en una línea para el análisis',combo_total_odds:'cuota total',combo_realproba:'Prob. real',combo_market:'Mercado',combo_default_crit:'elegidas por el modelo',combo_warn:'⚠️ Una combinada solo gana si entran <strong>TODAS</strong> las selecciones. Cuanto mayor la cuota, menor la probabilidad real: para diversión, apuestas pequeñas.',out_model:'modelo',
   md_winchance:'probabilidad de ganar',md_tab_pronos:'⚡ Pronósticos ({n})',md_tab_data:'📋 Datos completos',md_load_first:'Carga primero los pronósticos (pestaña ⚡)',md_data_na:'Datos no disponibles. Abre primero la pestaña ⚡ Pronósticos para cargarlos.',md_visitor_home:'visitante / local',md_net_over:'neto {v} pts Over',md_vegas:'Cuotas Vegas (mercado)',md_vegas_hint:'Probabilidades implícitas del mercado',md_r_score:'🏆 Puntuación compuesta del modelo',md_r_score_h:'Nota global sobre todos los criterios cruzados',md_r_proba:'Probabilidad de victoria',md_r_season:'Balance temporada',md_r_pyth:'% victorias teórico',md_r_pyth_h:'Fórmula pitagórica (carreras reales)',md_r_form:'Forma (últimos 10 reales)',md_r_form_h:'Resultados reales vía API MLB',md_r_rest:'Descanso en 7 días',md_r_rest_h:'Más descanso = más fresco',md_rest_val:'{d} d ({m} partidos)',md_r_ops:'💪 Poder ofensivo (OPS)',md_r_ops_h1:'Split local/visitante real',md_r_ops_h2:'Temporada completa',md_r_era:'🛡️ ERA del equipo (defensa)',md_r_era_h:'Carreras permitidas/9 entradas, todos los lanzadores',md_r_starter:'⚾ Lanzador abridor',md_r_fip:'FIP abridor',md_r_fip_h:'Calidad real del lanzador, aislada de su defensa (más predictivo que el ERA)',md_r_erap:'ERA abridor',md_r_erap_h:'Carreras permitidas / 9 entradas',md_r_whip:'WHIP abridor',md_r_whip_h:'Corredores permitidos/entrada',md_r_k9:'K/9 abridor',md_r_k9_h:'Ponches/9 entradas',md_r_runs:'📊 Carreras estimadas',md_r_runs_h:'Estimadas sobre datos reales (ofensiva, FIP, bullpen, park factor)',md_r_park:'🏟️ Park factor',md_r_park_h:'Impacto del estadio en las carreras (100 = neutro, >104 = ofensivo)',md_tba:'Sin anunciar',md_foot:'✅ = mejor valor. Todos estos datos provienen en tiempo real de la API oficial MLB{meteo}.',md_foot_meteo:' y de Open-Meteo',
   q_excep:'excepcional',q_excel:'excelente',q_vgood:'muy bueno',q_correct:'correcto',q_weak:'flojo',qo_excel:'excelente',qo_good:'buena',qo_correct:'correcta',qo_weak:'floja',qw_hi:'muy eficiente',qw_mid:'eficiencia correcta',qw_lo:'poco eficiente',ctx_home:' en casa',ctx_away:' fuera',streak_win:'victorias seguidas',streak_loss:'derrotas seguidas',
   fac_pyth_n:'Porcentaje de victorias teórico',fac_pyth_v:'{pct}% de victorias esperadas esta temporada',fac_pyth_d:'Calculado sobre las carreras reales anotadas y permitidas (fórmula pitagórica de Bill James, 1977)',
@@ -3541,13 +3553,16 @@ let FUN={combos:[],outs:[]};
 // Calcule les pronos fun du jour (combinés + outsiders) — c'est le modèle qui choisit (proba / edge)
 function computeFun(){
   if(!tousLesPronos.length)return {combos:[],outs:[]};
-  const parProba=bestPerGame(p=>p.proba).sort((a,b)=>b.proba-a.proba);
-  const parEdge=bestPerGame(p=>legEdge(p)).sort((a,b)=>legEdge(b)-legEdge(a));
   COMBOS={};
   const combos=[];const add=c=>{if(c)combos.push(c);};
-  add(buildCombo(parProba.slice(0,2),'prudent',t('combo_prudent_n'),'🛡️',t('combo_prudent_c'),'combo_prudent_n'));
-  if(parEdge.length>=3)add(buildCombo(parEdge.slice(0,3),'equilibre',t('combo_equil_n'),'⚖️',t('combo_equil_c'),'combo_equil_n'));
-  if(parEdge.length>=4)add(buildCombo(parEdge.slice(0,4),'gros',t('combo_gros_n'),'🚀',t('combo_gros_c'),'combo_gros_n'));
+  // ── COMBINÉS INDÉPENDANTS : chaque combiné pioche dans des MATCHS DIFFÉRENTS (`used`).
+  // Avant, les 3 combinés étaient des sous-ensembles emboîtés des mêmes sélections → 1 match perdu = les 3 combinés perdus.
+  // Maintenant un match ne figure que dans UN combiné → ils gagnent/perdent indépendamment.
+  const used=new Set();
+  const take=(scoreFn,n)=>{const legs=bestPerGame(scoreFn).filter(p=>!used.has(p.gamePk)).sort((a,b)=>scoreFn(b)-scoreFn(a)).slice(0,n);legs.forEach(p=>used.add(p.gamePk));return legs;};
+  add(buildCombo(take(p=>p.proba,2),'prudent',t('combo_prudent_n'),'🛡️',t('combo_prudent_c'),'combo_prudent_n'));   // 2 sélections les PLUS PROBABLES
+  add(buildCombo(take(p=>legEdge(p),3),'equilibre',t('combo_equil_n'),'⚖️',t('combo_equil_c'),'combo_equil_n'));    // 3 meilleures VALEURS (edge), matchs restants
+  add(buildCombo(take(p=>p.coteVegas,4),'gros',t('combo_gros_n'),'🚀',t('combo_gros_c'),'combo_gros_n'));           // 4 plus grosses COTES, matchs restants
   const outs=[];
   Object.keys(matchDataMap||{}).forEach(gp=>{
     const m=matchDataMap[gp];if(!m||!m.vegas)return;
@@ -3912,22 +3927,32 @@ function drawCurve(init,settled){
   if(settled.length<1)return `<div class="empty" style="padding:30px;font-size:11px">${t('bk_curve_empty')}</div>`;
   const pts=[init];let run=init;
   settled.forEach(h=>{run+=h.resultat==='W'?h.mise*(h.cote-1):-h.mise;pts.push(Math.round(run*100)/100);});
-  const W=300,H=140,pad=10;
-  const min=Math.min(...pts,init),max=Math.max(...pts,init);
-  const range=(max-min)||1;
-  const x=i=>pad+(i/(pts.length-1||1))*(W-2*pad);
-  const y=v=>H-pad-((v-min)/range)*(H-2*pad);
+  const W=320,H=176,padL=46,padR=16,padT=16,padB=22;
+  const min=Math.min(...pts),max=Math.max(...pts);
+  const range=(max-min)||Math.max(1,init*0.1||1);
+  const lo=min-range*0.08,hi=max+range*0.08,rg=(hi-lo)||1;
+  const x=i=>padL+(i/(pts.length-1||1))*(W-padL-padR);
+  const y=v=>padT+(1-(v-lo)/rg)*(H-padT-padB);
   const line=pts.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
-  const area=`${line} L${x(pts.length-1).toFixed(1)},${H-pad} L${x(0).toFixed(1)},${H-pad} Z`;
-  const yInit=y(init).toFixed(1);
-  const up=pts[pts.length-1]>=init;
-  const col=up?'var(--green)':'var(--red)';
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="160" preserveAspectRatio="none">
-    <defs><linearGradient id="bkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".25"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-    <line x1="${pad}" y1="${yInit}" x2="${W-pad}" y2="${yInit}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
+  const area=`${line} L${x(pts.length-1).toFixed(1)},${(H-padB).toFixed(1)} L${x(0).toFixed(1)},${(H-padB).toFixed(1)} Z`;
+  const cur=pts[pts.length-1],up=cur>=init,col=up?'var(--green)':'var(--red)';
+  const F='ui-monospace,SFMono-Regular,Menlo,monospace';
+  const grid=(v,dash)=>`<line x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke="var(--b1)" stroke-width="1" ${dash?'stroke-dasharray="3 3"':''} opacity="${dash?'.8':'.35'}"/>`;
+  const yLab=v=>`<text x="${padL-6}" y="${(y(v)+3).toFixed(1)}" text-anchor="end" font-size="8" fill="var(--muted)" font-family="${F}">${Math.round(v)}€</text>`;
+  const dfmt=d=>{const p=(d||'').split('-');return p.length===3?`${p[2]}/${p[1]}`:'';};
+  const d1=dfmt(settled[0].datePari||settled[0].date),d2=dfmt(settled[settled.length-1].datePari||settled[settled.length-1].date);
+  const showInit=init>min+range*0.06&&init<max-range*0.06;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="184" preserveAspectRatio="xMidYMid meet">
+    <defs><linearGradient id="bkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".28"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    ${grid(max,false)}${grid(min,false)}${grid(init,true)}
+    ${yLab(max)}${yLab(min)}${showInit?yLab(init):''}
+    <text x="${padL}" y="${(y(init)-3).toFixed(1)}" font-size="7.5" fill="var(--muted)" font-family="${F}" opacity=".85">${t('bk_start')}</text>
     <path d="${area}" fill="url(#bkg)"/>
-    <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-    ${pts.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.5" fill="${col}"/>`).join('')}
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${x(pts.length-1).toFixed(1)}" cy="${y(cur).toFixed(1)}" r="3.5" fill="${col}"/>
+    <text x="${(W-padR).toFixed(1)}" y="${Math.min(H-padB-3,Math.max(padT+9,y(cur)-8)).toFixed(1)}" text-anchor="end" font-size="12" font-weight="700" fill="${col}" font-family="${F}">${cur.toFixed(0)}€</text>
+    ${d1?`<text x="${padL}" y="${(H-6).toFixed(1)}" font-size="8" fill="var(--muted)" font-family="${F}">${d1}</text>`:''}
+    ${d2&&d2!==d1?`<text x="${(W-padR).toFixed(1)}" y="${(H-6).toFixed(1)}" text-anchor="end" font-size="8" fill="var(--muted)" font-family="${F}">${d2}</text>`:''}
   </svg>`;
 }
 
@@ -3953,34 +3978,54 @@ function renderBankroll(){
 
   document.getElementById('bk-curve').innerHTML=drawCurve(init||0,settled);
 
-  const el=document.getElementById('paris-list');
-  if(!paris.length){el.innerHTML=`<div class="empty" style="padding:24px">${t('bk_empty')}</div>`;return;}
-  el.innerHTML=[...paris].reverse().map(h=>{
-    const res=h.resultat;
-    const pnl=res==='W'?`+${(h.mise*(h.cote-1)).toFixed(2)}€`:res==='L'?`−${h.mise.toFixed(2)}€`:t('bk_pending');
-    const col=res==='W'?'var(--green)':res==='L'?'var(--red)':'var(--amber)';
-    const bc=res==='W'?'w':res==='L'?'l':'p';
-    const bt=res==='W'?t('bet_won'):res==='L'?t('bet_lost'):t('bet_pending');
-    const foot=`<div class="pari-foot"><span class="pf-mise">🎟️ ${(+h.mise||0).toFixed(2)}€ · @${(+h.cote||0).toFixed(2)}</span><span class="pf-pnl" style="color:${col}">${pnl}</span></div>`;
-    const top=`<div class="pari-card-top"><span class="pari-when">📅 ${betWhen(h)}</span><span class="pari-badge ${bc}">${bt}</span></div>`;
-    if(h.type==='combo'){
-      const n=h.nLegs||(h.legs?h.legs.length:0);
-      const legs=(h.legs||[]).map(l=>displayPick(l)).join(' + ');
-      return`<div class="pari-card pari-combo" onclick="ouvrirComboDetail('${h.id}')" style="cursor:pointer">
-        ${top}
-        <div class="pari-match">🎲 <span><strong>${comboName(h)}</strong> · ${tf('combo_nsel',{n})}</span><span style="margin-left:auto;color:var(--blue);font-weight:700">›</span></div>
-        <div class="pari-pick2" style="font-size:11.5px;color:var(--muted);font-weight:500">${legs}</div>
-        ${foot}
-      </div>`;
-    }
-    const logos=logosFromLabel(h.matchLabel,16);
-    return`<div class="pari-card">
-      ${top}
-      ${h.matchLabel?`<div class="pari-match">${logos}<span>${h.matchLabel}</span></div>`:''}
-      <div class="pari-pick2">🎯 ${displayPick(h)}</div>
-      ${foot}
-    </div>`;
-  }).join('');
+  renderParisList();
+}
+let _bkFilter='tous',_bkLimit=15;
+function setBkFilter(f,btn){_bkFilter=f;_bkLimit=15;document.querySelectorAll('#bk-filter .ss-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderParisList();}
+function bkCard(h){
+  const res=h.resultat;
+  const pnl=res==='W'?`+${(h.mise*(h.cote-1)).toFixed(2)}€`:res==='L'?`−${h.mise.toFixed(2)}€`:t('bk_pending');
+  const col=res==='W'?'var(--green)':res==='L'?'var(--red)':'var(--amber)';
+  const bc=res==='W'?'w':res==='L'?'l':'p';
+  const bt=res==='W'?t('bet_won'):res==='L'?t('bet_lost'):t('bet_pending');
+  const foot=`<div class="pari-foot"><span class="pf-mise">🎟️ ${(+h.mise||0).toFixed(2)}€ · @${(+h.cote||0).toFixed(2)}</span><span class="pf-pnl" style="color:${col}">${pnl}</span></div>`;
+  const top=`<div class="pari-card-top"><span class="pari-when">📅 ${betWhen(h)}</span><span class="pari-badge ${bc}">${bt}</span></div>`;
+  if(h.type==='combo'){
+    const n=h.nLegs||(h.legs?h.legs.length:0);
+    const legs=(h.legs||[]).map(l=>displayPick(l)).join(' + ');
+    return`<div class="pari-card pari-combo" onclick="ouvrirComboDetail('${h.id}')" style="cursor:pointer">${top}<div class="pari-match">🎲 <span><strong>${comboName(h)}</strong> · ${tf('combo_nsel',{n})}</span><span style="margin-left:auto;color:var(--blue);font-weight:700">›</span></div><div class="pari-pick2" style="font-size:11.5px;color:var(--muted);font-weight:500">${legs}</div>${foot}</div>`;
+  }
+  const logos=logosFromLabel(h.matchLabel,16);
+  return`<div class="pari-card">${top}${h.matchLabel?`<div class="pari-match">${logos}<span>${h.matchLabel}</span></div>`:''}<div class="pari-pick2">🎯 ${displayPick(h)}</div>${foot}</div>`;
+}
+function renderParisList(){
+  const el=document.getElementById('paris-list');if(!el)return;
+  const all=getHistorique().filter(h=>h.parie).sort((a,b)=>(a.datePari||a.date||'').localeCompare(b.datePari||b.date||''));
+  if(!all.length){el.innerHTML=`<div class="empty" style="padding:24px">${t('bk_empty')}</div>`;return;}
+  let list=[...all].reverse();
+  if(_bkFilter!=='tous')list=list.filter(h=>h.resultat===_bkFilter);
+  if(!list.length){el.innerHTML=`<div class="empty" style="padding:20px;font-size:12px">${t('bk_filter_empty')}</div>`;return;}
+  const shown=list.slice(0,_bkLimit);
+  const more=list.length>_bkLimit?`<button class="bk-more" onclick="_bkLimit+=15;renderParisList()">${tf('bk_more',{n:list.length-_bkLimit})}</button>`:'';
+  el.innerHTML=shown.map(bkCard).join('')+more;
+}
+// Repartir de zéro : efface les paris placés + remet le capital à sa valeur de départ (garde les pronos suivis pour le track record)
+function resetBankroll(){
+  const paris=getHistorique().filter(h=>h.parie);
+  if(!paris.length){toast(t('ts_bk_nobets'),'info');return;}
+  askConfirm(t('dc_bkreset_t'),tf('dc_bkreset_b',{n:paris.length}),()=>{
+    const kept=[];
+    getHistorique().forEach(h=>{
+      if(!h.parie){kept.push(h);return;}
+      if(h.suggere){const c={...h};delete c.parie;delete c.mise;delete c.cote;delete c.datePari;kept.push(c);return;}
+    });
+    sauverHistorique(kept);
+    lsSet('db_bankroll_actuel',String(getBankroll()));
+    _bkFilter='tous';_bkLimit=15;
+    clearTimeout(_syncTimer);_pushRaw(); // écrase Supabase (sinon le merge multi-appareils restaure les paris)
+    renderBankroll();
+    toast(t('ts_bk_reset'),'info');
+  },t('dc_bkreset_ok'));
 }
 // Nom localisé d'un combiné stocké (clé i18n si dispo, sinon texte stocké / extrait du pick)
 function comboName(h){
