@@ -99,13 +99,17 @@ function fitLogit(X,y,m,iter=5000,lr=0.3,l2=0.003){let w=new Array(m).fill(0),b=
   const base=ys.reduce((a,b)=>a+b,0)/ys.length;
 
   // ── variantes ──
-  const W0={pyth:0.28,starter:0.26,ops:0.18,whip:0.04,k9:0.08,teamera:0.08,recoff:0.05,recpit:0.05,home:0.06}; // ACTUEL
-  const W1={pyth:0.30,starter:0.20,ops:0.12,whip:0.04,k9:0.02,teamera:0.08,recoff:0.05,recpit:0.15,home:0.06}; // RE-PONDÉRÉ (recpit↑, pyth↑, k9↓, ops↓)
+  const W0={pyth:0.28,starter:0.26,ops:0.18,whip:0.04,k9:0.08,teamera:0.08,recoff:0.05,recpit:0.05,home:0.06}; // ACTUEL (pyth + ops + teamEra = doublon offense/défense ?)
+  const Wpl={...W0,pyth:0.14,ops:0.25,teamera:0.13};   // pyth RÉDUIT → poids reporté sur ses composantes directes (offense + défense)
+  const Wpo={...W0,ops:0,teamera:0,pyth:0.44};          // pyth SEUL (on retire ops + teamEra qu'il recoupe)
+  const Wco={...W0,pyth:0,ops:0.28,teamera:0.16};       // COMPOSANTES seules (on retire pyth)
+  const Wk3={...W0,k9:0.03};                            // k9 réduit (mon fix double-comptage FIP)
   const variants=[
-    {name:'V0 ACTUEL',                W:W0,rec:false},
-    {name:'V1 re-pondéré',            W:W1,rec:false},
-    {name:'V2 pitching récence',      W:W0,rec:true },
-    {name:'V3 re-pond.+récence',      W:W1,rec:true },
+    {name:'V0 ACTUEL',                W:W0, rec:false},
+    {name:'Vpl pyth réduit 0.14',     W:Wpl,rec:false},
+    {name:'Vpo pyth SEUL',            W:Wpo,rec:false},
+    {name:'Vco composantes seules',   W:Wco,rec:false},
+    {name:'Vk3 k9 réduit (mon fix)',  W:Wk3,rec:false},
   ];
   const evalV=(W,rec)=>{const ps=te.map(g=>probaHome(rec?g.maR:g.maB,rec?g.mhR:g.mhB,W));return {ps,m:metrics(ps,ys)};};
 
