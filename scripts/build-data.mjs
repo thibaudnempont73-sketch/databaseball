@@ -307,13 +307,13 @@ async function recordAndSettleResults(pronos){
   const rows=pronos.filter(p=>p.coteVegas).map(p=>({id:p.id,date:td,type:p.type,proba:p.probaRaw??p.proba,cote:p.coteVegas,fair_proba:p.fairProba??null,gamepk:p.gamePk,pick:p.pick,ou_line:p.ouLine??null,ou_side:p.ouSide??null,rl_is_home:p.rlIsHome??null,rl_point:p.rlPoint??null,resultat:'P'}));
   if(rows.length)await POST(rows);
   // 3) Toutes les lignes réglées (pour bilan + recalibration)
-  return await fetch(`${url}/rest/v1/results?select=proba,cote,resultat,type&resultat=in.(W,L)`,{headers:H}).then(r=>r.ok?r.json():[]).catch(()=>[]);
+  return await fetch(`${url}/rest/v1/results?select=proba,cote,fair_proba,resultat,type&resultat=in.(W,L)`,{headers:H}).then(r=>r.ok?r.json():[]).catch(()=>[]);
 }
 // Lit uniquement les résultats déjà réglés (pour construire la recalibration AVANT la boucle → appliquée à la source)
 async function fetchSettledRows(){
   const {url,key}=supaConf(); if(!url||!key)return [];
   const H={apikey:key,Authorization:'Bearer '+key};
-  return await fetch(`${url}/rest/v1/results?select=proba,cote,resultat,type&resultat=in.(W,L)`,{headers:H}).then(r=>r.ok?r.json():[]).catch(()=>[]);
+  return await fetch(`${url}/rest/v1/results?select=proba,cote,fair_proba,resultat,type&resultat=in.(W,L)`,{headers:H}).then(r=>r.ok?r.json():[]).catch(()=>[]);
 }
 
 // ═══════════════════════════════════════════════════
